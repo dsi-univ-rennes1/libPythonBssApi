@@ -1,0 +1,5 @@
+test_integration
+venv
+.idea
+test_unitaire/.pytest_cache
+doc/build
