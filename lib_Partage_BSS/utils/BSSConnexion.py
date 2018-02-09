@@ -5,12 +5,13 @@ import hashlib
 from time import time
 from xml.dom import minidom
 from lib_Partage_BSS.exceptions.BSSConnexionException import BSSConnexionException
+from lib_Partage_BSS.utils.ParseBSSResponse import parseResponse
+from lib_Partage_BSS.utils.PostBSSApi import postBSS
 
 
 class BSSConnexion:
     """
-    Classe permettant de récuperer le token pour intérroger l'API Partage BSS
-
+    Classe fournissant permettant de récuperé un token d'une durée de vie de 5min auprès de l'API BSS Partage. Elle regenère un token lorsque celui-ci est sur le point d'expiré
     :ivar _domain: Le domaine sur le quel on souhaite travailler
     :ivar _key: La clé associé à notre domaine
     :ivar _timestampOfLastToken: Le timesstamp au quel on à obtenue notre dernier token. Permet de renouveller le token si celui-ci est sur le point d'être périmé ou si il l'est déjà
@@ -97,26 +98,26 @@ class BSSConnexion:
                 ... print("BSS Erreur: {0}".format(err))
                 ...
             Description :
+                Le token ayant une durée de vie de 5min on le regenère si il est plus vieux que 4min30s
                 Si l'ecart entre le timestamp actuel et le timestamp de l'obtention du dernier token est de moins de 270 secondes (4min30s) on renvoie le token actuel. Au delà on génère un nouveau token
         """
-        actualTimestamp = round(time()) #Timestamp lors de l'appel de _get_token
-        if (actualTimestamp-self._timestampOfLastToken) < 270: #Si il y a moin de 270seconde d'ecart on renvoie le token actuel
+        actualTimestamp = round(time())
+        if (actualTimestamp-self._timestampOfLastToken) < 270:
             return self._token
-        else: #sinon on génére un nouveau token
-            self._timestampOfLastToken = actualTimestamp #On indique le timestamp au quel on génére le nouveau token
-            msg = self._domain+ "|" + str(actualTimestamp) #On constitue le message à chiffrer avec notre clé privé
-            preAuth = hmac.new(self._key.encode("utf-8"), msg.encode("utf-8"), hashlib.sha1).hexdigest() #On chiffre le message avec la clé privé
-            data = { #on ajoute les paramètres au body de la requete
+        else:
+            self._timestampOfLastToken = actualTimestamp
+            msg = self._domain+ "|" + str(actualTimestamp)
+            preAuth = hmac.new(self._key.encode("utf-8"), msg.encode("utf-8"), hashlib.sha1).hexdigest()
+            data = {
                 "domain": self._domain,
                 "timestamp": str(round(time())),
                 "preauth": preAuth
             }
-            response = requests.post(self._url+"/Auth", data) #On émet la requête et on récupere la réponse
-            dom = minidom.parseString(response.text) #On parse la reponse XML obtenu
-            status_code = dom.getElementsByTagName("status")[0].childNodes[0].data #On récupère le code renvoyé
-            message = dom.getElementsByTagName("message")[0].childNodes[0].data #On récupère le message renvoyé
-            if status_code == "0": #Si on obtient le code de succés on récupère le token
-                self._token = dom.getElementsByTagName("token")[0].childNodes[0].data
-            else: #Sinon on lève une exception de type BSSConnexionException
+            response = postBSS(self._url+"/Auth", data)
+            status_code = response["status"]
+            message = response["message"]
+            if status_code == 0:
+                self._token = response["token"]
+            else:
                 raise BSSConnexionException(message)
             return self._token

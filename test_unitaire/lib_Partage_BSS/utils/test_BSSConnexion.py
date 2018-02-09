@@ -36,9 +36,9 @@ def test_getDomain_casNormal():
 def test_getToken_casNormal(mocker):
     con = create_connexion()
     response = MagicMock(Response)
-    response.text = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <status type=\"integer\">0</status>\n  <message>Op\xc3\xa9ration r\xc3\xa9alis\xc3\xa9e avec succ\xc3\xa8s !</message>\n  <token>BSSToken</token>\n</Response>\n"
+    response.text = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <status type=\"integer\">0</status>\n  <message>Op\xc3\xa9ration r\xc3\xa9alis\xc3\xa9e avec succ\xc3\xa8s !</message>\n  <token>tokenDeTest</token>\n</Response>\n"
     with mocker.patch('requests.post', return_value=response):
-        assert con.token == "BSSToken"
+        assert con.token == "tokenDeTest"
 
 
 def test_getToken_casPreAuthEchec(mocker):
