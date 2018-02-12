@@ -12,6 +12,7 @@ from lib_Partage_BSS.utils.PostBSSApi import postBSS
 class BSSConnexion:
     """
     Classe fournissant permettant de récuperé un token d'une durée de vie de 5min auprès de l'API BSS Partage. Elle regenère un token lorsque celui-ci est sur le point d'expiré
+
     :ivar _domain: Le domaine sur le quel on souhaite travailler
     :ivar _key: La clé associé à notre domaine
     :ivar _timestampOfLastToken: Le timesstamp au quel on à obtenue notre dernier token. Permet de renouveller le token si celui-ci est sur le point d'être périmé ou si il l'est déjà
