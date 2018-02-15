@@ -3,3 +3,6 @@ test_integration
 test_unitaire/.pytest_cache
 doc/build
 Test.py
+.pytest_cache
+lib_Partage_BSS/__pycache__
+lib_Partage_BSS/utils/__pycache__

@@ -19,5 +19,8 @@ class GlobalService:
         return postBSS(self._con.url+"/"+methodName+"/"+self._con.token, data)
 
     def showAttr(self):
+        ret = ""
         for key in self.__dict__.keys():
-            print(key+" : "+str(self.__dict__[key]))
+            if self.__dict__[key] is not None:
+                ret += (key+" : "+str(self.__dict__[key])+"\n")
+        return ret

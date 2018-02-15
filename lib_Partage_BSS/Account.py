@@ -244,7 +244,7 @@ class Account(GlobalService):
         :param cosId: l'identifiant du cosId à appliquer pour le compte
         :return:
         """
-        if userPassword[:6] == "{SSHA}":
+        if userPassword[:6] == "{ssha}":
             data = {
                 "name": self._name,
                 "password": "",
@@ -288,19 +288,19 @@ class Account(GlobalService):
             "telehoneNumber": self._telehoneNumber,
             "title": self._title,
             "zimbraAccountStatus": self._zimbraAccountStatus,
-            "zimbraFeatureBriefcasesEnabled": self._zimbraFeatureBriefcasesEnabled,
-            "zimbraFeatureCalendarEnabled": self._zimbraFeatureCalendarEnabled,
-            "zimbraFeatureMailEnabled": self._zimbraFeatureMailEnabled,
-            "zimbraFeatureMailForwardingEnabled": self._zimbraFeatureMailForwardingEnabled,
-            "zimbraFeatureOptionsEnabled": self._zimbraFeatureOptionsEnabled,
-            "zimbraFeatureTasksEnabled": self._zimbraFeatureTasksEnabled,
-            "zimbraHideInGal": self._zimbraHideInGal,
+            "zimbraFeatureBriefcasesEnabled": self.changeBooleanToString(self._zimbraFeatureBriefcasesEnabled),
+            "zimbraFeatureCalendarEnabled": self.changeBooleanToString(self._zimbraFeatureCalendarEnabled),
+            "zimbraFeatureMailEnabled": self.changeBooleanToString(self._zimbraFeatureMailEnabled),
+            "zimbraFeatureMailForwardingEnabled": self.changeBooleanToString(self._zimbraFeatureMailForwardingEnabled),
+            "zimbraFeatureOptionsEnabled": self.changeBooleanToString(self._zimbraFeatureOptionsEnabled),
+            "zimbraFeatureTasksEnabled": self.changeBooleanToString(self._zimbraFeatureTasksEnabled),
+            "zimbraHideInGal": self.changeBooleanToString(self._zimbraHideInGal),
             "zimbraLastLogonTimestamp": self._zimbraLastLogonTimestamp,
             "zimbraMailQuota": self._zimbraMailQuota,
             "zimbraNotes": self._zimbraNotes,
-            "zimbraPasswordMustChange": self._zimbraPasswordMustChange,
+            "zimbraPasswordMustChange": self.changeBooleanToString(self._zimbraPasswordMustChange),
             "zimbraPrefMailForwardingAddress": self._zimbraPrefMailForwardingAddress,
-            "zimbraPrefMailLocalDeliveryDisabled": self._zimbraPrefMailLocalDeliveryDisabled,
+            "zimbraPrefMailLocalDeliveryDisabled": self.changeBooleanToString(self._zimbraPrefMailLocalDeliveryDisabled),
             "zimbraMailCanonicalAddress": self._zimbraMailCanonicalAddress,
             "zimbraPrefFromDisplay": self._zimbraPrefFromDisplay,
             "zimbraCOSId": self._zimbraCOSId,
@@ -357,8 +357,6 @@ class Account(GlobalService):
                 if isinstance(self.getZimbraMailAlias(), list) or isinstance(self.getZimbraMailAlias(), str) :
                     if alias not in self.getZimbraMailAlias():
                         self.addAccountAlias(alias)
-                else:
-                    self.addAccountAlias(alias)
             if isinstance(self.getZimbraMailAlias(), list):
                 for alias in self.getZimbraMailAlias():
                     if alias not in listOfAliases:
