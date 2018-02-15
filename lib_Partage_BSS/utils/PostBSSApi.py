@@ -1,3 +1,5 @@
+# -*-coding:Latin-1 -*
+
 import requests
 
 from lib_Partage_BSS.utils.ParseBSSResponse import parseResponse
@@ -5,9 +7,9 @@ from lib_Partage_BSS.utils.ParseBSSResponse import parseResponse
 
 def postBSS(url, data):
     """
-    Permet de rÃ©cupÃ©rer la rÃ©ponse d'une requÃªte auprÃ¨s de l'API BSS
-    :param url: url de l'action demandÃ© avec si nÃ©cessaire le token
-    :param data: le body de la requÃªte post
+    Permet de récupérer la réponse d'une requête auprès de l'API BSS
+    :param url: url de l'action demandé avec si nécessaire le token
+    :param data: le body de la requête post
     :return: BSSResponse la reponse de l'API BSS
     """
     return parseResponse(requests.post(url, data).text)

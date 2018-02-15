@@ -1,4 +1,5 @@
-import hashlib
+# -*-coding:Latin-1 -*
+
 import re
 
 from lib_Partage_BSS.GlobalService import GlobalService
@@ -8,47 +9,48 @@ from lib_Partage_BSS.exceptions.ServiceException import ServiceException
 
 class Account(GlobalService):
     """
-    Classe reprÃ©sentant un compte dans Partage
+    Classe représentant un compte dans Partage
 
     :ivar _id: l'identifiant du compte
     :ivar _admin: le niveau d'administrateur du compte (ADMIN,...)
     :ivar _co: ...
     :ivar _company: ...
     :ivar _description: Description du compte
-    :ivar _facsimileTelephoneNumber: NumÃ©ro de Fax du compte
+    :ivar _facsimileTelephoneNumber: Numéro de Fax du compte
     :ivar _homePhone: ...
     :ivar _initials: ...
     :ivar _l: ...
     :ivar _mavTransformation: ...
     :ivar _mavRedirection: ...
-    :ivar _mobile: NumÃ©ro de mobile associÃ© au compte
+    :ivar _mobile: Numéro de mobile associé au compte
     :ivar _pager: ...
-    :ivar _postalCode: Code postal associÃ© au compte
-    :ivar _used: Espace utilisÃ© par le compte (en octet)
+    :ivar _postalCode: Code postal associé au compte
+    :ivar _used: Espace utilisé par le compte (en octet)
     :ivar _quota: Espace disponible pour le compte (en octet)
     :ivar _eppn: EduPersonPrincipalName l'identifiant fondation du compte
-    :ivar _givenName: PrÃ©nom de famille de la personne
-    :ivar _displayName: PrÃ©nom Nom de la personne
+    :ivar _givenName: Prénom de famille de la personne
+    :ivar _displayName: Prénom Nom de la personne
     :ivar _businessCategory: ...
     :ivar _sn: Nom de la personne
     :ivar _st:
     :ivar _street: Rue de la personne
-    :ivar _telehoneNumber: NumÃ©ro de tÃ©lÃ©phone de la personne
+    :ivar _telehoneNumber: Numéro de téléphone de la personne
     :ivar _title: ...
-    :ivar _zimbraAccountStatus: Etat du compte dÃ©faut active (active,closed)
+    :ivar _zimbraAccountStatus: Etat du compte défaut active (active,closed)
     :ivar _zimbraFeatureBriefcasesEnabled: ...
     :ivar _zimbraFeatureCalendarEnabled: ...
     :ivar _zimbraFeatureMailEnabled: ...
-    :ivar _zimbraFeatureMailForwardingEnabled: Permettre Ã  lâ€™utilisateur dâ€™indiquer une adresse de redirection (TRUE,FALSE)
+    :ivar _zimbraFeatureMailForwardingEnabled: Permettre à l?utilisateur d?indiquer une adresse de redirection (TRUE,FALSE)
     :ivar _zimbraFeatureOptionsEnabled: ...
     :ivar _zimbraFeatureTasksEnabled: ...
     :ivar _zimbraHideInGal: Masquer dans la GAL (TRUE,FALSE)
-    :ivar _zimbraLastLogonTimestamp: Timestamp de la derniÃ¨re connection au compte
+    :ivar _zimbraLastLogonTimestamp: Timestamp de la dernière connection au compte
     :ivar _zimbraMailQuota: ...
     :ivar _zimbraNotes: ...
-    :ivar _zimbraPasswordMustChange: Forcer le changement de mot de passe Ã  la prochaine connection (TRUE,FALSE)
-    :ivar _zimbraPrefMailForwardingAddress: Adresse de redirection saisie par lâ€™utilisateur
+    :ivar _zimbraPasswordMustChange: Forcer le changement de mot de passe à la prochaine connection (TRUE,FALSE)
+    :ivar _zimbraPrefMailForwardingAddress: Adresse de redirection saisie par l?utilisateur
     :ivar _zimbraPrefMailLocalDeliveryDisabled: Ne pas conserver de copie des mails sur le client local
+    :ivar _zimbraMailAlias: Liste des alias du compte
     :ivar _zimbraMailCanonicalAddress: Adresse email visible pour les messages sortants
     :ivar _zimbraPrefFromDisplay: Adresse email visible pour les messages sortants
     :ivar _zimbraCOSId: Id de la classe de Service du compte
@@ -57,61 +59,65 @@ class Account(GlobalService):
     def __init__(self, connexion, name):
         if re.match(".+@.+", name):
             GlobalService.__init__(self, connexion, name)
-            self._id = ""
-            self._admin = ""
-            self._businessCategory = ""
-            self._co = ""
-            self._company = ""
-            self._description = ""
-            self._displayName = ""
-            self._eppn = ""
-            self._facsimileTelephoneNumber = ""
-            self._givenName = ""
-            self._homePhone = ""
-            self._initials = ""
-            self._l = ""
-            self._mavTransformation = ""
-            self._mavRedirection = ""
-            self._mobile = ""
-            self._pager = ""
-            self._postalCode = ""
-            self._quota = 0
-            self._sn = ""
-            self._st = ""
-            self._street = ""
-            self._telehoneNumber = ""
-            self._title = ""
-            self._used = 0
-            self._zimbraAccountStatus = ""
-            self._zimbraFeatureBriefcasesEnabled = ""
-            self._zimbraFeatureCalendarEnabled = ""
-            self._zimbraFeatureMailEnabled = ""
-            self._zimbraFeatureMailForwardingEnabled = ""
-            self._zimbraFeatureOptionsEnabled = ""
-            self._zimbraFeatureTasksEnabled = ""
-            self._zimbraHideInGal = ""
-            self._zimbraLastLogonTimestamp = ""
-            self._zimbraMailQuota = ""
-            self._zimbraNotes = ""
-            self._zimbraPasswordMustChange = ""
-            self._zimbraPrefMailForwardingAddress = ""
-            self._zimbraPrefMailLocalDeliveryDisabled = ""
-            self._zimbraMailCanonicalAddress = ""
-            self._zimbraPrefFromDisplay = ""
-            self._zimbraCOSId = ""
-            self._zimbraZimletAvailableZimlets = []
+            self._id = None
+            self._admin = None
+            self._businessCategory = None
+            self._co = None
+            self._company = None
+            self._description = None
+            self._displayName = None
+            self._eppn = None
+            self._facsimileTelephoneNumber = None
+            self._givenName = None
+            self._homePhone = None
+            self._initials = None
+            self._l = None
+            self._mavTransformation = None
+            self._mavRedirection = None
+            self._mobile = None
+            self._pager = None
+            self._postalCode = None
+            self._quota = None
+            self._sn = None
+            self._st = None
+            self._street = None
+            self._telehoneNumber = None
+            self._title = None
+            self._used = None
+            self._zimbraAccountStatus = None
+            self._zimbraFeatureBriefcasesEnabled = None
+            self._zimbraFeatureCalendarEnabled = None
+            self._zimbraFeatureMailEnabled = None
+            self._zimbraFeatureMailForwardingEnabled = None
+            self._zimbraFeatureOptionsEnabled = None
+            self._zimbraFeatureTasksEnabled = None
+            self._zimbraHideInGal = None
+            self._zimbraLastLogonTimestamp = None
+            self._zimbraMailQuota = None
+            self._zimbraNotes = None
+            self._zimbraPasswordMustChange = None
+            self._zimbraPrefMailForwardingAddress = None
+            self._zimbraPrefMailLocalDeliveryDisabled = None
+            self._zimbraMailAlias = None
+            self._zimbraMailCanonicalAddress = None
+            self._zimbraPrefFromDisplay = None
+            self._zimbraCOSId = None
+            self._zimbraZimletAvailableZimlets = None
 
         else:
-            raise NameException("Le nom donnÃ© n'est pas une adresse mail")
+            raise NameException("Le nom donné n'est pas une adresse mail")
 
     def getAccount(self):
+        """
+        Méthide permettant de récuperer les informations d'un compte via l'API BSS
+        :return: Le compte récupéré
+        """
         data = {
             "name": self._name
         }
         response = self.callMethod("GetAccount", data)
         if response["status"] == 0:
             account= response["account"]
-            print(account)
             accountKeys = account.keys()
             if "id" in accountKeys:
                 self._id = account["id"]
@@ -220,6 +226,8 @@ class Account(GlobalService):
                     self._zimbraPrefMailLocalDeliveryDisabled = False
             if "zimbraPrefMailForwardingAddress" in accountKeys:
                 self._zimbraPrefMailForwardingAddress = account["zimbraPrefMailForwardingAddress"]
+            if "zimbraMailAlias" in accountKeys:
+                self._zimbraMailAlias = account["zimbraMailAlias"]["zimbraMailAlias"]
             if "zimbraMailCanonicalAddress" in accountKeys:
                 self._zimbraMailCanonicalAddress = account["zimbraMailCanonicalAddress"]
             if "zimbraPrefFromDisplay" in accountKeys:
@@ -229,16 +237,24 @@ class Account(GlobalService):
         else:
             raise ServiceException(response["status"], response["message"])
 
-    def createAccount(self,userPassword):
-        data = {
-            "name": self._name,
-            "password": "",
-            "userPassword": userPassword,
-            "zimbraHideInGal": "FALSE"
-        }
-        response = self.callMethod("CreateAccount", data)
-        if response["status"] != 0:
-            raise ServiceException(response["status"], response["message"])
+    def createAccount(self,userPassword, cosId):
+        """
+        Méthode permettant de créer un compte via l'API BSS en lui passant en paramètre l'empreinte du mot de passe (SSHA) et le cosId
+        :param userPassword: le mot de passe de l'utilisateur hashé en SSHA1
+        :param cosId: l'identifiant du cosId à appliquer pour le compte
+        :return:
+        """
+        if userPassword[:6] == "{SSHA}":
+            data = {
+                "name": self._name,
+                "password": "",
+                "userPassword": userPassword,
+                "zimbraHideInGal": "FALSE",
+                "zimbraCOSId": cosId
+            }
+            response = self.callMethod("CreateAccount", data)
+            if response["status"] != 0:
+                raise ServiceException(response["status"], response["message"])
 
     def deleteAccount(self):
         data = {
@@ -247,6 +263,109 @@ class Account(GlobalService):
         response = self.callMethod("DeleteAccount", data)
         if response["status"] != 0:
             raise ServiceException(response["status"], response["message"])
+
+    def modifyAccount(self):
+        data = {
+            "name": self._name,
+            "co": self._co,
+            "company": self._company,
+            "description": self._description,
+            "displayName": self._displayName,
+            "carLicense": self._eppn,
+            "facsimileTelephoneNumber": self._facsimileTelephoneNumber,
+            "givenName": self._givenName,
+            "homePhone": self._homePhone,
+            "initials": self._initials,
+            "l": self._l,
+            "mav-transformation": self._mavTransformation,
+            "mav-redirection": self._mavRedirection,
+            "mobile": self._mobile,
+            "pager": self._pager,
+            "postalCode": self._postalCode,
+            "sn": self._sn,
+            "st": self._st,
+            "street": self._street,
+            "telehoneNumber": self._telehoneNumber,
+            "title": self._title,
+            "zimbraAccountStatus": self._zimbraAccountStatus,
+            "zimbraFeatureBriefcasesEnabled": self._zimbraFeatureBriefcasesEnabled,
+            "zimbraFeatureCalendarEnabled": self._zimbraFeatureCalendarEnabled,
+            "zimbraFeatureMailEnabled": self._zimbraFeatureMailEnabled,
+            "zimbraFeatureMailForwardingEnabled": self._zimbraFeatureMailForwardingEnabled,
+            "zimbraFeatureOptionsEnabled": self._zimbraFeatureOptionsEnabled,
+            "zimbraFeatureTasksEnabled": self._zimbraFeatureTasksEnabled,
+            "zimbraHideInGal": self._zimbraHideInGal,
+            "zimbraLastLogonTimestamp": self._zimbraLastLogonTimestamp,
+            "zimbraMailQuota": self._zimbraMailQuota,
+            "zimbraNotes": self._zimbraNotes,
+            "zimbraPasswordMustChange": self._zimbraPasswordMustChange,
+            "zimbraPrefMailForwardingAddress": self._zimbraPrefMailForwardingAddress,
+            "zimbraPrefMailLocalDeliveryDisabled": self._zimbraPrefMailLocalDeliveryDisabled,
+            "zimbraMailCanonicalAddress": self._zimbraMailCanonicalAddress,
+            "zimbraPrefFromDisplay": self._zimbraPrefFromDisplay,
+            "zimbraCOSId": self._zimbraCOSId,
+            "zimbraZimletAvailableZimlets": self._zimbraZimletAvailableZimlets
+        }
+        response = self.callMethod("ModifyAccount", data)
+        if response["status"] != 0:
+            raise ServiceException(response["status"], response["message"])
+
+    def modifyPassword(self, newUserPassword):
+        """
+        Pour modifier le mot de passe on n'accept que l'emprunte du mot de passe.
+        On commence par faire un SetPassword avec une valeur factise pour forcer la déconnection des session en cours
+        On passe ensuite via ModifyAccount l'empreinte du nouveau mot de passe
+        :param newUserPassword:
+        :return:
+        """
+        data= {
+            "name": self._name,
+            "password": "valeurPourDeconnecterLesSessions"
+        }
+        response = self.callMethod("SetPassword", data)
+        if response["status"] != 0:
+            raise ServiceException(response["status"], response["message"])
+        data = {
+            "name": self._name,
+            "userPassword": newUserPassword
+        }
+        response = self.callMethod("ModifyAccount", data)
+        if response["status"] != 0:
+            raise ServiceException(response["status"], response["message"])
+
+    def addAccountAlias(self, newAlias):
+        data = {
+            "name": self._name,
+            "alias": newAlias
+        }
+        response = self.callMethod("AddAccountAlias", data)
+        if response["status"] != 0:
+            raise ServiceException(response["status"], response["message"])
+
+    def deleteAccountAlias(self, aliasToDelete):
+        data = {
+            "name": self._name,
+            "alias": aliasToDelete
+        }
+        response = self.callMethod("RemoveAccountAlias", data)
+        if response["status"] != 0:
+            raise ServiceException(response["status"], response["message"])
+
+    def modifyAccountAliases(self, listOfAliases):
+        if isinstance(listOfAliases, list):
+            for alias in listOfAliases:
+                if isinstance(self.getZimbraMailAlias(), list) or isinstance(self.getZimbraMailAlias(), str) :
+                    if alias not in self.getZimbraMailAlias():
+                        self.addAccountAlias(alias)
+                else:
+                    self.addAccountAlias(alias)
+            if isinstance(self.getZimbraMailAlias(), list):
+                for alias in self.getZimbraMailAlias():
+                    if alias not in listOfAliases:
+                        self.deleteAccountAlias(alias)
+            elif isinstance(self.getZimbraMailAlias(), str):
+                if self.getZimbraMailAlias() not in listOfAliases:
+                    self.deleteAccountAlias(self.getZimbraMailAlias())
 
     def getId(self):
         return self._id
@@ -347,6 +466,9 @@ class Account(GlobalService):
     def getZimbraLastLogonTimestamp(self):
         return self._zimbraLastLogonTimestamp
 
+    def getZimbraMailAlias(self):
+        return self._zimbraMailAlias
+
     def getZimbraMailQuota(self):
         return self._zimbraMailQuota
 
@@ -375,127 +497,298 @@ class Account(GlobalService):
         return self._zimbraZimletAvailableZimlets
 
     def setId(self, newValue):
-        self._id = newValue
+        if isinstance(newValue, str):
+            self._id = newValue
+        else:
+            raise TypeError
 
     def setAdmin(self, newValue):
-        self._admin = newValue
+        if isinstance(newValue, str):
+            self._admin = newValue
+        else:
+            raise TypeError
 
     def setBusinessCategory(self, newValue):
-        self._businessCategory = newValue
+        if isinstance(newValue, str):
+            self._businessCategory = newValue
+        else:
+            raise TypeError
 
     def setCo(self, newValue):
-        self._co = newValue
+        if isinstance(newValue, str):
+            self._co = newValue
+        else:
+            raise TypeError
 
     def setCompany(self, newValue):
-        self._company = newValue
+        if isinstance(newValue, str):
+            self._company = newValue
+        else:
+            raise TypeError
 
     def setDisplayName(self, newValue):
-        self._displayName = newValue
+        if isinstance(newValue, str):
+            self._displayName = newValue
+        else:
+            raise TypeError
 
     def setEppn(self, newValue):
-        self._eppn = newValue
+        if isinstance(newValue, str):
+            self._eppn = newValue
+        else:
+            raise TypeError
 
     def setFacsimileTelephoneNumber(self, newValue):
-        self._facsimileTelephoneNumber = newValue
+        if isinstance(newValue, str):
+            if self.chekIsNum(newValue):
+                self._facsimileTelephoneNumber = newValue
+        else:
+            raise TypeError
 
     def setGivenName(self, newValue):
-        self._givenName = newValue
+        if isinstance(newValue, str):
+            self._givenName = newValue
+        else:
+            raise TypeError
 
     def setHomePhone(self, newValue):
-        self._homePhone = newValue
+        if isinstance(newValue, str):
+            if self.chekIsNum(newValue):
+                self._homePhone = newValue
+        else:
+            raise TypeError
 
     def setInitials(self, newValue):
-        self._initials = newValue
+        if isinstance(newValue, str):
+            self._initials = newValue
+        else:
+            raise TypeError
 
     def setL(self, newValue):
-        self._l = newValue
+        if isinstance(newValue, str):
+            self._l = newValue
+        else:
+            raise TypeError
 
     def setMavTransformation(self, newValue):
-        self._mavTransformation = newValue
+        if isinstance(newValue, str):
+            self._mavTransformation = newValue
+        else:
+            raise TypeError
 
     def setMavRedirection(self, newValue):
-        self._mavRedirection = newValue
+        if isinstance(newValue, str):
+            self._mavRedirection = newValue
+        else:
+            raise TypeError
 
     def setMobile(self, newValue):
-        self._mobile = newValue
+        if isinstance(newValue, str):
+            if self.chekIsNum(newValue):
+                self._mobile = newValue
+        else:
+            raise TypeError
 
     def setPager(self, newValue):
-        self._pager = newValue
+        if isinstance(newValue, str):
+            self._pager = newValue
+        else:
+            raise TypeError
 
-    def setPosyalCode(self, newValue):
-        self._postalCode = newValue
+    def setPostalCode(self, newValue):
+        if isinstance(newValue, str):
+            if self.chekIsNum(newValue):
+                self._postalCode = newValue
+        else:
+            raise TypeError
 
     def setQuota(self, newValue):
-        self._quota = newValue
+        if isinstance(newValue, int):
+            self._quota = newValue
+        else:
+            raise TypeError
 
     def setSn(self, newValue):
-        self._sn = newValue
+        if isinstance(newValue, str):
+            self._sn = newValue
+        else:
+            raise TypeError
 
     def setSt(self, newValue):
-        self._st = newValue
+        if isinstance(newValue, str):
+            self._st = newValue
+        else:
+            raise TypeError
 
     def setStreet(self, newValue):
-        self._street = newValue
+        if isinstance(newValue, str):
+            self._street = newValue
+        else:
+            raise TypeError
 
     def setTelephoneNumber(self, newValue):
-        self._telehoneNumber = newValue
+        if isinstance(newValue, str):
+            if self.chekIsNum(newValue):
+                self._telehoneNumber = newValue
+        else:
+            raise TypeError
 
     def setTitle(self, newValue):
-        self._title = newValue
+        if isinstance(newValue, str):
+            self._title = newValue
+        else:
+            raise TypeError
 
     def setUsed(self, newValue):
-        self._used = newValue
+        if isinstance(newValue, int):
+            self._used = newValue
+        else:
+            raise TypeError
 
-    def setZimbraAccountStatus(self, newValue):
-        self._zimbraAccountStatus = newValue
+    def activeZimbraAccount(self):
+        self._zimbraAccountStatus = "active"
+
+    def closedZimbraAccount(self):
+        self._zimbraAccountStatus = "closed"
 
     def setZimbraFeatureBriefcasesEnabled(self, newValue):
-        self._zimbraFeatureBriefcasesEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureBriefcasesEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraFeatureCalendarEnabled(self, newValue):
-        self._zimbraFeatureCalendarEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureCalendarEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraFeatureMailEnabled(self, newValue):
-        self._zimbraFeatureMailEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureMailEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraFeatureMailForwardingEnabled(self, newValue):
-        self._zimbraFeatureMailForwardingEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureMailForwardingEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraFeatureOptionsEnabled(self, newValue):
-        self._zimbraFeatureOptionsEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureOptionsEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraFeatureTasksEnabled(self, newValue):
-        self._zimbraFeatureTasksEnabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraFeatureTasksEnabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraHideInGal(self, newValue):
-        self._zimbraHideInGal = newValue
-
-    def setZimbraLastLogonTimestamp(self, newValue):
-        self._zimbraLastLogonTimestamp = newValue
+        if isinstance(newValue, bool):
+            self._zimbraHideInGal = newValue
+        else:
+            raise TypeError
 
     def setZimbraMailQuota(self, newValue):
-        self._zimbraMailQuota = newValue
+        if isinstance(newValue, int):
+            self._zimbraMailQuota = newValue
+        else:
+            raise TypeError
 
     def setZimbraCanonicalAddress(self, newValue):
-        self._zimbraMailCanonicalAddress = newValue
+        if isinstance(newValue, int):
+            if self.checkIsMailAddress(newValue):
+                self._zimbraMailCanonicalAddress = newValue
+        else:
+            raise TypeError
 
     def setZimbraNotes(self, newValue):
-        self._zimbraNotes = newValue
+        if isinstance(newValue, str):
+            self._zimbraNotes = newValue
+        else:
+            raise TypeError
 
     def setZimbraPasswordMustChange(self, newValue):
-        self._zimbraPasswordMustChange = newValue
+        if isinstance(newValue, bool):
+            self._zimbraPasswordMustChange = newValue
+        else:
+            raise TypeError
 
     def setZimbraPrefFromDisplay(self, newValue):
-        self._zimbraPrefFromDisplay = newValue
+        if isinstance(newValue, bool):
+            if self.checkIsMailAddress(newValue):
+                self._zimbraPrefFromDisplay = newValue
+        else:
+            raise TypeError
 
     def setZimbraPrefMailForwardingAddress(self, newValue):
-        self._zimbraPrefMailForwardingAddress = newValue
+        if isinstance(newValue, bool):
+            if self.checkIsMailAddress(newValue):
+                self._zimbraPrefMailForwardingAddress = newValue
+        else:
+            raise TypeError
 
     def setZimbraPrefMailLocalDeliveryDisabled(self, newValue):
-        self._zimbraPrefMailLocalDeliveryDisabled = newValue
+        if isinstance(newValue, bool):
+            self._zimbraPrefMailLocalDeliveryDisabled = newValue
+        else:
+            raise TypeError
 
     def setZimbraCOSId(self, newValue):
-        self._zimbraCOSId = newValue
+        if isinstance(newValue, str):
+            self._zimbraCOSId = newValue
+        else:
+            raise TypeError
 
     def setZimbraZimletAvailableZimlets(self, newValue):
-        self._zimbraZimletAvailableZimlets = newValue
+        if isinstance(newValue, list):
+            self._zimbraZimletAvailableZimlets = newValue
+        else:
+            raise TypeError
+
+    def chekIsNum(self, value):
+        """
+        Vérifie si la valeur passé en paramètre est un numéro ou pas (constitué uniquement de digit)
+        :param value: la valeur a tester
+        :return: True si c'est un numéro False sinon
+        """
+        return re.match("^[0-9]*$", value)
+
+    def checkIsMailAddress(self,value):
+        """
+        Vérifie si la valeur passé en paramètre est une adresse mail ou pas (contient une chaine suivi d'un @ suivi d'une chaine suivi d'un point suivi d'une chaine)
+        :param value: la valeur a tester
+        :return: True si c'est une adresse mail False sinon
+        """
+        return re.match("^[^\W][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$", value)
+
+    def changeBooleanToString(self, boolean):
+        """
+        Permet de changer les booleen True et False en String correspondant entièrement en majuscule.
+        :param booleanString: le booleen à changer en String
+        :return: "TRUE" ou  "FALSE"
+        """
+        if isinstance(boolean, bool):
+            if boolean:
+                return "TRUE"
+            else:
+                return "FALSE"
+
+    def changeStringToBoolean(self, booleanString):
+        """
+        Permet de changer les chaines TRUE et FALSE (quelque soit leurs case) en booleen correspondant.
+        Renvoie un TypeErreur sinon
+        :param booleanString: "TRUE" ou  "FALSE"
+        :return: renvoie le booleen correspondant
+        """
+        if isinstance(booleanString, str):
+            if booleanString.upper() == "TRUE":
+                return True
+            elif booleanString.upper() == "FALSE":
+                return False
+            else:
+                raise TypeError()

@@ -18,7 +18,9 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.append(os.path.abspath('../..'))
+sys.path.append(os.path.abspath('../../venv/python3.5/site-packages'))
+print(sys.path)
 
 # -- General configuration ------------------------------------------------
 

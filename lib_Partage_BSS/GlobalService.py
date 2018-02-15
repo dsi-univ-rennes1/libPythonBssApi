@@ -1,3 +1,5 @@
+# -*-coding:Latin-1 -*
+
 from lib_Partage_BSS.utils.PostBSSApi import postBSS
 
 
@@ -15,3 +17,7 @@ class GlobalService:
 
     def callMethod(self, methodName, data):
         return postBSS(self._con.url+"/"+methodName+"/"+self._con.token, data)
+
+    def showAttr(self):
+        for key in self.__dict__.keys():
+            print(key+" : "+str(self.__dict__[key]))

@@ -11,6 +11,7 @@ Welcome to lib_Partage_BSS's documentation!
    :caption: Contents:
 
    BSSConnexion.rst
+   Account.rst
 
 
 Indices and tables

@@ -46,7 +46,7 @@ class BSSConnexion:
 
     @property
     def url(self):
-        """Get de l'url
+        """Getter de l'url
 
            Arguments : Aucun
 
