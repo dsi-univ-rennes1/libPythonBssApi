@@ -6,7 +6,7 @@ Test.py
 .pytest_cache
 lib_Partage_BSS/__pycache__
 lib_Partage_BSS/utils/__pycache__
-*.json
+/*.json
 lib_Partage_BSS/exceptions/__pycache__/
 
 lib_Partage_BSS/models/__pycache__/
