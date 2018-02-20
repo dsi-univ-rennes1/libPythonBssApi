@@ -1,7 +1,6 @@
 # -*-coding:Latin-1 -*
 
 import requests
-
 from lib_Partage_BSS.utils.ParseBSSResponse import parseResponse
 
 

@@ -3,15 +3,10 @@ from unittest.mock import MagicMock
 import pytest
 from requests import Response
 
-from lib_Partage_BSS.Account import Account
+from lib_Partage_BSS.models.Account import Account
 from lib_Partage_BSS.exceptions.NameException import NameException
 from lib_Partage_BSS.exceptions.ServiceException import ServiceException
-from lib_Partage_BSS.utils.BSSConnexion import BSSConnexion
-
-
-@pytest.fixture()
-def create_connexion():
-    return BSSConnexion("domain.com", "key")
+from lib_Partage_BSS.services import AccountService, BSSConnexion, BSSConnexionService
 
 
 @pytest.fixture()
@@ -60,6 +55,7 @@ def initGoodResponse():
                     "</Response>"
     return response
 
+
 @pytest.fixture()
 def initBadResponse():
     response = MagicMock(Response)
@@ -70,33 +66,34 @@ def initBadResponse():
                     "</Response>"
     return response
 
+
 def test_init_cas_nom_vallide():
-    con = create_connexion()
-    account = Account(con, "test@domain.com")
-    assert account.getName() == "test@domain.com"
+    account = Account("test@domain.com")
+    assert account.getName == "test@domain.com"
+
 
 def test_init_cas_nom_non_vallide():
     with pytest.raises(NameException):
-        con = create_connexion()
-        account = Account(con, "test")
+        account = Account("test")
+
 
 def test_getAccount_cas_compte_existant(mocker):
-    con = create_connexion()
-    account = Account(con, "test@domain.com")
     response = initGoodResponse()
+    con = BSSConnexion()
+
     with mocker.patch('requests.post', return_value=response):
-        with mocker.patch.object(BSSConnexion, 'token', return_value="test"):
-            account.getAccount()
-            assert account.getName() == "test@domain.com"
-            assert account.getEppn() == "EPPN"
-            assert account.getZimbraCOSId() == "testCOSId"
-            print(account.getZimbraZimletAvailableZimlets()[0])
+        with mocker.patch.object(con, 'token', return_value="test"):
+            account = AccountService.getAccount("test@domain.com")
+            assert account.getName == "test@domain.com"
+            print(account.getCarLicense)
+            assert account.getCarLicense == "EPPN"
+            assert account.getZimbraCOSId == "testCOSId"
+
 
 def test_getAccount_cas_compte_inexistant(mocker):
     with pytest.raises(ServiceException):
-        con = create_connexion()
-        account = Account(con, "test@domain.com")
         response = initBadResponse()
+        con = BSSConnexion()
         with mocker.patch('requests.post', return_value=response):
-            with mocker.patch.object(BSSConnexion, 'token', return_value="test"):
-                account.getAccount()
+            with mocker.patch.object(con, 'token', return_value="test"):
+                AccountService.getAccount("test@domain.com")
