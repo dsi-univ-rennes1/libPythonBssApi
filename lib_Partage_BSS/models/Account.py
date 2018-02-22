@@ -1,6 +1,4 @@
-# -*-coding:Latin-1 -*
-from collections import OrderedDict
-
+# -*-coding:utf-8 -*
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.exceptions.NameException import NameException
 from lib_Partage_BSS.models.GlobalModel import GlobalModel
@@ -8,45 +6,45 @@ from lib_Partage_BSS.models.GlobalModel import GlobalModel
 
 class Account(GlobalModel):
     """
-    Classe représentant un compte dans Partage
+    Classe reprÃ©sentant un compte dans Partage
 
     :ivar _id: l'identifiant du compte
     :ivar _admin: le niveau d'administrateur du compte (ADMIN,...)
     :ivar _co: ...
     :ivar _company: ...
     :ivar _description: Description du compte
-    :ivar _facsimileTelephoneNumber: Numéro de Fax du compte
+    :ivar _facsimileTelephoneNumber: NumÃ©ro de Fax du compte
     :ivar _homePhone: ...
     :ivar _initials: ...
     :ivar _l: ...
     :ivar _mavTransformation: ...
     :ivar _mavRedirection: ...
-    :ivar _mobile: Numéro de mobile associé au compte
+    :ivar _mobile: NumÃ©ro de mobile associÃ© au compte
     :ivar _pager: ...
-    :ivar _postalCode: Code postal associé au compte
-    :ivar _used: Espace utilisé par le compte (en octet)
+    :ivar _postalCode: Code postal associÃ© au compte
+    :ivar _used: Espace utilisÃ© par le compte (en octet)
     :ivar _quota: Espace disponible pour le compte (en octet)
     :ivar _carLicense: EduPersonPrincipalName l'identifiant fondation du compte
-    :ivar _givenName: Prénom de famille de la personne
-    :ivar _displayName: Prénom Nom de la personne
+    :ivar _givenName: PrÃ©nom de famille de la personne
+    :ivar _displayName: PrÃ©nom Nom de la personne
     :ivar _businessCategory: ...
     :ivar _sn: Nom de la personne
     :ivar _st:
     :ivar _street: Rue de la personne
-    :ivar _telephoneNumber: Numéro de téléphone de la personne
+    :ivar _telephoneNumber: NumÃ©ro de tÃ©lÃ©phone de la personne
     :ivar _title: ...
-    :ivar _zimbraAccountStatus: Etat du compte défaut active (active,closed)
+    :ivar _zimbraAccountStatus: Etat du compte dÃ©faut active (active,closed)
     :ivar _zimbraFeatureBriefcasesEnabled: ...
     :ivar _zimbraFeatureCalendarEnabled: ...
     :ivar _zimbraFeatureMailEnabled: ...
-    :ivar _zimbraFeatureMailForwardingEnabled: Permettre à l?utilisateur d?indiquer une adresse de redirection (TRUE,FALSE)
+    :ivar _zimbraFeatureMailForwardingEnabled: Permettre Ã  l?utilisateur d?indiquer une adresse de redirection (TRUE,FALSE)
     :ivar _zimbraFeatureOptionsEnabled: ...
     :ivar _zimbraFeatureTasksEnabled: ...
     :ivar _zimbraHideInGal: Masquer dans la GAL (TRUE,FALSE)
-    :ivar _zimbraLastLogonTimestamp: Timestamp de la dernière connection au compte
+    :ivar _zimbraLastLogonTimestamp: Timestamp de la derniÃ¨re connection au compte
     :ivar _zimbraMailQuota: ...
     :ivar _zimbraNotes: ...
-    :ivar _zimbraPasswordMustChange: Forcer le changement de mot de passe à la prochaine connection (TRUE,FALSE)
+    :ivar _zimbraPasswordMustChange: Forcer le changement de mot de passe Ã  la prochaine connection (TRUE,FALSE)
     :ivar _zimbraPrefMailForwardingAddress: Adresse de redirection saisie par l?utilisateur
     :ivar _zimbraPrefMailLocalDeliveryDisabled: Ne pas conserver de copie des mails sur le client local
     :ivar _zimbraMailAlias: Liste des alias du compte
@@ -104,7 +102,7 @@ class Account(GlobalModel):
             self._zimbraZimletAvailableZimlets = None
 
         else:
-            raise NameException("Le nom donné n'est pas une adresse mail")
+            raise NameException("Le nom donnÃ© n'est pas une adresse mail")
 
     @property
     def getId(self):
@@ -439,7 +437,7 @@ class Account(GlobalModel):
             raise TypeError
 
     def setZimbraAccountStatus(self, newValue):
-        if newValue == "active" or newValue == "closed":
+        if newValue == "active" or newValue == "closed" or newValue == "locked":
             self._zimbraAccountStatus = newValue
         else:
             raise TypeError

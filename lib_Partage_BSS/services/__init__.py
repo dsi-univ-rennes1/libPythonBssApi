@@ -1,11 +1,6 @@
+"""Package services"""
 from .BSSConnexionService import BSSConnexion
 from .GlobalService import callMethod
 from .GlobalService import extractDomain
-from .AccountService import getAccount
-from .AccountService import createAccount
-from .AccountService import deleteAccount
-from .AccountService import modifyAccount
-from .AccountService import modifyPassword
-from .AccountService import modifyAccountAliases
-from .AccountService import addAccountAlias
-from .AccountService import removeAccountAlias
+from .AccountService import *
+

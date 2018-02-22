@@ -3,20 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to lib_Partage_BSS's documentation!
-===========================================
-
+Documentation de la bibliothèque Python permettant d'appeller l'API BSS
+=======================================================================
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   BSSConnexion.rst
-   Account.rst
+   models.rst
+   services.rst
+   utils.rst
+   exceptions.rst
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

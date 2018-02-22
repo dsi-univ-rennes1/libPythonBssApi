@@ -1,8 +1,9 @@
-# -*-coding:Latin-1 -*
+# -*-coding:utf-8 -*
 class BSSConnexionException(Exception):
     """
-    Exception lev� lors d'une erreur de connexion
+    Exception levé lors d'une erreur de connexion
+
+    :ivar message: message à afficher
     """
     def __init__(self, message):
-        self.expr = "Erreur de connection"
         self.msg = message

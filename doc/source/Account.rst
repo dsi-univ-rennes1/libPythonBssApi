@@ -1,5 +1,5 @@
 Classe Account
 ===================
 
-.. automodule:: lib_Partage_BSS.Account
-    :members:
+.. automodule:: lib_Partage_BSS.models.Account
+   :members:

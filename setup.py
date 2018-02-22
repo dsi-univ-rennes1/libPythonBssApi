@@ -62,5 +62,5 @@ setup(
     author='rpeillet',
     author_email='',
     description='Bibliothèque permettant l\'intégoration de l\'API BSS PAratage de RENATER',
-    install_requires=['xmljson']
+    install_requires=['xmljson', 'requests']
 )

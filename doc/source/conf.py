@@ -20,7 +20,10 @@ import os
 import sys
 sys.path.append(os.path.abspath('../..'))
 sys.path.append(os.path.abspath('../../venv/python3.5/site-packages'))
-print(sys.path)
+import lib_Partage_BSS.utils as utils
+import lib_Partage_BSS.models as models
+import lib_Partage_BSS.services as services
+import lib_Partage_BSS.exceptions as exceptions
 
 # -- General configuration ------------------------------------------------
 
@@ -32,6 +35,7 @@ print(sys.path)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
@@ -89,7 +93,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinxdoc'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

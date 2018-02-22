@@ -1,3 +1,7 @@
+# -*-coding:utf-8 -*
+"""
+Module contenant les méthodes de vérification de paramètre et de conversion de paramètre
+"""
 import re
 from collections import OrderedDict
 
@@ -5,34 +9,80 @@ from collections import OrderedDict
 def checkIsNum(value):
     """
     Vérifie si la valeur passé en paramètre est un numéro ou pas (constitué uniquement de digit)
+
     :param value: la valeur a tester
     :return: True si c'est un numéro False sinon
+    :raises TypeError: Exception levé si le paramètre n'est pas un str
     """
-    return re.match("^[0-9 .\-_/]*$", value)
+    if isinstance(value, str):
+        return re.match("^[0-9 .\-_/]*$", value)
+    else:
+        raise TypeError
 
 
 def checkIsMailAddress(value):
     """
     Vérifie si la valeur passé en paramètre est une adresse mail ou pas (contient une chaine suivi d'un @ suivi d'une chaine suivi d'un point suivi d'une chaine)
+
     :param value: la valeur a tester
     :return: True si c'est une adresse mail False sinon
+    :raises TypeError: Exception levé si le paramètre n'est pas un str
     """
-    return re.match("^[^\W][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$", value)
+    if isinstance(value, str):
+        return re.match("^[^\W][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]+)*\@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value)
+    else:
+        raise TypeError
 
 
 def checkIsDomain(value):
-    return re.match("^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$", value)
+    """
+    Vérifie si la valeur passé en paramètre est un nom de domaine ou pas
+
+    :param value: la valeur a tester
+    :return: True si c'est un domain False sinon
+    :raises TypeError: Exception levé si le paramètre n'est pas un str
+    """
+    if isinstance(value, str):
+        return re.match("^[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value)
+    else:
+        raise TypeError
+
+
+def checkIsPreDeleteAccount(value):
+    """
+    Vérifie si la valeur passé en paramètre est un nom de compte en pre instance de suppression (deleted_timestamp_nom)
+
+    :param value: la valeur a tester
+    :return: True si c'est un compte en instance de suppression False sinon
+    :raises TypeError: Exception levé si le paramètre n'est pas un str
+    """
+    if isinstance(value, str):
+        return re.match("^deleted_\d{9,11}_.*", value)
+    else:
+        raise TypeError
 
 
 def checkResponseStatus(statuscode):
-    return changeToInt(statuscode) == 0
+    """
+    Vérifie si le code status passé est un code de réussite ou pas (réussite = 0)
+
+    :param statuscode: le code status à tester
+    :return: True si le code est 0 False sinon
+    :raises TypeError: Exception levé si le paramètre n'est pas un OrderedDict et si il ne posséde pas un champs type avec la valeur integer
+    """
+    try:
+        return changeToInt(statuscode) == 0
+    except TypeError:
+        return False
 
 
 def changeBooleanToString(boolean):
     """
     Permet de changer les booleen True et False en String correspondant entièrement en majuscule.
+
     :param booleanString: le booleen à changer en String
     :return: "TRUE" ou  "FALSE"
+    :raises TypeError: Exception levé si le paramètre n'est pas un bool
     """
     if boolean is not None:
         if isinstance(boolean, bool):
@@ -50,8 +100,10 @@ def changeStringToBoolean(booleanString):
     """
     Permet de changer les chaines TRUE et FALSE (quelque soit leurs case) en booleen correspondant.
     Renvoie un TypeErreur sinon
+
     :param booleanString: "TRUE" ou  "FALSE"
     :return: renvoie le booleen correspondant
+    :raises TypeError: Exception levé si le paramètre n'est pas un String
     """
     if booleanString is not None:
         if isinstance(booleanString, str):
@@ -66,10 +118,19 @@ def changeStringToBoolean(booleanString):
 
 
 def changeToInt(value):
+    """
+    Permet de changer les réponses qui contiennent le type integer en int
+
+    :param value: la valeur de la réponse à changer en int
+    :return: renvoie le int correspondant
+    :raises TypeError: Exception levé si le paramètre n'est pas un OrderedDict et si il ne posséde pas un champs type avec la valeur integer
+    """
     if value is not None:
         if isinstance(value, OrderedDict):
             if value["type"] == "integer":
                 return int(value["content"])
+            else:
+                raise TypeError
         else:
             raise TypeError
     else:

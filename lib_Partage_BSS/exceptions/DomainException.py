@@ -1,7 +1,7 @@
 # -*-coding:utf-8 -*
-class NameException(Exception):
+class DomainException(Exception):
     """
-    Exception levé lorsqu'un nom d'objet n'est pas conforme
+    Exception levé lors d'une erreur sur le nom de domaine
 
     :ivar message: message à afficher
     """
