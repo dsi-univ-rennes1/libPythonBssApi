@@ -522,14 +522,14 @@ class Account(GlobalModel):
             raise TypeError
 
     def setZimbraPrefFromDisplay(self, newValue):
-        if isinstance(newValue, bool):
+        if isinstance(newValue, str):
             if utils.checkIsMailAddress(newValue):
                 self._zimbraPrefFromDisplay = newValue
         else:
             raise TypeError
 
     def setZimbraPrefMailForwardingAddress(self, newValue):
-        if isinstance(newValue, bool):
+        if isinstance(newValue, str):
             if utils.checkIsMailAddress(newValue):
                 self._zimbraPrefMailForwardingAddress = newValue
         else:

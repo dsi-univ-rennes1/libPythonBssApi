@@ -14,3 +14,7 @@ lib_Partage_BSS/models/__pycache__/
 lib_Partage_BSS/services/__pycache__/
 
 DeleteOldAccount.py
+
+venv/
+
+*.pyc

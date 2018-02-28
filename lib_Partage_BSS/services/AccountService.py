@@ -16,8 +16,8 @@ def fillAccount(accountResponse):
 
     :param accountResponse: l'objet account renvoyé par l'API
     :return: l'objet account créé
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     """
     if utils.checkIsMailAddress(accountResponse["name"]):
         retAccount = models.Account(accountResponse["name"])
@@ -42,14 +42,15 @@ def fillAccount(accountResponse):
     else:
         raise NameException("L'adresse mail "+accountResponse["name"]+" n'est pas valide")
 
+
 def getAccount(name):
     """
     Méthide permettant de récuperer les informations d'un compte via l'API BSS
 
     :return: Le compte récupéré
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail valide
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         data = {
@@ -71,11 +72,11 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
     Permet de rechercher tout les comptes mail d'un domain
 
     :param domain: le domain de la recherche
-    :param limit: le nombre de résultat renvoyé
-    :param offset: le nombre appartir du quel les compte sont renvoyé
-    :param ldapQuery: un filtre ldap pour affiner la rechercher
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises DomainException: Exception levé si le domaine n'est pas un domaine valide
+    :param limit: le nombre de résultat renvoyé (optionnel)
+    :param offset: le nombre appartir du quel les compte sont renvoyé (optionnel)
+    :param ldapQuery: un filtre ldap pour affiner la rechercher (optionnel)
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
     """
     if utils.checkIsDomain(domain):
         data = {
@@ -85,30 +86,34 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
         }
         response = callMethod(domain, "GetAllAccounts", data)
         if utils.checkResponseStatus(response["status"]):
-
-            accounts = response["accounts"]["account"]
-            retAccounts = []
-            if isinstance(accounts, list):
-                for account in accounts:
-                    retAccounts.append(fillAccount(account))
+            if len(response["accounts"]) == 1:
+                return []
             else:
-                retAccounts.append(fillAccount(accounts))
-            return retAccounts
+                accounts = response["accounts"]["account"]
+                retAccounts = []
+                if isinstance(accounts, list):
+                    for account in accounts:
+                        retAccounts.append(fillAccount(account))
+                else:
+                    retAccounts.append(fillAccount(accounts))
+                return retAccounts
         else:
             raise ServiceException(response["status"], response["message"])
     else:
         raise DomainException
 
 
-def createAccount(name,userPassword, cosId):
+def createAccount(name,userPassword, cosId, account = None):
     """
     Méthode permettant de créer un compte via l'API BSS en lui passant en paramètre l'empreinte du mot de passe (SSHA) et le cosId
+
     :param userPassword: le mot de passe de l'utilisateur hashé en SSHA1
     :param cosId: l'identifiant du cosId à appliquer pour le compte
+    :param account: objet account contenant les informations à ajouter dans le compte (optionnel)
     :return: Le compte créé
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail valide
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         if userPassword[:6] == "{ssha}":
@@ -121,9 +126,12 @@ def createAccount(name,userPassword, cosId):
             }
             response = callMethod(services.extractDomain(name), "CreateAccount", data)
             if utils.checkResponseStatus(response["status"]):
+                if account is not None:
+                    modifyAccount(account)
                 return getAccount(name)
             else:
                 raise ServiceException(response["status"], response["message"])
+
     else:
         raise NameException("L'adresse mail "+name+" n'est pas valide")
 
@@ -133,9 +141,9 @@ def deleteAccount(name):
     Permet de supprimer un compte
 
     :param name: Nom du compte à supprimer
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail valide
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         data = {
@@ -154,13 +162,13 @@ def preDeleteAccount(name):
     Cette méthode désactive le compte puis ajoute devant le nom du compte deleted_timestampactuel_name
 
     :param name: nom du compte à préSupprimer
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail valide
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         closeAccount(name)
-        renameAccount(name, "deleted_"+str(round(time()))+"_"+name)
+        renameAccount(name, "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name)
     else:
         raise NameException("L'adresse mail " + name + " n'est pas valide")
 
@@ -170,9 +178,9 @@ def restorePreDeleteAccount(name):
     Permet d'annuler la préSuppresion d'un compte
 
     :param name: le nom du compte preSupprimé à restaurer
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsPreDeleteAccount(name):
         activeAccount(name)
@@ -180,14 +188,15 @@ def restorePreDeleteAccount(name):
     else:
         raise NameException("L'adresse mail " + name + " n'est pas une adresse mail preSupprimé")
 
+
 def modifyAccount(account):
     """
     Permet de modifier un compte via l'API
 
     :param account: un objets compte avec les attribut à changé definit
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(account.getName):
         data = {}
@@ -202,7 +211,8 @@ def modifyAccount(account):
         if not utils.checkResponseStatus(response["status"]):
             raise ServiceException(response["status"], response["message"])
     else:
-        raise NameException("L'adresse mail " + name + " n'est pas valide")
+        raise NameException("L'adresse mail " + account.getName + " n'est pas valide")
+
 
 def modifyPassword(name, newUserPassword):
     """
@@ -211,9 +221,9 @@ def modifyPassword(name, newUserPassword):
     On passe ensuite via ModifyAccount l'empreinte du nouveau mot de passe
 
     :param newUserPassword:
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         data={
@@ -240,9 +250,9 @@ def addAccountAlias(name, newAlias):
 
     :param name: le nom du compte
     :param aliasToDelete: l'alias a ajouter
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name) and utils.checkIsMailAddress(newAlias):
         data = {
@@ -261,9 +271,9 @@ def removeAccountAlias(name, aliasToDelete):
 
     :param name: le nom du compte
     :param aliasToDelete: l'alias a supprimer
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name) or utils.checkIsMailAddress(aliasToDelete):
         data = {
@@ -282,10 +292,10 @@ def modifyAccountAliases(name, listOfAliases):
 
     :param name: le nom du compte
     :param listOfAliases: la liste des alias pour le compte
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
-    :raise TypeError: Exception levé si le parametre listOfAliases n'est pas une liste
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
+    :raise TypeError: Exception levée si le parametre listOfAliases n'est pas une liste
     """
     if utils.checkIsMailAddress(name):
         if isinstance(listOfAliases, list):
@@ -317,9 +327,9 @@ def activeAccount(name):
     Méthode permettant de passer l'état d'un compte à active
 
     :param name: le nom du compte à (ré)activer
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         account = models.Account(name)
@@ -336,9 +346,9 @@ def lockAccount(name):
     Le compte sera toujours visible dans la GAL et les mails seront toujours acheminé à l'adresse
 
     :param name: le nom du compte à verrouiller
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         account = models.Account(name)
@@ -353,9 +363,9 @@ def closeAccount(name):
     Le compte ne sera plus visible dans la GAL et les mails seront rejeté
 
     :param name: le nom du compte à Désactiver
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
         account = models.Account(name)
@@ -372,9 +382,9 @@ def renameAccount(name, newName):
 
     :param name: le nom du compte à renommer
     :param newName: le nouveau nom du compte
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises NameException: Exception levé si le nom n'est pas une adresse mail preSupprimé
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name) and utils.checkIsMailAddress(newName):
         data = {

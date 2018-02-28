@@ -14,7 +14,7 @@ def extractDomain(mailAddress):
 
     :param mailAddress: adresse mail pour extraire le domaine
     :return: le nom de domaine
-    :raises NameException: Exception levé si l'adresse mail n'est pas valide
+    :raises NameException: Exception levée si l'adresse mail n'est pas valide
     """
     if utils.checkIsMailAddress(mailAddress):
         return mailAddress.split("@")[1]
@@ -30,8 +30,8 @@ def callMethod(domain, methodName, data):
     :param methodName: le nom de la méthode à appeller
     :param data: le body de la requête
     :return: la réponse reçu de l'API BSS
-    :raises ServiceException: Exception levé si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
-    :raises DomainException: Exception levé si le domaine de l'adresse mail n'est pas un domaine valide
+    :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
+    :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     con = BSSConnexion()
     return postBSS(con.url+"/"+methodName+"/"+con.token(domain), data)
