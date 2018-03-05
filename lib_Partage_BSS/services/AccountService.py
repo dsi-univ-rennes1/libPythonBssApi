@@ -2,6 +2,7 @@
 """
 Module contenant les méthodes permettant d'appeler les services de l'API BSS concencernant les comptes
 """
+import re
 from collections import OrderedDict
 from time import time
 
@@ -47,7 +48,7 @@ def getAccount(name):
     """
     Méthide permettant de récuperer les informations d'un compte via l'API BSS
 
-    :return: Le compte récupéré
+    :return: Le compte récupéré ou None si le compte n'existe pas
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
@@ -61,6 +62,8 @@ def getAccount(name):
         if utils.checkResponseStatus(response["status"]):
             account = response["account"]
             return fillAccount(account)
+        elif re.search(".*no such account.*", response["message"]):
+            return None
         else:
             raise ServiceException(response["status"], response["message"])
     else:
