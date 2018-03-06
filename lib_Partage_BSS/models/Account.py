@@ -280,12 +280,6 @@ class Account(GlobalModel):
     def getZimbraZimletAvailableZimlets(self):
         return self._zimbraZimletAvailableZimlets
 
-    def setId(self, newValue):
-        if isinstance(newValue, str):
-            self._id = newValue
-        else:
-            raise TypeError
-
     def setAdmin(self, newValue):
         if isinstance(newValue, str):
             self._admin = newValue
@@ -368,7 +362,7 @@ class Account(GlobalModel):
 
     def setMavRedirection(self, newValue):
 
-        if isinstance(newValue, str) or newValue is None:
+        if isinstance(newValue, str):
             self._mavRedirection = newValue
         else:
             raise TypeError

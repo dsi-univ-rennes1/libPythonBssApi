@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='lib_Partage_BSS',
-    version='1.1.0',
+    version='1.1.1',
     packages=['lib_Partage_BSS',
               'lib_Partage_BSS.utils', 'lib_Partage_BSS.exceptions', 'lib_Partage_BSS.models','lib_Partage_BSS.services',
               ],

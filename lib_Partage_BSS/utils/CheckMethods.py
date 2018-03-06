@@ -27,11 +27,14 @@ def checkIsMailAddress(value):
     Vérifie si la valeur passé en paramètre est une adresse mail ou pas (contient une chaine suivi d'un @ suivi d'une chaine suivi d'un point suivi d'une chaine)
 
     :param value: la valeur a tester
-    :return: True si c'est une adresse mail False sinon
+    :return: True si c'est une adresse mail ou vide False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
     if isinstance(value, str):
-        return re.match("^[^\W][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]+)*\@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value)
+        if value == "" or re.match("^[^\W][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]+)*\@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value):
+            return True
+        else:
+            return False
     else:
         raise TypeError
 
@@ -45,7 +48,10 @@ def checkIsDomain(value):
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
     if isinstance(value, str):
-        return re.match("^[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value)
+        if value == "" or re.match("^[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value):
+            return True
+        else:
+            return False
     else:
         raise TypeError
 
