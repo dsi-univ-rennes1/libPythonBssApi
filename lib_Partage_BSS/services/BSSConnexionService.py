@@ -78,6 +78,14 @@ class BSSConnexion(object):
             """
             return self._domain
 
+        def setDomainKey(self,domain,key):
+            if isinstance(domain, str) and isinstance(key, str):
+                self._key[domain] = key
+                self._timestampOfLastToken[domain] = 0
+                self._token[domain] = ""
+            else:
+                raise TypeError
+
         def token(self, domain):
             """Getter du Token
 
@@ -101,21 +109,16 @@ class BSSConnexion(object):
                     Le token ayant une durée de vie de 5min on le regenère si il est plus vieux que 4min30s
                     Si l'ecart entre le timestamp actuel et le timestamp de l'obtention du dernier token est de moins de 270 secondes (4min30s) on renvoie le token actuel. Au delà on génère un nouveau token
             """
-
             if isinstance(domain, str):
                 if utils.checkIsDomain(domain):
+
+                    self._domain = domain
+                    """Le domaine sur le quel on souhaite travailler"""
                     if domain not in self._key:
-                        json_config = open('config_lib_bss.json')
-                        config = json.load(json_config)
-                        self._domain = domain
-                        """Le domaine sur le quel on souhaite travailler"""
-                        if domain in config:
-                            self._key[domain] = config[domain]
-                            self._timestampOfLastToken[domain] = 0
-                            self._token[domain] = ""
-                        else:
-                            raise DomainException(domain+" : Domaine non présent dans le fichier de config config_lib_bss.json")
-                        json_config.close()
+                        raise DomainException(domain + " : Domaine non initialisé")
+                    print("key = " + self._key[domain])
+                    print("time = " + str(self._timestampOfLastToken[domain]))
+                    print("token = " + self._token[domain])
                     actualTimestamp = round(time())
                     if (actualTimestamp - self._timestampOfLastToken[domain]) < 270:
                         return self._token[domain]
@@ -134,7 +137,7 @@ class BSSConnexion(object):
                         if status_code == 0:
                             self._token[domain] = response["token"]
                         else:
-                            raise BSSConnexionException(message)
+                            raise BSSConnexionException(status_code, message)
                         return self._token[domain]
                 else:
                     raise DomainException(domain+" n'est pas un nom de domain valide")

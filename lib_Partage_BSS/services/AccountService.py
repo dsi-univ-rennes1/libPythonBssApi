@@ -119,7 +119,7 @@ def createAccount(name,userPassword, cosId, account = None):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
-        if userPassword[:6] == "{ssha}":
+        if userPassword[:6].upper() == "{SSHA}":
             data = {
                 "name": name,
                 "password": "",
@@ -134,7 +134,6 @@ def createAccount(name,userPassword, cosId, account = None):
                 return getAccount(name)
             else:
                 raise ServiceException(response["status"], response["message"])
-
     else:
         raise NameException("L'adresse mail "+name+" n'est pas valide")
 
@@ -171,7 +170,9 @@ def preDeleteAccount(name):
     """
     if utils.checkIsMailAddress(name):
         closeAccount(name)
-        renameAccount(name, "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name)
+        newname = "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name
+        renameAccount(name, newname)
+        return newname
     else:
         raise NameException("L'adresse mail " + name + " n'est pas valide")
 
@@ -186,7 +187,7 @@ def restorePreDeleteAccount(name):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsPreDeleteAccount(name):
-        activeAccount(name)
+        activateAccount(name)
         renameAccount(name, name.split("_")[2])
     else:
         raise NameException("L'adresse mail " + name + " n'est pas une adresse mail preSupprimé")
@@ -268,6 +269,7 @@ def addAccountAlias(name, newAlias):
     else:
         raise NameException("L'adresse mail " + name +" ou "+newAlias+" n'est pas valide")
 
+
 def removeAccountAlias(name, aliasToDelete):
     """
     Méthode permettant de supprimer un alias d'un compte
@@ -289,6 +291,7 @@ def removeAccountAlias(name, aliasToDelete):
     else:
         raise NameException("L'adresse mail " + name +" ou "+aliasToDelete+" n'est pas valide")
 
+
 def modifyAccountAliases(name, listOfAliases):
     """
     Méthode permettant de changer l'ensemble des alias d'un compte par ceux passés en paramètre
@@ -303,19 +306,26 @@ def modifyAccountAliases(name, listOfAliases):
     if utils.checkIsMailAddress(name):
         if isinstance(listOfAliases, list):
             account = getAccount(name)
+            #On vérifie que les adresses mail passées en paramètres sont des adresses valide
             for alias in listOfAliases:
                 if not utils.checkIsMailAddress(alias):
                     raise NameException("L'adresse mail " + alias + " n'est pas valide")
+            #On parcour la liste passé en paramètre
             for alias in listOfAliases:
                 if isinstance(account.getZimbraMailAlias, list) or isinstance(account.getZimbraMailAlias, str):
+                    #si la l'adresse mail n'est pas présente dans partage on la rajoute
                     if alias not in account.getZimbraMailAlias:
                         addAccountAlias(name, alias)
+                #si la liste partage est vide on rajoute l'adresse
                 elif account.getZimbraMailAlias is None:
                     addAccountAlias(name, alias)
             if isinstance(account.getZimbraMailAlias, list):
+                #On parcours la liste des adresses partages
                 for alias in account.getZimbraMailAlias:
+                    #Si l'adresse n'est pas présente dans la liste passé en parametre on supprime l'adresse de partage
                     if alias not in listOfAliases:
                         removeAccountAlias(name, alias)
+            #Si le compte n'a qu'un alias on test si il est présent ou pas dans la liste passé en paramètre
             elif isinstance(account.getZimbraMailAlias, str):
                 if account.getZimbraMailAlias not in listOfAliases:
                     removeAccountAlias(name, account.getZimbraMailAlias)
@@ -325,7 +335,7 @@ def modifyAccountAliases(name, listOfAliases):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
 
 
-def activeAccount(name):
+def activateAccount(name):
     """
     Méthode permettant de passer l'état d'un compte à active
 
@@ -359,6 +369,7 @@ def lockAccount(name):
         modifyAccount(account)
     else:
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+
 
 def closeAccount(name):
     """

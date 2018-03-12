@@ -5,5 +5,5 @@ class BSSConnexionException(Exception):
 
     :ivar message: message à afficher
     """
-    def __init__(self, message):
-        self.msg = message
+    def __init__(self,code, message):
+        self.msg = str(code)+" : "+message

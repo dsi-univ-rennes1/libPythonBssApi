@@ -66,6 +66,11 @@ def initBadResponse():
                     "</Response>"
     return response
 
+@pytest.fixture()
+def create_connexion():
+    con = BSSConnexion()
+    con.setDomainKey("domain.com", "keyDeTest")
+    return con
 
 def test_init_cas_nom_vallide():
     account = Account("test@domain.com")
@@ -79,7 +84,7 @@ def test_init_cas_nom_non_vallide():
 
 def test_getAccount_cas_compte_existant(mocker):
     response = initGoodResponse()
-    con = BSSConnexion()
+    con = create_connexion()
 
     with mocker.patch('requests.post', return_value=response):
         with mocker.patch.object(con, 'token', return_value="test"):
@@ -93,7 +98,9 @@ def test_getAccount_cas_compte_existant(mocker):
 def test_getAccount_cas_compte_inexistant(mocker):
     with pytest.raises(ServiceException):
         response = initBadResponse()
-        con = BSSConnexion()
+        con = create_connexion()
         with mocker.patch('requests.post', return_value=response):
             with mocker.patch.object(con, 'token', return_value="test"):
                 AccountService.getAccount("test@domain.com")
+
+

@@ -3,7 +3,7 @@
 Module permettant de faire de requêtes HTTP vers l'API BSS et de parser la réponse
 """
 import xml.etree.ElementTree as et
-from xmljson import yahoo as pa
+from xmljson import yahoo as ya
 import requests
 
 
@@ -14,7 +14,7 @@ def parseResponse(stringXml):
     :param stringXml: la chaine XML à transformer en objet python
     :return: l'objet response obtenue
     """
-    return pa.data(et.fromstring(stringXml))["Response"]
+    return ya.data(et.fromstring(stringXml))["Response"]
 
 def postBSS(url, data):
     """

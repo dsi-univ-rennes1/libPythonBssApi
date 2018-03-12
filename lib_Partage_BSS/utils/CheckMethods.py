@@ -7,6 +7,8 @@ from collections import OrderedDict
 from datetime import datetime
 from time import mktime
 
+from lib_Partage_BSS.exceptions import NameException
+
 
 def checkIsNum(value):
     """
@@ -17,7 +19,10 @@ def checkIsNum(value):
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
     if isinstance(value, str):
-        return re.match("^[0-9 .\-_/]*$", value)
+        if value == "" or re.match("^[0-9 .\-_/]*$", value):
+            return True
+        else:
+            return False
     else:
         raise TypeError
 
@@ -65,7 +70,13 @@ def checkIsPreDeleteAccount(value):
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
     if isinstance(value, str):
-        return re.match("^readytodelete_\d{4}[\-]\d{2}[\-]\d{2}[\-]\d{2}[\-]\d{2}[\-]\d{2}_.*", value)
+            if re.match("^readytodelete_\d{4}[\-]\d{2}[\-]\d{2}[\-]\d{2}[\-]\d{2}[\-]\d{2}_.*", value):
+                if checkIsMailAddress(value.split("_")[2]):
+                    return True
+                else:
+                    return False
+            else:
+                return False
     else:
         raise TypeError
 
@@ -119,6 +130,8 @@ def changeStringToBoolean(booleanString):
                 return True
             elif booleanString.upper() == "FALSE":
                 return False
+            else:
+                return None
         else:
             raise TypeError()
     else:
