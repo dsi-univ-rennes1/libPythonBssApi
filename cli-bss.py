@@ -18,7 +18,24 @@ from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 
 printer = pprint.PrettyPrinter(indent=4)
 
-parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage")
+epilog = "Exemples d'appel :\n" + \
+    "./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --deleteAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --lockAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=us*'\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --closeAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n"
+
+parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--preAuthKey', required=True, metavar="6b7ead4bd425836e8c", help="clé de preAuth pour le domaine cible")
 parser.add_argument('--email', metavar='jchirac@mondomaine.fr', help="adresse mail passée en argument")
@@ -31,21 +48,22 @@ parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', he
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
 parser.add_argument('--jsonData', metavar='/tmp/myAccount.json', type=argparse.FileType('r'), help="fichier contenant des données JSON")
 
-parser.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
-parser.add_argument('--createAccount', action='store_const', const=True, help="créer un compte")
-parser.add_argument('--modifyAccount', action='store_const', const=True, help="mettre à jour un compte")
-parser.add_argument('--renameAccount', action='store_const', const=True, help="renommer un compte")
-parser.add_argument('--deleteAccount', action='store_const', const=True, help="supprimer un compte")
-parser.add_argument('--preDeleteAccount', action='store_const', const=True, help="pré-supprimer un compte (le compte est fermé et renommé)")
-parser.add_argument('--restorePreDeleteAccount', action='store_const', const=True, help="rétablir un compte pré-supprimé (compte fermé et renommé)")
-parser.add_argument('--getAllAccounts', action='store_const', const=True, help="rechercher tous les comptes du domaine")
-parser.add_argument('--modifyPassword', action='store_const', const=True, help="modifier l'empreinte du mot de passe d'un compte")
-parser.add_argument('--lockAccount', action='store_const', const=True, help="vérouiller un compte")
-parser.add_argument('--activateAccount', action='store_const', const=True, help="(ré)activer un compte")
-parser.add_argument('--closeAccount', action='store_const', const=True, help="fermer un compte")
-parser.add_argument('--addAccountAlias', action='store_const', const=True, help="ajoute des aliases à un compte")
-parser.add_argument('--removeAccountAlias', action='store_const', const=True, help="retire des aliases d'un compte")
-parser.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
+group = parser.add_argument_group('Opérations implémentées :')
+group.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
+group.add_argument('--createAccount', action='store_const', const=True, help="créer un compte")
+group.add_argument('--modifyAccount', action='store_const', const=True, help="mettre à jour un compte")
+group.add_argument('--renameAccount', action='store_const', const=True, help="renommer un compte")
+group.add_argument('--deleteAccount', action='store_const', const=True, help="supprimer un compte")
+group.add_argument('--preDeleteAccount', action='store_const', const=True, help="pré-supprimer un compte (le compte est fermé et renommé)")
+group.add_argument('--restorePreDeleteAccount', action='store_const', const=True, help="rétablir un compte pré-supprimé (compte fermé et renommé)")
+group.add_argument('--getAllAccounts', action='store_const', const=True, help="rechercher tous les comptes du domaine")
+group.add_argument('--modifyPassword', action='store_const', const=True, help="modifier l'empreinte du mot de passe d'un compte")
+group.add_argument('--lockAccount', action='store_const', const=True, help="vérouiller un compte")
+group.add_argument('--activateAccount', action='store_const', const=True, help="(ré)activer un compte")
+group.add_argument('--closeAccount', action='store_const', const=True, help="fermer un compte")
+group.add_argument('--addAccountAlias', action='store_const', const=True, help="ajoute des aliases à un compte")
+group.add_argument('--removeAccountAlias', action='store_const', const=True, help="retire des aliases d'un compte")
+group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
 
 args = vars(parser.parse_args())
 
