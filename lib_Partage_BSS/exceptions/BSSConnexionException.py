@@ -1,7 +1,7 @@
 # -*-coding:utf-8 -*
 class BSSConnexionException(Exception):
     """
-    Exception levé lors d'une erreur de connexion
+    Exception levée lors d'une erreur de connexion
 
     :ivar message: message à afficher
     """

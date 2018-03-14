@@ -11,12 +11,13 @@ from lib_Partage_BSS.utils.BSSRequest import postBSS
 
 class BSSConnexion(object):
     """
-    Classe permettant de récuperé un token d'une durée de vie de 5min auprès de l'API BSS Partage. Elle regenère un token lorsque celui-ci est sur le point d'expiré
+    Classe permettant de récuperer un token d'une durée de vie de 5min auprès de l'API BSS Partage.
+    Elle regenère un token lorsque celui-ci est sur le point d'expirer
 
-    :ivar _domain: Le domaine sur le quel on souhaite travailler
-    :ivar _key: La clé associé à notre domaine
-    :ivar _timestampOfLastToken: Le timesstamp au quel on à obtenue notre dernier token. Permet de renouveller le token si celui-ci est sur le point d'être périmé ou si il l'est déjà
-    :ivar _token: Le token obtenue via l'api pour utiliser les autres méthodes de l'API
+    :ivar _domain: Le domaine cible
+    :ivar _key: La clé associée au domaine
+    :ivar _timestampOfLastToken: Le timestamp auquel on à obtenue notre dernier token. Permet de renouveller le token avant expiration
+    :ivar _token: Le token obtenu via l'API pour utiliser les autres méthodes de l'API
     :ivar _url: L'url vers l'API BSS Partage (https://api.partage.renater.fr/service/domain/)
     """
     class __BSSConnexion:
@@ -25,22 +26,22 @@ class BSSConnexion(object):
             """Constructeur de BSS connexion
 
                Arguments :
-                    domain(string): Le domaine sur le quel on souhaite se connecter
-                    key(string): La clé associé à notre domaine
+                    domain(string): Le domaine cible
+                    key(string): La clé associée au domaine
 
                 Retour :
-                    BBSConnexion : l'objet contenant tout les paramêtre pour pouvoir se connecter
+                    BBSConnexion : l'objet contenant tous les paramètres de connexion
 
                 Exemple d'utilisation :
                 >>>BSSConnexion("domain.com","6b7ead4bd425836e8cf0079cd6c1a05acc127acd07c8ee4b61023e19250e929c")
             """
             self._domain = ""
             self._key = {}
-            """La clé associé à notre domaine"""
+            """La clé associés au domaine"""
             self._timestampOfLastToken = {}
-            """Le timesstamp au quel on à obtenue notre dernier token. Permet de renouveller le token si celui-ci est sur le point d'être périmé ou si il l'est déjà"""
+            """Le timestamp auquel on a obtenu le dernier token. Permet de renouveller le token avant expiration"""
             self._token = {}
-            """Le token obtenue via l'api pour utiliser les autres méthodes de l'API"""
+            """Le token obtenu via l'API pour utiliser les autres méthodes"""
             self._url = "https://api.partage.renater.fr/service/domain/"
             """L'url vers l'API BSS Partage"""
 
@@ -68,7 +69,7 @@ class BSSConnexion(object):
                 Arguments : Aucun
 
                 Retour :
-                    string : domaine sur le quel on travail
+                    string : domaine cible
 
                 Example d'utilisation :
                     >>>con = BSSConnexion("domain.com","6b7ead4bd425836e8cf0079cd6c1a05acc127acd07c8ee4b61023e19250e929c")
@@ -92,10 +93,10 @@ class BSSConnexion(object):
                 Arguments : Aucun
 
                 Retour :
-                    string : token permettant la connexion à l'api
+                    string : token pour connexion à l'API
 
                 Exception:
-                    BSSConnexion en cas d'Eurreur lors de la récupération du token
+                    BSSConnexion en cas d'Erreur lors de la récupération du token
 
                 Example d'utilisation :
                     >>>con = BSSConnexion("domain.com","6b7ead4bd425836e8cf0079cd6c1a05acc127acd07c8ee4b61023e19250e929c")
@@ -106,14 +107,15 @@ class BSSConnexion(object):
                     ... print("BSS Erreur: {0}".format(err))
                     ...
                 Description :
-                    Le token ayant une durée de vie de 5min on le regenère si il est plus vieux que 4min30s
-                    Si l'ecart entre le timestamp actuel et le timestamp de l'obtention du dernier token est de moins de 270 secondes (4min30s) on renvoie le token actuel. Au delà on génère un nouveau token
+                    Le token ayant une durée de vie de 5min on le regénère si il est plus vieux que 4min30s
+                    Si l'ecart entre le timestamp actuel et le timestamp de l'obtention du dernier token est de moins de 270 secondes (4min30s)
+                    on renvoie le token actuel. Au delà on génère un nouveau token
             """
             if isinstance(domain, str):
                 if utils.checkIsDomain(domain):
 
                     self._domain = domain
-                    """Le domaine sur le quel on souhaite travailler"""
+                    """Le domaine sur lequel on souhaite travailler"""
                     if domain not in self._key:
                         raise DomainException(domain + " : Domaine non initialisé")
                     print("key = " + self._key[domain])

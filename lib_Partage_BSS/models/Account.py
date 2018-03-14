@@ -25,8 +25,8 @@ class Account(GlobalModel):
     :ivar _used: Espace utilisé par le compte (en octet)
     :ivar _quota: Espace disponible pour le compte (en octet)
     :ivar _carLicense: EduPersonPrincipalName l'identifiant fondation du compte
-    :ivar _givenName: Prénom de famille de la personne
-    :ivar _displayName: Prénom Nom de la personne
+    :ivar _givenName: Prénom de la personne
+    :ivar _displayName: Nom complet de la personne
     :ivar _businessCategory: ...
     :ivar _sn: Nom de la personne
     :ivar _st:
@@ -37,7 +37,7 @@ class Account(GlobalModel):
     :ivar _zimbraFeatureBriefcasesEnabled: ...
     :ivar _zimbraFeatureCalendarEnabled: ...
     :ivar _zimbraFeatureMailEnabled: ...
-    :ivar _zimbraFeatureMailForwardingEnabled: Permettre à l?utilisateur d?indiquer une adresse de redirection (TRUE,FALSE)
+    :ivar _zimbraFeatureMailForwardingEnabled: Permettre à l'utilisateur d'indiquer une adresse de redirection (TRUE,FALSE)
     :ivar _zimbraFeatureOptionsEnabled: ...
     :ivar _zimbraFeatureTasksEnabled: ...
     :ivar _zimbraHideInGal: Masquer dans la GAL (TRUE,FALSE)

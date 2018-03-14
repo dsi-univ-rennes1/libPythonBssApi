@@ -2,7 +2,7 @@
 from lib_Partage_BSS import utils
 class ServiceException(Exception):
     """
-    Exception levé lorsqu'un appel à l'API échoue
+    Exception levée lorsqu'un appel à l'API échoue
 
     :ivar code: code de l'erreur
     :ivar message: message à afficher

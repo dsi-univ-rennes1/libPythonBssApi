@@ -1,6 +1,6 @@
 # -*-coding:utf-8 -*
 """
-Module contenant les méthodes de vérification de paramètre et de conversion de paramètre
+Module contenant les méthodes de vérification de paramètres et de conversion de paramètres
 """
 import re
 from collections import OrderedDict
@@ -12,10 +12,10 @@ from lib_Partage_BSS.exceptions import NameException
 
 def checkIsNum(value):
     """
-    Vérifie si la valeur passé en paramètre est un numéro ou pas (constitué uniquement de digit)
+    Vérifie si la valeur passée en paramètre est un nombre
 
     :param value: la valeur a tester
-    :return: True si c'est un numéro False sinon
+    :return: True si c'est un nombre False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
     if isinstance(value, str):
@@ -29,9 +29,9 @@ def checkIsNum(value):
 
 def checkIsMailAddress(value):
     """
-    Vérifie si la valeur passé en paramètre est une adresse mail ou pas (contient une chaine suivi d'un @ suivi d'une chaine suivi d'un point suivi d'une chaine)
+    Vérifie si la valeur passée en paramètre est une adresse mail
 
-    :param value: la valeur a tester
+    :param value: la valeur à tester
     :return: True si c'est une adresse mail ou vide False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
@@ -46,7 +46,7 @@ def checkIsMailAddress(value):
 
 def checkIsDomain(value):
     """
-    Vérifie si la valeur passé en paramètre est un nom de domaine ou pas
+    Vérifie si la valeur passée en paramètre est un nom de domaine
 
     :param value: la valeur a tester
     :return: True si c'est un domain False sinon
@@ -63,9 +63,9 @@ def checkIsDomain(value):
 
 def checkIsPreDeleteAccount(value):
     """
-    Vérifie si la valeur passé en paramètre est un nom de compte en pre instance de suppression (deleted_timestamp_nom)
+    Vérifie si la valeur passée en paramètre est un nom de compte en pré instance de suppression (deleted_timestamp_nom)
 
-    :param value: la valeur a tester
+    :param value: l'identifiant du compte
     :return: True si c'est un compte en instance de suppression False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
@@ -87,7 +87,7 @@ def checkResponseStatus(statuscode):
 
     :param statuscode: le code status à tester
     :return: True si le code est 0 False sinon
-    :raises TypeError: Exception levée si le paramètre n'est pas un OrderedDict et si il ne posséde pas un champs type avec la valeur integer
+    :raises TypeError: Exception levée si le paramètre n'est pas un OrderedDict et si il ne possède pas un champs type avec la valeur integer
     """
     try:
         return changeToInt(statuscode) == 0
@@ -97,9 +97,9 @@ def checkResponseStatus(statuscode):
 
 def changeBooleanToString(boolean):
     """
-    Permet de changer les booleen True et False en String correspondant entièrement en majuscule.
+    Permet de changer les booleen True et False en String.
 
-    :param booleanString: le booleen à changer en String
+    :param booleanString: le booléen à changer en String
     :return: "TRUE" ou  "FALSE"
     :raises TypeError: Exception levée si le paramètre n'est pas un bool
     """
@@ -117,7 +117,7 @@ def changeBooleanToString(boolean):
 
 def changeStringToBoolean(booleanString):
     """
-    Permet de changer les chaines TRUE et FALSE (quelque soit leurs case) en booleen correspondant.
+    Permet de changer les chaînes TRUE et FALSE (quelque soit leurs casse) en booléen.
     Renvoie un TypeErreur sinon
 
     :param booleanString: "TRUE" ou  "FALSE"
@@ -144,7 +144,7 @@ def changeToInt(value):
 
     :param value: la valeur de la réponse à changer en int
     :return: renvoie le int correspondant
-    :raises TypeError: Exception levée si le paramètre n'est pas un OrderedDict et si il ne posséde pas un champs type avec la valeur integer
+    :raises TypeError: Exception levée si le paramètre n'est pas un OrderedDict et si il ne possède pas un champs type avec la valeur integer
     """
     if value is not None:
         if isinstance(value, OrderedDict):
@@ -160,7 +160,7 @@ def changeToInt(value):
 
 def changeTimestampToDate(timestamp):
     """
-    Méthode permetant de changer un timestamp en date de forme AAAA-MM-JJ-HH-MM-SS
+    Méthode permettant de changer un timestamp en date de forme AAAA-MM-JJ-HH-MM-SS
 
     :param timestamp: le timestamp à convertir
     :return: la date obtenue

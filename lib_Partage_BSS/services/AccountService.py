@@ -1,6 +1,6 @@
 # -*-coding:utf-8 -*
 """
-Module contenant les méthodes permettant d'appeler les services de l'API BSS concencernant les comptes
+Module contenant les méthodes permettant d'appeler les services de l'API BSS concernant les comptes
 """
 import re
 from collections import OrderedDict
@@ -13,7 +13,7 @@ from .GlobalService import callMethod
 
 def fillAccount(accountResponse):
     """
-    Permet de remplir un objet compte depuis une reponse de l'API BSS
+    Permet de remplir un objet compte depuis une réponse de l'API BSS
 
     :param accountResponse: l'objet account renvoyé par l'API
     :return: l'objet account créé
@@ -46,7 +46,7 @@ def fillAccount(accountResponse):
 
 def getAccount(name):
     """
-    Méthide permettant de récuperer les informations d'un compte via l'API BSS
+    Méthode permettant de récupérer les informations d'un compte via l'API BSS
 
     :return: Le compte récupéré ou None si le compte n'existe pas
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
@@ -72,11 +72,11 @@ def getAccount(name):
 
 def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
     """
-    Permet de rechercher tout les comptes mail d'un domain
+    Permet de rechercher tous les comptes mail d'un domain
 
-    :param domain: le domain de la recherche
-    :param limit: le nombre de résultat renvoyé (optionnel)
-    :param offset: le nombre appartir du quel les compte sont renvoyé (optionnel)
+    :param domain: le domaine de la recherche
+    :param limit: le nombre de résultats renvoyés (optionnel)
+    :param offset: le nombre à partir duquel les comptes sont renvoyés (optionnel)
     :param ldapQuery: un filtre ldap pour affiner la rechercher (optionnel)
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
@@ -110,7 +110,7 @@ def createAccount(name,userPassword, cosId, account = None):
     """
     Méthode permettant de créer un compte via l'API BSS en lui passant en paramètre l'empreinte du mot de passe (SSHA) et le cosId
 
-    :param userPassword: le mot de passe de l'utilisateur hashé en SSHA1
+    :param userPassword: l'empreine du mot de passe de l'utilisateur
     :param cosId: l'identifiant du cosId à appliquer pour le compte
     :param account: objet account contenant les informations à ajouter dans le compte (optionnel)
     :return: Le compte créé
@@ -165,8 +165,8 @@ def deleteAccount(name):
 
 def preDeleteAccount(name):
     """
-    Permet de mettre un compte dans un état de préSuppresion
-    Cette méthode désactive le compte puis ajoute devant le nom du compte deleted_timestampactuel_name
+    Permet de mettre un compte dans un état de préSuppression
+    Cette méthode désactive le compte puis le renomme (ajout d'un préfixe 'deleted_timestampactuel_name')
 
     :param name: nom du compte à préSupprimer
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
@@ -184,7 +184,7 @@ def preDeleteAccount(name):
 
 def restorePreDeleteAccount(name):
     """
-    Permet d'annuler la préSuppresion d'un compte
+    Permet d'annuler la préSuppression d'un compte
 
     :param name: le nom du compte preSupprimé à restaurer
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
@@ -202,7 +202,7 @@ def modifyAccount(account):
     """
     Permet de modifier un compte via l'API
 
-    :param account: un objets compte avec les attribut à changé definit
+    :param account: un objets compte avec les attributs à changer
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
@@ -225,8 +225,8 @@ def modifyAccount(account):
 
 def modifyPassword(name, newUserPassword):
     """
-    Pour modifier le mot de passe on n'accept que l'emprunte du mot de passe.
-    On commence par faire un SetPassword avec une valeur factise pour forcer la déconnection des session en cours
+    Pour modifier le mot de passe on n'accepte que l'empreinte du mot de passe.
+    On commence par faire un SetPassword avec une valeur factice pour forcer la déconnexion des sessions en cours
     On passe ensuite via ModifyAccount l'empreinte du nouveau mot de passe
 
     :param newUserPassword:
@@ -342,7 +342,7 @@ def modifyAccountAliases(name, listOfAliases):
 
 def activateAccount(name):
     """
-    Méthode permettant de passer l'état d'un compte à active
+    Méthode permettant de passer l'état d'un compte à activer
 
     :param name: le nom du compte à (ré)activer
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
@@ -360,8 +360,8 @@ def activateAccount(name):
 def lockAccount(name):
     """
     Méthode permettant de passer l'état d'un compte à lock
-    Cette état déconnecte toutes les instances du compte et empêche la connection à celui-ci.
-    Le compte sera toujours visible dans la GAL et les mails seront toujours acheminé à l'adresse
+    Cette état déconnecte toutes les instances du compte et empêche la connexion à celui-ci.
+    Le compte sera toujours visible dans la GAL et les mails seront toujours acheminés vers cette boîte
 
     :param name: le nom du compte à verrouiller
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
@@ -378,8 +378,8 @@ def lockAccount(name):
 
 def closeAccount(name):
     """
-    Cette état déconnecte toutes les instances du compte et empêche la connection à celui-ci.
-    Le compte ne sera plus visible dans la GAL et les mails seront rejeté
+    Cette méthode déconnecte toutes les instances du compte et empêche la connexion à celui-ci.
+    Le compte ne sera plus visible dans la GAL et les mails entrants seront rejetés
 
     :param name: le nom du compte à Désactiver
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
