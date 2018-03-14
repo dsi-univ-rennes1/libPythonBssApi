@@ -118,24 +118,29 @@ def createAccount(name,userPassword, cosId, account = None):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        if userPassword[:6].upper() == "{SSHA}":
-            data = {
-                "name": name,
-                "password": "",
-                "userPassword": userPassword,
-                "zimbraHideInGal": "FALSE",
-                "zimbraCOSId": cosId
-            }
-            response = callMethod(services.extractDomain(name), "CreateAccount", data)
-            if utils.checkResponseStatus(response["status"]):
-                if account is not None:
-                    modifyAccount(account)
-                return getAccount(name)
-            else:
-                raise ServiceException(response["status"], response["message"])
-    else:
-        raise NameException("L'adresse mail "+name+" n'est pas valide")
+
+    if not re.search(r'^\{\S+\}', userPassword):
+        raise NameException("Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
+
+    if not utils.checkIsMailAddress(name):
+        raise NameException("L'adresse mail " + name + " n'est pas valide")
+
+    data = {
+            "name": name,
+            "password": "",
+            "userPassword": userPassword,
+            "zimbraHideInGal": "FALSE",
+            "zimbraCOSId": cosId
+        }
+    response = callMethod(services.extractDomain(name), "CreateAccount", data)
+
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
+    if account is not None:
+        modifyAccount(account)
+
+    return getAccount(name)
 
 
 def deleteAccount(name):
