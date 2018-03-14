@@ -1,6 +1,6 @@
 # -*-coding:utf-8 -*
 """
-Module générale regroupant les méthodes communes des différents services
+Module général regroupant les méthodes communes des différents services
 """
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.exceptions import NameException
@@ -24,12 +24,12 @@ def extractDomain(mailAddress):
 
 def callMethod(domain, methodName, data):
     """
-    Méthode permettant d'appeller une méthode de l'API BSS
+    Méthode permettant d'appeler une méthode de l'API BSS
 
     :param domain: le nom de domaine
-    :param methodName: le nom de la méthode à appeller
+    :param methodName: le nom de la méthode à appeler
     :param data: le body de la requête
-    :return: la réponse reçu de l'API BSS
+    :return: la réponse reçue de l'API BSS
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
