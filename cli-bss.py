@@ -70,7 +70,7 @@ args = vars(parser.parse_args())
 # Connexion au BSS
 try:
     bss = BSSConnexion()
-    bss.setDomainKey(domain=args['domain'], key=args['preAuthKey'])
+    bss.setDomainKey(listDomainKey={args['domain']: args['preAuthKey']})
 
 except Exception as err:
     print("Echec de connexion : %s" % err)
