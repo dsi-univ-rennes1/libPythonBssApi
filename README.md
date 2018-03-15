@@ -1,4 +1,4 @@
-#Bibliothèque Python pour l'API BSS du service Partage
+# Bibliothèque Python pour l'API BSS du service Partage
 
 La plateforme Partage est proposé par RENATER aux organismes 
 d'enseignement supérieur et de recherche français. L'API BSS, 
@@ -10,16 +10,16 @@ fonctions de l'API de provisioning de Zimbra.
 L'accès à l'API BSS est réservée aux administrateurs de chaque organisme raccordé à 
 Partage et nécessite une authentification via une clé de pré-authentification.
 
-##Motivation pour le développement de cette bibliothèque
+## Motivation pour le développement de cette bibliothèque
 
 Début 2018, l'Université de Rennes 1 souscrit au service Partage et développe la 
 bibliothèque `lib_Partage_BSS` pour mettre en oeuvre le provisioning des comptes utilisateurs sur Partage. 
 
-##Installation et prérequis
+## Installation et prérequis
 
-##Documentation
+## Documentation
 
-##Exemple
+## Exemple
 
 ```
 from lib_Partage_BSS.models.Account import Account
@@ -40,7 +40,7 @@ account = AccountService.getAccount('user@x.fr')
 AccountService.createAccount(name='user@x.fr', userPassword='{SSHA}yourHash', cosId='yourCos')
 ```
 
-##CLI, client en ligne de commande
+## Client en ligne de commande
 Le script `cli-bss.py` est un client BSS en ligne de commande.
 
 Les arguments `--domain` et `--preAuthKey` doivent être fournis pour chaque appel.
@@ -65,6 +65,6 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr
 ```
 
-##License
+## License
 
 La bibilothèque `lib_Partage_BSS` est distribuée sous [la license Apache 2.0](https://www.apache.org/licenses/)
