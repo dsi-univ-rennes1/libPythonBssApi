@@ -20,28 +20,28 @@ def fillAccount(accountResponse):
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     """
-    if utils.checkIsMailAddress(accountResponse["name"]):
-        retAccount = models.Account(accountResponse["name"])
-        accountKeys = accountResponse.keys()
-        for attr in accountKeys:
-            if accountResponse[attr] is not None:
-                if isinstance(accountResponse[attr], str):
-                    if accountResponse[attr] == "TRUE" or accountResponse[attr] == "FALSE":
-                        retAccount.__setattr__("_" + attr, utils.changeStringToBoolean(accountResponse[attr]))
-                    else:
-                        retAccount.__setattr__("_" + attr, accountResponse[attr])
-                elif isinstance(accountResponse[attr], OrderedDict):
-                    if "type" in accountResponse[attr].keys():
-                        if accountResponse[attr]["type"] == "integer":
-                            retAccount.__setattr__("_" + attr, int(accountResponse[attr]["content"]))
-                        elif accountResponse[attr]["type"] == "array":
-                            if attr == "zimbraZimletAvailableZimlets":
-                                retAccount.__setattr__("_" + attr, accountResponse[attr]["zimbraZimletAvailableZimlet"])
-                            elif attr == "zimbraMailAlias":
-                                retAccount.__setattr__("_" + attr, accountResponse[attr]["zimbraMailAlias"])
-        return retAccount
-    else:
-        raise NameException("L'adresse mail "+accountResponse["name"]+" n'est pas valide")
+    if not utils.checkIsMailAddress(accountResponse["name"]):
+        raise NameException("L'adresse mail " + accountResponse["name"] + " n'est pas valide")
+
+    retAccount = models.Account(accountResponse["name"])
+    accountKeys = accountResponse.keys()
+    for attr in accountKeys:
+        if accountResponse[attr] is not None:
+            if isinstance(accountResponse[attr], str):
+                if accountResponse[attr] == "TRUE" or accountResponse[attr] == "FALSE":
+                    retAccount.__setattr__("_" + attr, utils.changeStringToBoolean(accountResponse[attr]))
+                else:
+                    retAccount.__setattr__("_" + attr, accountResponse[attr])
+            elif isinstance(accountResponse[attr], OrderedDict):
+                if "type" in accountResponse[attr].keys():
+                    if accountResponse[attr]["type"] == "integer":
+                        retAccount.__setattr__("_" + attr, int(accountResponse[attr]["content"]))
+                    elif accountResponse[attr]["type"] == "array":
+                        if attr == "zimbraZimletAvailableZimlets":
+                            retAccount.__setattr__("_" + attr, accountResponse[attr]["zimbraZimletAvailableZimlet"])
+                        elif attr == "zimbraMailAlias":
+                            retAccount.__setattr__("_" + attr, accountResponse[attr]["zimbraMailAlias"])
+    return retAccount
 
 
 def getAccount(name):
@@ -317,23 +317,23 @@ def modifyAccountAliases(name, listOfAliases):
                     raise NameException("L'adresse mail " + alias + " n'est pas valide")
             #On parcour la liste passé en paramètre
             for alias in listOfAliases:
-                if isinstance(account.getZimbraMailAlias, list) or isinstance(account.getZimbraMailAlias, str):
+                if isinstance(account.zimbraMailAlias, list) or isinstance(account.zimbraMailAlias, str):
                     #si la l'adresse mail n'est pas présente dans partage on la rajoute
-                    if alias not in account.getZimbraMailAlias:
+                    if alias not in account.zimbraMailAlias:
                         addAccountAlias(name, alias)
                 #si la liste partage est vide on rajoute l'adresse
-                elif account.getZimbraMailAlias is None:
+                elif account.zimbraMailAlias is None:
                     addAccountAlias(name, alias)
-            if isinstance(account.getZimbraMailAlias, list):
+            if isinstance(account.zimbraMailAlias, list):
                 #On parcours la liste des adresses partages
-                for alias in account.getZimbraMailAlias:
+                for alias in account.zimbraMailAlias:
                     #Si l'adresse n'est pas présente dans la liste passé en parametre on supprime l'adresse de partage
                     if alias not in listOfAliases:
                         removeAccountAlias(name, alias)
             #Si le compte n'a qu'un alias on test si il est présent ou pas dans la liste passé en paramètre
-            elif isinstance(account.getZimbraMailAlias, str):
-                if account.getZimbraMailAlias not in listOfAliases:
-                    removeAccountAlias(name, account.getZimbraMailAlias)
+            elif isinstance(account.zimbraMailAlias, str):
+                if account.zimbraMailAlias not in listOfAliases:
+                    removeAccountAlias(name, account.zimbraMailAlias)
         else:
             raise TypeError
     else:

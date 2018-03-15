@@ -1,4 +1,6 @@
 # -*-coding:utf-8 -*
+import json
+
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.exceptions.NameException import NameException
 from lib_Partage_BSS.models.GlobalModel import GlobalModel
@@ -105,448 +107,490 @@ class Account(GlobalModel):
             raise NameException("Le nom donné n'est pas une adresse mail")
 
     @property
-    def getId(self):
+    def id(self):
         return self._id
 
     @property
-    def getAdmin(self):
+    def admin(self):
         return self._admin
 
     @property
-    def getBusinessCategory(self):
+    def businessCategory(self):
         return self._businessCategory
 
     @property
-    def getCo(self):
+    def co(self):
         return self._co
 
     @property
-    def getCompany(self):
+    def company(self):
         return self._company
 
     @property
-    def getDescription(self):
+    def description(self):
         return self._description
 
     @property
-    def getDisplayName(self):
+    def displayName(self):
         return self._displayName
 
     @property
-    def getCarLicense(self):
+    def carLicense(self):
         return self._carLicense
 
     @property
-    def getFacsimileTelephoneNumber(self):
+    def facsimileTelephoneNumber(self):
         return self._facsimileTelephoneNumber
 
     @property
-    def getGivenName(self):
+    def givenName(self):
         return self._givenName
 
     @property
-    def getHomePhone(self):
+    def homePhone(self):
         return self._homePhone
 
     @property
-    def getInitials(self):
+    def initials(self):
         return self._initials
 
     @property
-    def getL(self):
+    def l(self):
         return self._l
 
     @property
-    def getMavTransformation(self):
+    def mavTransformation(self):
         return self._mavTransformation
 
     @property
-    def getMavRedirection(self):
+    def mavRedirection(self):
         return self._mavRedirection
 
     @property
-    def getMobile(self):
+    def mobile(self):
         return self._mobile
 
     @property
-    def getPager(self):
+    def pager(self):
         return self._pager
 
     @property
-    def getPostalCode(self):
+    def postalCode(self):
         return self._postalCode
 
     @property
-    def getQuota(self):
+    def quota(self):
         return self._quota
 
     @property
-    def getSn(self):
+    def sn(self):
         return self._sn
 
     @property
-    def getSt(self):
+    def st(self):
         return self._st
 
     @property
-    def getStreet(self):
+    def street(self):
         return self._street
 
     @property
-    def getTelephoneNumber(self):
+    def telephoneNumber(self):
         return self._telephoneNumber
 
     @property
-    def getTitle(self):
+    def title(self):
         return self._title
 
     @property
-    def getUsed(self):
+    def used(self):
         return self._used
 
     @property
-    def getZimbraAccountStatus(self):
+    def zimbraAccountStatus(self):
         return self._zimbraAccountStatus
 
     @property
-    def getZimbraFeatureBriefcasesEnabled(self):
+    def zimbraFeatureBriefcasesEnabled(self):
         return self._zimbraFeatureBriefcasesEnabled
 
     @property
-    def getZimbraFeatureCalendarEnabled(self):
+    def zimbraFeatureCalendarEnabled(self):
         return self._zimbraFeatureCalendarEnabled
 
     @property
-    def getZimbraFeatureMailEnabled(self):
+    def zimbraFeatureMailEnabled(self):
         return self._zimbraFeatureMailEnabled
 
     @property
-    def getZimbraFeatureMailForwardingEnabled(self):
+    def zimbraFeatureMailForwardingEnabled(self):
         return self._zimbraFeatureMailForwardingEnabled
 
     @property
-    def getZimbraFeatureOptionsEnabled(self):
+    def zimbraFeatureOptionsEnabled(self):
         return self._zimbraFeatureOptionsEnabled
 
     @property
-    def getZimbraFeatureTasksEnabled(self):
+    def zimbraFeatureTasksEnabled(self):
         return self._zimbraFeatureTasksEnabled
 
     @property
-    def getZimbraHideInGal(self):
+    def zimbraHideInGal(self):
         return self._zimbraHideInGal
 
     @property
-    def getZimbraLastLogonTimestamp(self):
+    def zimbraLastLogonTimestamp(self):
         return self._zimbraLastLogonTimestamp
 
     @property
-    def getZimbraMailAlias(self):
+    def zimbraMailAlias(self):
         return self._zimbraMailAlias
 
     @property
-    def getZimbraMailQuota(self):
+    def zimbraMailQuota(self):
         return self._zimbraMailQuota
 
     @property
-    def getZimbraMailCanonicalAddress(self):
+    def zimbraMailCanonicalAddress(self):
         return self._zimbraMailCanonicalAddress
 
     @property
-    def getZimbraNotes(self):
+    def zimbraNotes(self):
         return self._zimbraNotes
 
     @property
-    def getZimbraPasswordMustChange(self):
+    def zimbraPasswordMustChange(self):
         return self._zimbraPasswordMustChange
 
     @property
-    def getZimbraPrefFromDisplay(self):
+    def zimbraPrefFromDisplay(self):
         return self._zimbraPrefFromDisplay
 
     @property
-    def getZimbraPrefMailForwardingAddress(self):
+    def zimbraPrefMailForwardingAddress(self):
         return self._zimbraPrefMailForwardingAddress
 
     @property
-    def getZimbraPrefMailLocalDeliveryDisabled(self):
+    def zimbraPrefMailLocalDeliveryDisabled(self):
         return self._zimbraPrefMailLocalDeliveryDisabled
 
     @property
-    def getZimbraCOSId(self):
+    def zimbraCOSId(self):
         return self._zimbraCOSId
 
     @property
-    def getZimbraZimletAvailableZimlets(self):
+    def zimbraZimletAvailableZimlets(self):
         return self._zimbraZimletAvailableZimlets
 
-    def setAdmin(self, newValue):
-        if isinstance(newValue, str):
-            self._admin = newValue
+    @admin.setter
+    def admin(self, value):
+        if isinstance(value, str):
+            self._admin = value
         else:
             raise TypeError
 
-    def setBusinessCategory(self, newValue):
-        if isinstance(newValue, str):
-            self._businessCategory = newValue
+    @businessCategory.setter
+    def businessCategory(self, value):
+        if isinstance(value, str):
+            self._businessCategory = value
         else:
             raise TypeError
 
-    def setCo(self, newValue):
-        if isinstance(newValue, str):
-            self._co = newValue
+    @co.setter
+    def co(self, value):
+        if isinstance(value, str):
+            self._co = value
         else:
             raise TypeError
 
-    def setCompany(self, newValue):
-        if isinstance(newValue, str):
-            self._company = newValue
+    @company.setter
+    def company(self, value):
+        if isinstance(value, str):
+            self._company = value
         else:
             raise TypeError
 
-    def setDescription(self, newValue):
-        if isinstance(newValue, str):
-            self._description = newValue
+    @description.setter
+    def description(self, value):
+        if isinstance(value, str):
+            self._description = value
         else:
             raise TypeError
 
-    def setDisplayName(self, newValue):
-        if isinstance(newValue, str):
-            self._displayName = newValue
+    @displayName.setter
+    def displayName(self, value):
+        if isinstance(value, str):
+            self._displayName = value
         else:
             raise TypeError
 
-    def setCarLicense(self, newValue):
-        if isinstance(newValue, str):
-            self._carLicense = newValue
+    @carLicense.setter
+    def carLicense(self, value):
+        if isinstance(value, str):
+            self._carLicense = value
         else:
             raise TypeError
 
-    def setFacsimileTelephoneNumber(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsNum(newValue):
-                self._facsimileTelephoneNumber = newValue
+    @facsimileTelephoneNumber.setter
+    def facsimileTelephoneNumber(self, value):
+        if isinstance(value, str):
+            if utils.checkIsNum(value):
+                self._facsimileTelephoneNumber = value
         else:
             raise TypeError
 
-    def setGivenName(self, newValue):
-        if isinstance(newValue, str):
-            self._givenName = newValue
+    @givenName.setter
+    def givenName(self, value):
+        if isinstance(value, str):
+            self._givenName = value
         else:
             raise TypeError
 
-    def setHomePhone(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsNum(newValue):
-                self._homePhone = newValue
+    @homePhone.setter
+    def homePhone(self, value):
+        if isinstance(value, str):
+            if utils.checkIsNum(value):
+                self._homePhone = value
         else:
             raise TypeError
 
-    def setInitials(self, newValue):
-        if isinstance(newValue, str):
-            self._initials = newValue
+    @initials.setter
+    def initials(self, value):
+        if isinstance(value, str):
+            self._initials = value
         else:
             raise TypeError
 
-    def setL(self, newValue):
-        if isinstance(newValue, str):
-            self._l = newValue
+    @l.setter
+    def l(self, value):
+        if isinstance(value, str):
+            self._l = value
         else:
             raise TypeError
 
-    def setMavTransformation(self, newValue):
-        if isinstance(newValue, bool):
-            self._mavTransformation = newValue
+    @mavTransformation.setter
+    def transformation(self, value):
+        if isinstance(value, bool):
+            self._mavTransformation = value
         else:
             raise TypeError
 
-    def setMavRedirection(self, newValue):
+    @mavRedirection.setter
+    def mavRedirection(self, value):
 
-        if isinstance(newValue, str):
-            self._mavRedirection = newValue
+        if isinstance(value, str):
+            self._mavRedirection = value
         else:
             raise TypeError
 
-    def setMobile(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsNum(newValue):
-                self._mobile = newValue
+    @mobile.setter
+    def mobile(self, value):
+        if isinstance(value, str):
+            if utils.checkIsNum(value):
+                self._mobile = value
         else:
             raise TypeError
 
-    def setPager(self, newValue):
-        if isinstance(newValue, str):
-            self._pager = newValue
+    @pager.setter
+    def pager(self, value):
+        if isinstance(value, str):
+            self._pager = value
         else:
             raise TypeError
 
-    def setPostalCode(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsNum(newValue):
-                self._postalCode = newValue
+    @postalCode.setter
+    def postalCode(self, value):
+        if isinstance(value, str):
+            if utils.checkIsNum(value):
+                self._postalCode = value
         else:
             raise TypeError
 
-    def setQuota(self, newValue):
-        if isinstance(newValue, int):
-            self._quota = newValue
+    @quota.setter
+    def quota(self, value):
+        if isinstance(value, int):
+            self._quota = value
         else:
             raise TypeError
 
-    def setSn(self, newValue):
-        if isinstance(newValue, str):
-            self._sn = newValue
+    @sn.setter
+    def sn(self, value):
+        if isinstance(value, str):
+            self._sn = value
         else:
             raise TypeError
 
-    def setSt(self, newValue):
-        if isinstance(newValue, str):
-            self._st = newValue
+    @st.setter
+    def st(self, value):
+        if isinstance(value, str):
+            self._st = value
         else:
             raise TypeError
 
-    def setStreet(self, newValue):
-        if isinstance(newValue, str):
-            self._street = newValue
+    @street.setter
+    def street(self, value):
+        if isinstance(value, str):
+            self._street = value
         else:
             raise TypeError
 
-    def setTelephoneNumber(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsNum(newValue):
-                self._telephoneNumber = newValue
+    @telephoneNumber.setter
+    def telephoneNumber(self, value):
+        if isinstance(value, str):
+            if utils.checkIsNum(value):
+                self._telephoneNumber = value
         else:
             raise TypeError
 
-    def setTitle(self, newValue):
-        if isinstance(newValue, str):
-            self._title = newValue
+    @title.setter
+    def title(self, value):
+        if isinstance(value, str):
+            self._title = value
         else:
             raise TypeError
 
-    def setUsed(self, newValue):
-        if isinstance(newValue, int):
-            self._used = newValue
+    @used.setter
+    def used(self, value):
+        if isinstance(value, int):
+            self._used = value
         else:
             raise TypeError
 
-    def setZimbraAccountStatus(self, newValue):
-        if newValue == "active" or newValue == "closed" or newValue == "locked":
-            self._zimbraAccountStatus = newValue
+    @zimbraAccountStatus.setter
+    def zimbraAccountStatus(self, value):
+        if value == "active" or value == "closed" or value == "locked":
+            self._zimbraAccountStatus = value
         else:
             raise TypeError
 
-    def setZimbraFeatureBriefcasesEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureBriefcasesEnabled = newValue
+    @zimbraFeatureBriefcasesEnabled.setter
+    def zimbraFeatureBriefcasesEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureBriefcasesEnabled = value
         else:
             raise TypeError
 
-    def setZimbraFeatureCalendarEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureCalendarEnabled = newValue
+    @zimbraFeatureCalendarEnabled.setter
+    def zimbraFeatureCalendarEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureCalendarEnabled = value
         else:
             raise TypeError
 
-    def setZimbraFeatureMailEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureMailEnabled = newValue
+    @zimbraFeatureMailEnabled.setter
+    def zimbraFeatureMailEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureMailEnabled = value
         else:
             raise TypeError
 
-    def setZimbraFeatureMailForwardingEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureMailForwardingEnabled = newValue
+    @zimbraFeatureMailForwardingEnabled.setter
+    def zimbraFeatureMailForwardingEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureMailForwardingEnabled = value
         else:
             raise TypeError
 
-    def setZimbraFeatureOptionsEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureOptionsEnabled = newValue
+    @zimbraFeatureOptionsEnabled.setter
+    def zimbraFeatureOptionsEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureOptionsEnabled = value
         else:
             raise TypeError
 
-    def setZimbraFeatureTasksEnabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraFeatureTasksEnabled = newValue
+    @zimbraFeatureTasksEnabled.setter
+    def zimbraFeatureTasksEnabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraFeatureTasksEnabled = value
         else:
             raise TypeError
 
-    def setZimbraHideInGal(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraHideInGal = newValue
+    @zimbraHideInGal.setter
+    def zimbraHideInGal(self, value):
+        if isinstance(value, bool):
+            self._zimbraHideInGal = value
         else:
             raise TypeError
 
-    def setZimbraMailQuota(self, newValue):
-        if isinstance(newValue, int):
-            self._zimbraMailQuota = newValue
+    @zimbraMailQuota.setter
+    def zimbraMailQuota(self, value):
+        if isinstance(value, int):
+            self._zimbraMailQuota = value
         else:
             raise TypeError
 
-    def setZimbraMailAlias(self, newValue):
-        if isinstance(newValue, list):
-            self._zimbraMailAlias = newValue
+    @zimbraMailAlias.setter
+    def zimbraMailAlias(self, value):
+        if isinstance(value, list):
+            self._zimbraMailAlias = value
         else:
             raise TypeError
 
-    def setZimbraMailCanonicalAddress(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsMailAddress(newValue):
-                self._zimbraMailCanonicalAddress = newValue
+    @zimbraMailCanonicalAddress.setter
+    def zimbraMailCanonicalAddress(self, value):
+        if isinstance(value, str):
+            if utils.checkIsMailAddress(value):
+                self._zimbraMailCanonicalAddress = value
         else:
             raise TypeError
 
-    def setZimbraLastLogonTimestamp(self, newValue):
-        if isinstance(newValue, str):
-            self._zimbraLastLogonTimestamp = newValue
+    @zimbraLastLogonTimestamp.setter
+    def zimbraLastLogonTimestamp(self, value):
+        if isinstance(value, str):
+            self._zimbraLastLogonTimestamp = value
         else:
             raise TypeError
 
-    def setZimbraNotes(self, newValue):
-        if isinstance(newValue, str):
-            self._zimbraNotes = newValue
+    @zimbraNotes.setter
+    def zimbraNotes(self, value):
+        if isinstance(value, str):
+            self._zimbraNotes = value
         else:
             raise TypeError
 
-    def setZimbraPasswordMustChange(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraPasswordMustChange = newValue
+    @zimbraPasswordMustChange.setter
+    def zimbraPasswordMustChange(self, value):
+        if isinstance(value, bool):
+            self._zimbraPasswordMustChange = value
         else:
             raise TypeError
 
-    def setZimbraPrefFromDisplay(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsMailAddress(newValue):
-                self._zimbraPrefFromDisplay = newValue
+    @zimbraPrefFromDisplay.setter
+    def zimbraPrefFromDisplay(self, value):
+        if isinstance(value, str):
+            if utils.checkIsMailAddress(value):
+                self._zimbraPrefFromDisplay = value
         else:
             raise TypeError
 
-    def setZimbraPrefMailForwardingAddress(self, newValue):
-        if isinstance(newValue, str):
-            if utils.checkIsMailAddress(newValue):
-                self._zimbraPrefMailForwardingAddress = newValue
+    @zimbraPrefMailForwardingAddress.setter
+    def zimbraPrefMailForwardingAddress(self, value):
+        if isinstance(value, str):
+            if utils.checkIsMailAddress(value):
+                self._zimbraPrefMailForwardingAddress = value
         else:
             raise TypeError
 
-    def setZimbraPrefMailLocalDeliveryDisabled(self, newValue):
-        if isinstance(newValue, bool):
-            self._zimbraPrefMailLocalDeliveryDisabled = newValue
+    @zimbraPrefMailLocalDeliveryDisabled.setter
+    def zimbraPrefMailLocalDeliveryDisabled(self, value):
+        if isinstance(value, bool):
+            self._zimbraPrefMailLocalDeliveryDisabled = value
         else:
             raise TypeError
 
-    def setZimbraCOSId(self, newValue):
-        if isinstance(newValue, str):
-            self._zimbraCOSId = newValue
+    @zimbraCOSId.setter
+    def zimbraCOSId(self, value):
+        if isinstance(value, str):
+            self._zimbraCOSId = value
         else:
             raise TypeError
 
-    def addZimbraZimletAvailableZimlets(self, newValue):
-        if isinstance(newValue, str):
+    def addZimbraZimletAvailableZimlets(self, value):
+        if isinstance(value, str):
             if self._zimbraZimletAvailableZimlets is None:
                 self._zimbraZimletAvailableZimlets = []
-            if newValue not in self._zimbraZimletAvailableZimlets:
-                self._zimbraZimletAvailableZimlets.append(newValue)
+            if value not in self._zimbraZimletAvailableZimlets:
+                self._zimbraZimletAvailableZimlets.append(value)
         else:
             raise TypeError
 
@@ -556,4 +600,17 @@ class Account(GlobalModel):
                 self._zimbraZimletAvailableZimlets.remove(valueToRemove)
         else:
             raise TypeError
+
+def importJsonAccount(jsonAccount):
+    json_data = open(jsonAccount)
+    data = json.load(json_data)
+
+    if "name" in data:
+        account = Account(data["name"])
+        for attr in data:
+            if attr != "name":
+                propattr = getattr(account.__class__, attr, None)
+                propattr.fset(account, data[attr])
+        return account
+
 
