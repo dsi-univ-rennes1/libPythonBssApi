@@ -79,13 +79,25 @@ class BSSConnexion(object):
             """
             return self._domain
 
-        def setDomainKey(self,domain,key):
-            if isinstance(domain, str) and isinstance(key, str):
-                self._key[domain] = key
+        def setDomainKey(self, listDomainKey):
+            """Getter du domaine
+
+                :param listDomainKey: une liste conntenant l'emsemble des domaine à initialiser. Formate de la liste
+                {"domaine1" : "keydomain1", "domaine2" : "keydomain2"}
+
+
+                Example d'utilisation :
+                    >>>con = BSSConnexion()
+                    >>>con.setDomainKey({"domaine1" : "keydomain1", "domaine2" : "keydomain2"} )
+            """
+            if not isinstance(listDomainKey, dict):
+                raise TypeError
+            for domain in listDomainKey:
+                if not utils.checkIsDomain(domain):
+                    raise DomainException(domain + " n'est pas un nom de domain valide")
+                self._key[domain] = listDomainKey[domain]
                 self._timestampOfLastToken[domain] = 0
                 self._token[domain] = ""
-            else:
-                raise TypeError
 
         def token(self, domain):
             """Getter du Token
@@ -118,9 +130,6 @@ class BSSConnexion(object):
                     """Le domaine sur lequel on souhaite travailler"""
                     if domain not in self._key:
                         raise DomainException(domain + " : Domaine non initialisé")
-                    print("key = " + self._key[domain])
-                    print("time = " + str(self._timestampOfLastToken[domain]))
-                    print("token = " + self._token[domain])
                     actualTimestamp = round(time())
                     if (actualTimestamp - self._timestampOfLastToken[domain]) < 270:
                         return self._token[domain]
