@@ -601,6 +601,19 @@ class Account(GlobalModel):
         else:
             raise TypeError
 
+    def fillAccount(self, listOfAttr):
+        if not isinstance(listOfAttr, dict) and not isinstance(listOfAttr, list):
+            raise TypeError
+        for attr in listOfAttr:
+            if attr != "name":
+                propattr = getattr(self.__class__, attr, None)
+                if isinstance(propattr, property):
+                    if propattr.fset is not None:
+                        if listOfAttr[attr] == "None":
+                            propattr.fset(self, None)
+                        else:
+                            propattr.fset(self, listOfAttr[attr])
+
 
 def importJsonAccount(jsonAccount):
     json_data = open(jsonAccount)
