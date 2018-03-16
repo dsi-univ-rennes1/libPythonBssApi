@@ -43,26 +43,26 @@ AccountService.createAccount(name='user@x.fr', userPassword='{SSHA}yourHash', co
 ## Client en ligne de commande
 Le script `cli-bss.py` est un client BSS en ligne de commande.
 
-Les arguments `--domain` et `--preAuthKey` doivent être fournis pour chaque appel.
+Les arguments `--domain` et `--domainKey` doivent être fournis pour chaque appel.
 
 Exemples d'appel :
 ```
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --deleteAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --lockAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=us*'
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --closeAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --preDeleteAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
-./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash
+./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash
+./cli-bss.py --domain=x.fr --domainKey=yourKey --lockAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=us*'
+./cli-bss.py --domain=x.fr --domainKey=yourKey --closeAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr
 ```
 
 ## License

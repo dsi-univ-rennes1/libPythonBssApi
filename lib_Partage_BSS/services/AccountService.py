@@ -53,21 +53,21 @@ def getAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        data = {
-            "name": name
-        }
-
-        response = callMethod(services.extractDomain(name), "GetAccount", data)
-        if utils.checkResponseStatus(response["status"]):
-            account = response["account"]
-            return fillAccount(account)
-        elif re.search(".*no such account.*", response["message"]):
-            return None
-        else:
-            raise ServiceException(response["status"], response["message"])
+    if not utils.checkIsMailAddress(name):
+        raise NameException("L'adresse mail " + name + " n'est pas valide")
+    data = {
+        "name": name
+    }
+    response = callMethod(services.extractDomain(name), "GetAccount", data)
+    if utils.checkResponseStatus(response["status"]):
+        account = response["account"]
+        return fillAccount(account)
+    elif re.search(".*no such account.*", response["message"]):
+        return None
     else:
-        raise NameException("L'adresse mail "+name+" n'est pas valide")
+        raise ServiceException(response["status"], response["message"])
+
+
 
 
 def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
@@ -81,29 +81,28 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
     """
-    if utils.checkIsDomain(domain):
-        data = {
-            "limit": limit,
-            "offset": offset,
-            "ldap_query": ldapQuery
-        }
-        response = callMethod(domain, "GetAllAccounts", data)
-        if utils.checkResponseStatus(response["status"]):
-            if len(response["accounts"]) == 1:
-                return []
-            else:
-                accounts = response["accounts"]["account"]
-                retAccounts = []
-                if isinstance(accounts, list):
-                    for account in accounts:
-                        retAccounts.append(fillAccount(account))
-                else:
-                    retAccounts.append(fillAccount(accounts))
-                return retAccounts
-        else:
-            raise ServiceException(response["status"], response["message"])
-    else:
+    if not utils.checkIsDomain(domain):
         raise DomainException
+    data = {
+        "limit": limit,
+        "offset": offset,
+        "ldap_query": ldapQuery
+    }
+    response = callMethod(domain, "GetAllAccounts", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+    if len(response["accounts"]) == 1:
+        return []
+    else:
+        accounts = response["accounts"]["account"]
+        retAccounts = []
+        if isinstance(accounts, list):
+            for account in accounts:
+                retAccounts.append(fillAccount(account))
+        else:
+            retAccounts.append(fillAccount(accounts))
+        return retAccounts
+
 
 
 def createAccount(name,userPassword, cosId, account = None):
@@ -152,15 +151,16 @@ def deleteAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        data = {
-            "name": name
-        }
-        response = callMethod(services.extractDomain(name), "DeleteAccount", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    data = {
+        "name": name
+    }
+    response = callMethod(services.extractDomain(name), "DeleteAccount", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
+
 
 
 def preDeleteAccount(name):
@@ -173,13 +173,14 @@ def preDeleteAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail valide
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        closeAccount(name)
-        newname = "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name
-        renameAccount(name, newname)
-        return newname
-    else:
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    closeAccount(name)
+    newname = "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name
+    renameAccount(name, newname)
+    return newname
+
+
 
 
 def restorePreDeleteAccount(name):
@@ -191,11 +192,11 @@ def restorePreDeleteAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsPreDeleteAccount(name):
-        activateAccount(name)
-        renameAccount(name, name.split("_")[2])
-    else:
+    if not utils.checkIsPreDeleteAccount(name):
         raise NameException("L'adresse mail " + name + " n'est pas une adresse mail preSupprimé")
+    activateAccount(name)
+    renameAccount(name, name.split("_")[2])
+
 
 
 def modifyAccount(account):
@@ -207,20 +208,21 @@ def modifyAccount(account):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(account.getName):
-        data = {}
-        for attr in account.__dict__:
-            if attr != "_zimbraZimletAvailableZimlets":
-                if account.__getattribute__(attr) is not None:
-                    attrValue = account.__getattribute__(attr)
-                    if isinstance(attrValue, bool):
-                        attrValue = utils.changeBooleanToString(attrValue)
-                    data[attr[1:]] = attrValue
-        response = callMethod(services.extractDomain(account.getName), "ModifyAccount", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
-        raise NameException("L'adresse mail " + account.getName + " n'est pas valide")
+    if not utils.checkIsMailAddress(account.name):
+        raise NameException("L'adresse mail " + account.name + " n'est pas valide")
+    data = {}
+    for attr in account.__dict__:
+        if attr != "_zimbraZimletAvailableZimlets":
+            if account.__getattribute__(attr) is not None:
+                attrValue = account.__getattribute__(attr)
+                if isinstance(attrValue, bool):
+                    attrValue = utils.changeBooleanToString(attrValue)
+                data[attr[1:]] = attrValue
+    response = callMethod(services.extractDomain(account.name), "ModifyAccount", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
+
 
 
 def modifyPassword(name, newUserPassword):
@@ -234,23 +236,23 @@ def modifyPassword(name, newUserPassword):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        data={
-            "name": name,
-            "password": "valeurPourDeconnecterLesSessions"
-        }
-        response = callMethod(services.extractDomain(name), "SetPassword", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-        data = {
-            "name": name,
-            "userPassword": newUserPassword
-        }
-        response = callMethod(services.extractDomain(name), "ModifyAccount", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    data={
+        "name": name,
+        "password": "valeurPourDeconnecterLesSessions"
+    }
+    response = callMethod(services.extractDomain(name), "SetPassword", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+    data = {
+        "name": name,
+        "userPassword": newUserPassword
+    }
+    response = callMethod(services.extractDomain(name), "ModifyAccount", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
 
 
 def addAccountAlias(name, newAlias):
@@ -263,16 +265,17 @@ def addAccountAlias(name, newAlias):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name) and utils.checkIsMailAddress(newAlias):
-        data = {
-            "name": name,
-            "alias": newAlias
-        }
-        response = callMethod(services.extractDomain(name), "AddAccountAlias", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
-        raise NameException("L'adresse mail " + name +" ou "+newAlias+" n'est pas valide")
+    if not utils.checkIsMailAddress(name) or not utils.checkIsMailAddress(newAlias):
+        raise NameException("L'adresse mail " + name + " ou " + newAlias + " n'est pas valide")
+    data = {
+        "name": name,
+        "alias": newAlias
+    }
+    response = callMethod(services.extractDomain(name), "AddAccountAlias", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
+
 
 
 def removeAccountAlias(name, aliasToDelete):
@@ -285,16 +288,16 @@ def removeAccountAlias(name, aliasToDelete):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name) or utils.checkIsMailAddress(aliasToDelete):
-        data = {
-            "name": name,
-            "alias": aliasToDelete
-        }
-        response = callMethod(services.extractDomain(name), "RemoveAccountAlias", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
+    if not utils.checkIsMailAddress(name) or not utils.checkIsMailAddress(aliasToDelete):
         raise NameException("L'adresse mail " + name +" ou "+aliasToDelete+" n'est pas valide")
+    data = {
+        "name": name,
+        "alias": aliasToDelete
+    }
+    response = callMethod(services.extractDomain(name), "RemoveAccountAlias", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
+
 
 
 def modifyAccountAliases(name, listOfAliases):
@@ -306,38 +309,36 @@ def modifyAccountAliases(name, listOfAliases):
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
-    :raise TypeError: Exception levée si le parametre listOfAliases n'est pas une liste
+    :raises TypeError: Exception levée si le parametre listOfAliases n'est pas une liste
     """
-    if utils.checkIsMailAddress(name):
-        if isinstance(listOfAliases, list):
-            account = getAccount(name)
-            #On vérifie que les adresses mail passées en paramètres sont des adresses valide
-            for alias in listOfAliases:
-                if not utils.checkIsMailAddress(alias):
-                    raise NameException("L'adresse mail " + alias + " n'est pas valide")
-            #On parcour la liste passé en paramètre
-            for alias in listOfAliases:
-                if isinstance(account.zimbraMailAlias, list) or isinstance(account.zimbraMailAlias, str):
-                    #si la l'adresse mail n'est pas présente dans partage on la rajoute
-                    if alias not in account.zimbraMailAlias:
-                        addAccountAlias(name, alias)
-                #si la liste partage est vide on rajoute l'adresse
-                elif account.zimbraMailAlias is None:
-                    addAccountAlias(name, alias)
-            if isinstance(account.zimbraMailAlias, list):
-                #On parcours la liste des adresses partages
-                for alias in account.zimbraMailAlias:
-                    #Si l'adresse n'est pas présente dans la liste passé en parametre on supprime l'adresse de partage
-                    if alias not in listOfAliases:
-                        removeAccountAlias(name, alias)
-            #Si le compte n'a qu'un alias on test si il est présent ou pas dans la liste passé en paramètre
-            elif isinstance(account.zimbraMailAlias, str):
-                if account.zimbraMailAlias not in listOfAliases:
-                    removeAccountAlias(name, account.zimbraMailAlias)
-        else:
-            raise TypeError
-    else:
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    if not isinstance(listOfAliases, list):
+        raise TypeError
+    account = getAccount(name)
+    #On vérifie que les adresses mail passées en paramètres sont des adresses valide
+    for alias in listOfAliases:
+        if not utils.checkIsMailAddress(alias):
+            raise NameException("L'adresse mail " + alias + " n'est pas valide")
+    #On parcour la liste passé en paramètre
+    for alias in listOfAliases:
+        if isinstance(account.zimbraMailAlias, list) or isinstance(account.zimbraMailAlias, str):
+            #si la l'adresse mail n'est pas présente dans partage on la rajoute
+            if alias not in account.zimbraMailAlias:
+                addAccountAlias(name, alias)
+        #si la liste partage est vide on rajoute l'adresse
+        elif account.zimbraMailAlias is None:
+            addAccountAlias(name, alias)
+    if isinstance(account.zimbraMailAlias, list):
+        #On parcours la liste des adresses partages
+        for alias in account.zimbraMailAlias:
+            #Si l'adresse n'est pas présente dans la liste passé en parametre on supprime l'adresse de partage
+            if alias not in listOfAliases:
+                removeAccountAlias(name, alias)
+    #Si le compte n'a qu'un alias on test si il est présent ou pas dans la liste passé en paramètre
+    elif isinstance(account.zimbraMailAlias, str):
+        if account.zimbraMailAlias not in listOfAliases:
+            removeAccountAlias(name, account.zimbraMailAlias)
 
 
 def activateAccount(name):
@@ -350,11 +351,10 @@ def activateAccount(name):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
-        account = models.Account(name)
-        account.setZimbraAccountStatus("active")
-        modifyAccount(account)
-    else:
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    account = models.Account(name)
+    account.zimbraAccountStatus = "active"
+    modifyAccount(account)
 
 
 def lockAccount(name):
@@ -369,11 +369,10 @@ def lockAccount(name):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     if utils.checkIsMailAddress(name):
-        account = models.Account(name)
-        account.setZimbraAccountStatus("locked")
-        modifyAccount(account)
-    else:
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    account = models.Account(name)
+    account.zimbraAccountStatus = "locked"
+    modifyAccount(account)
 
 
 def closeAccount(name):
@@ -388,8 +387,8 @@ def closeAccount(name):
     """
     if utils.checkIsMailAddress(name):
         account = models.Account(name)
-        account.setZimbraAccountStatus("closed")
-        account.setZimbraHideInGal(True)
+        account.zimbraAccountStatus = "closed"
+        account.zimbraHideInGal = True
         modifyAccount(account)
     else:
         raise NameException("L'adresse mail n'est pas valide")
@@ -405,13 +404,12 @@ def renameAccount(name, newName):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name) and utils.checkIsMailAddress(newName):
-        data = {
-            "name": name,
-            "newname": newName
-        }
-        response = callMethod(services.extractDomain(name), "RenameAccount", data)
-        if not utils.checkResponseStatus(response["status"]):
-            raise ServiceException(response["status"], response["message"])
-    else:
+    if not utils.checkIsMailAddress(name) or not utils.checkIsMailAddress(newName):
         raise NameException("L'adresse mail n'est pas valide")
+    data = {
+        "name": name,
+        "newname": newName
+    }
+    response = callMethod(services.extractDomain(name), "RenameAccount", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])

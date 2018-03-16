@@ -22,7 +22,7 @@ class GlobalModel:
         return ret
 
     @property
-    def getName(self):
+    def name(self):
         """
         Getter de name
 
@@ -30,7 +30,8 @@ class GlobalModel:
         """
         return self._name
 
-    def setName(self, newValue):
+    @name.setter
+    def name(self, newValue):
         """
         Setter de name
 
@@ -41,7 +42,7 @@ class GlobalModel:
     def exportJsonAccount(self):
         json_data = {}
         for key in self.__dict__.keys():
-            json_data[key[1:]]= str(self.__dict__[key])
+            json_data[key[1:]]= self.__dict__[key]
         with open(self._name+".json", "w") as json_file:
             json_file.write(json.dumps(json_data, indent=4))
 

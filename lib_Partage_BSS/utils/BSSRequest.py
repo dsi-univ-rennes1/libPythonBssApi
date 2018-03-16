@@ -6,6 +6,8 @@ import xml.etree.ElementTree as et
 from xmljson import yahoo as ya
 import requests
 
+from lib_Partage_BSS.exceptions import ServiceException
+
 
 def parseResponse(stringXml):
     """
@@ -14,7 +16,14 @@ def parseResponse(stringXml):
     :param stringXml: la chaine XML à transformer en objet python
     :return: l'objet response obtenu
     """
-    return ya.data(et.fromstring(stringXml))["Response"]
+    response = ya.data(et.fromstring(stringXml))
+    if "Response" in response:
+        return response["Response"]
+    elif "response" in response:
+        return response["response"]
+    else:
+        raise ServiceException(3,"Problème format réponse")
+
 
 def postBSS(url, data):
     """

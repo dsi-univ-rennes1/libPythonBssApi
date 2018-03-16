@@ -12,32 +12,32 @@ import pprint
 import json
 
 from lib_Partage_BSS.exceptions import ServiceException, NameException
-from lib_Partage_BSS.models.Account import Account
+from lib_Partage_BSS.models.Account import Account, importJsonAccount
 from lib_Partage_BSS.services import AccountService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 
 printer = pprint.PrettyPrinter(indent=4)
 
 epilog = "Exemples d'appel :\n" + \
-    "./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --deleteAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --lockAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=us*'\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --closeAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --preAuthKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --lockAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=us*'\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --closeAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n"
 
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
-parser.add_argument('--preAuthKey', required=True, metavar="6b7ead4bd425836e8c", help="clé de preAuth pour le domaine cible")
+parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
 parser.add_argument('--email', metavar='jchirac@mondomaine.fr', help="adresse mail passée en argument")
 parser.add_argument('--newEmail', metavar='pdupont@mondomaine.fr', help="nouvelle adresse mail du compte")
 parser.add_argument('--alias', action='append', metavar='fcotton@mondomaine.fr', help="alias pour un compte")
@@ -70,7 +70,7 @@ args = vars(parser.parse_args())
 # Connexion au BSS
 try:
     bss = BSSConnexion()
-    bss.setDomainKey(listDomainKey={args['domain']: args['preAuthKey']})
+    bss.setDomainKey(listDomainKey={args['domain']: args['domainKey']})
 
 except Exception as err:
     print("Echec de connexion : %s" % err)
@@ -90,7 +90,7 @@ if args['getAllAccounts'] == True:
 
     print("%d comptes retournés :" % len(all_accounts))
     for account in all_accounts:
-        print("Compte %s :" % account.getName)
+        print("Compte %s :" % account.name)
         print(account.showAttr())
 
 elif args['getAccount'] == True:
@@ -109,7 +109,7 @@ elif args['getAccount'] == True:
         print(json.dumps(account.__dict__, sort_keys=True, indent=4))
 
     else:
-        print("Informations sur le compte %s :" % account.getName)
+        print("Informations sur le compte %s :" % account.name)
         print(account.showAttr())
 
 elif args['deleteAccount'] == True:
@@ -186,19 +186,13 @@ elif args['modifyAccount'] == True:
         raise Exception("Missing 'jsonData' argument")
 
     try:
-        account_as_json = json.load(args['jsonData'])
+        account = importJsonAccount(args['jsonData'].name)
 
     except Exception as err:
         print("Echec chargement fichier JSON %s : %s" % (args['jsonData'], err))
         sys.exit(2)
 
     try:
-        account = Account(name=args['email'])
-
-        # On exécute le setter pour chaque attribut présent dans le fichier jsonData
-        for key, value in account_as_json.items():
-            getattr(account, 'set'+key.capitalize())(value)
-
         AccountService.modifyAccount(account=account)
 
     except Exception as err:

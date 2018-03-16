@@ -18,6 +18,8 @@ def checkIsNum(value):
     :return: True si c'est un nombre False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
+    if value is None:
+        return False
     if isinstance(value, str):
         if value == "" or re.match("^[0-9 .\-_/]*$", value):
             return True
@@ -35,6 +37,8 @@ def checkIsMailAddress(value):
     :return: True si c'est une adresse mail ou vide False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
+    if value is None:
+        return True
     if isinstance(value, str):
         if value == "" or re.match("^[^\W][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]+)*\@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value):
             return True
@@ -52,6 +56,8 @@ def checkIsDomain(value):
     :return: True si c'est un domain False sinon
     :raises TypeError: Exception levée si le paramètre n'est pas un str
     """
+    if value is None:
+        return False
     if isinstance(value, str):
         if value == "" or re.match("^[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value):
             return True

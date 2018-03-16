@@ -284,56 +284,56 @@ class Account(GlobalModel):
 
     @admin.setter
     def admin(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._admin = value
         else:
             raise TypeError
 
     @businessCategory.setter
     def businessCategory(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._businessCategory = value
         else:
             raise TypeError
 
     @co.setter
     def co(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._co = value
         else:
             raise TypeError
 
     @company.setter
     def company(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._company = value
         else:
             raise TypeError
 
     @description.setter
     def description(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._description = value
         else:
             raise TypeError
 
     @displayName.setter
     def displayName(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._displayName = value
         else:
             raise TypeError
 
     @carLicense.setter
     def carLicense(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._carLicense = value
         else:
             raise TypeError
 
     @facsimileTelephoneNumber.setter
     def facsimileTelephoneNumber(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._facsimileTelephoneNumber = value
         else:
@@ -341,14 +341,14 @@ class Account(GlobalModel):
 
     @givenName.setter
     def givenName(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._givenName = value
         else:
             raise TypeError
 
     @homePhone.setter
     def homePhone(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._homePhone = value
         else:
@@ -356,21 +356,21 @@ class Account(GlobalModel):
 
     @initials.setter
     def initials(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._initials = value
         else:
             raise TypeError
 
     @l.setter
     def l(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._l = value
         else:
             raise TypeError
 
     @mavTransformation.setter
-    def transformation(self, value):
-        if isinstance(value, bool):
+    def mavTransformation(self, value):
+        if isinstance(value, bool) or value is None:
             self._mavTransformation = value
         else:
             raise TypeError
@@ -378,14 +378,14 @@ class Account(GlobalModel):
     @mavRedirection.setter
     def mavRedirection(self, value):
 
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._mavRedirection = value
         else:
             raise TypeError
 
     @mobile.setter
     def mobile(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._mobile = value
         else:
@@ -393,14 +393,14 @@ class Account(GlobalModel):
 
     @pager.setter
     def pager(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._pager = value
         else:
             raise TypeError
 
     @postalCode.setter
     def postalCode(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._postalCode = value
         else:
@@ -408,35 +408,35 @@ class Account(GlobalModel):
 
     @quota.setter
     def quota(self, value):
-        if isinstance(value, int):
+        if isinstance(value, int) or value is None:
             self._quota = value
         else:
             raise TypeError
 
     @sn.setter
     def sn(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._sn = value
         else:
             raise TypeError
 
     @st.setter
     def st(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._st = value
         else:
             raise TypeError
 
     @street.setter
     def street(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._street = value
         else:
             raise TypeError
 
     @telephoneNumber.setter
     def telephoneNumber(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._telephoneNumber = value
         else:
@@ -444,14 +444,14 @@ class Account(GlobalModel):
 
     @title.setter
     def title(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._title = value
         else:
             raise TypeError
 
     @used.setter
     def used(self, value):
-        if isinstance(value, int):
+        if isinstance(value, int) or value is None:
             self._used = value
         else:
             raise TypeError
@@ -465,70 +465,70 @@ class Account(GlobalModel):
 
     @zimbraFeatureBriefcasesEnabled.setter
     def zimbraFeatureBriefcasesEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureBriefcasesEnabled = value
         else:
             raise TypeError
 
     @zimbraFeatureCalendarEnabled.setter
     def zimbraFeatureCalendarEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureCalendarEnabled = value
         else:
             raise TypeError
 
     @zimbraFeatureMailEnabled.setter
     def zimbraFeatureMailEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureMailEnabled = value
         else:
             raise TypeError
 
     @zimbraFeatureMailForwardingEnabled.setter
     def zimbraFeatureMailForwardingEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureMailForwardingEnabled = value
         else:
             raise TypeError
 
     @zimbraFeatureOptionsEnabled.setter
     def zimbraFeatureOptionsEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureOptionsEnabled = value
         else:
             raise TypeError
 
     @zimbraFeatureTasksEnabled.setter
     def zimbraFeatureTasksEnabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraFeatureTasksEnabled = value
         else:
             raise TypeError
 
     @zimbraHideInGal.setter
     def zimbraHideInGal(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraHideInGal = value
         else:
             raise TypeError
 
     @zimbraMailQuota.setter
     def zimbraMailQuota(self, value):
-        if isinstance(value, int):
+        if isinstance(value, str) or value is None:
             self._zimbraMailQuota = value
         else:
             raise TypeError
 
     @zimbraMailAlias.setter
     def zimbraMailAlias(self, value):
-        if isinstance(value, list):
+        if isinstance(value, list) or value is None:
             self._zimbraMailAlias = value
         else:
             raise TypeError
 
     @zimbraMailCanonicalAddress.setter
     def zimbraMailCanonicalAddress(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsMailAddress(value):
                 self._zimbraMailCanonicalAddress = value
         else:
@@ -536,28 +536,28 @@ class Account(GlobalModel):
 
     @zimbraLastLogonTimestamp.setter
     def zimbraLastLogonTimestamp(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._zimbraLastLogonTimestamp = value
         else:
             raise TypeError
 
     @zimbraNotes.setter
     def zimbraNotes(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._zimbraNotes = value
         else:
             raise TypeError
 
     @zimbraPasswordMustChange.setter
     def zimbraPasswordMustChange(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraPasswordMustChange = value
         else:
             raise TypeError
 
     @zimbraPrefFromDisplay.setter
     def zimbraPrefFromDisplay(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsMailAddress(value):
                 self._zimbraPrefFromDisplay = value
         else:
@@ -565,7 +565,7 @@ class Account(GlobalModel):
 
     @zimbraPrefMailForwardingAddress.setter
     def zimbraPrefMailForwardingAddress(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             if utils.checkIsMailAddress(value):
                 self._zimbraPrefMailForwardingAddress = value
         else:
@@ -573,14 +573,14 @@ class Account(GlobalModel):
 
     @zimbraPrefMailLocalDeliveryDisabled.setter
     def zimbraPrefMailLocalDeliveryDisabled(self, value):
-        if isinstance(value, bool):
+        if isinstance(value, bool) or value is None:
             self._zimbraPrefMailLocalDeliveryDisabled = value
         else:
             raise TypeError
 
     @zimbraCOSId.setter
     def zimbraCOSId(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or value is None:
             self._zimbraCOSId = value
         else:
             raise TypeError
@@ -601,16 +601,23 @@ class Account(GlobalModel):
         else:
             raise TypeError
 
+
 def importJsonAccount(jsonAccount):
     json_data = open(jsonAccount)
     data = json.load(json_data)
 
-    if "name" in data:
-        account = Account(data["name"])
-        for attr in data:
-            if attr != "name":
-                propattr = getattr(account.__class__, attr, None)
-                propattr.fset(account, data[attr])
-        return account
+    if "name" not in data:
+        raise NameException("Adresse mail non présent dans le fichier json")
+    account = Account(data["name"])
+    for attr in data:
+        if attr != "name":
+            propattr = getattr(account.__class__, attr, None)
+            if isinstance(propattr, property):
+                if propattr.fset is not None:
+                    if data[attr] == "None":
+                        propattr.fset(account, None)
+                    else:
+                        propattr.fset(account, data[attr])
+    return account
 
 
