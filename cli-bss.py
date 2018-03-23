@@ -1,11 +1,6 @@
-#!/usr/bin/python
+#!venv/bin/python
 # This Python file uses the following encoding: utf-8# Script pour faire mes 1er pas en Python
 # O.Salaün (Univ Rennes1) : client en ligne de commande pour lib_Partage_BSS
-
-# Exemples d'appel :
-#  cli-bss.py --domain=ur1.fr --getAccount=odile.germes@ur1.fr
-#  cli-bss.py --domain=ur1.fr --getAllAccounts
-
 
 import argparse, sys
 import pprint
