@@ -350,7 +350,7 @@ def activateAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
     account = models.Account(name)
     account.zimbraAccountStatus = "active"
@@ -368,7 +368,7 @@ def lockAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
     account = models.Account(name)
     account.zimbraAccountStatus = "locked"
