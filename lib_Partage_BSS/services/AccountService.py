@@ -223,7 +223,16 @@ def modifyAccount(account):
         raise ServiceException(response["status"], response["message"])
 
 
-
+def setPassword(name, newPassword):
+    if not utils.checkIsMailAddress(name):
+        raise NameException("L'adresse mail " + name + " n'est pas valide")
+    data={
+        "name": name,
+        "password": newPassword
+    }
+    response = callMethod(services.extractDomain(name), "SetPassword", data)
+    if not utils.checkResponseStatus(response["status"]):
+        raise ServiceException(response["status"], response["message"])
 
 def modifyPassword(name, newUserPassword):
     """
@@ -238,13 +247,7 @@ def modifyPassword(name, newUserPassword):
     """
     if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
-    data={
-        "name": name,
-        "password": "valeurPourDeconnecterLesSessions"
-    }
-    response = callMethod(services.extractDomain(name), "SetPassword", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    setPassword(name,"valeurPourDeconnecterLesSessions")
     data = {
         "name": name,
         "userPassword": newUserPassword
@@ -370,6 +373,7 @@ def lockAccount(name):
     """
     if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
+    setPassword(name, "valeurPourDeconnecterLesSessions")
     account = models.Account(name)
     account.zimbraAccountStatus = "locked"
     modifyAccount(account)
@@ -385,13 +389,13 @@ def closeAccount(name):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if utils.checkIsMailAddress(name):
-        account = models.Account(name)
-        account.zimbraAccountStatus = "closed"
-        account.zimbraHideInGal = True
-        modifyAccount(account)
-    else:
+    if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail n'est pas valide")
+    setPassword(name, "valeurPourDeconnecterLesSessions")
+    account = models.Account(name)
+    account.zimbraAccountStatus = "closed"
+    account.zimbraHideInGal = True
+    modifyAccount(account)
 
 
 def renameAccount(name, newName):
