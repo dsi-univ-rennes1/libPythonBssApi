@@ -63,6 +63,8 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos
 ```
 
 ## License
