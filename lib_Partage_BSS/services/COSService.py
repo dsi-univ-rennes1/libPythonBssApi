@@ -27,18 +27,18 @@ def fillCOS(cosResponse):
         if cosResponse[attr] is not None:
             if isinstance(cosResponse[attr], str):
                 if cosResponse[attr] == "TRUE" or cosResponse[attr] == "FALSE":
-                    retCOS.__setattr__("_" + attr, utils.changeStringToBoolean(cosResponse[attr]))
+                    retCOS.__setattr__(attr, utils.changeStringToBoolean(cosResponse[attr]))
                 else:
-                    retCOS.__setattr__("_" + attr, cosResponse[attr])
+                    retCOS.__setattr__(attr, cosResponse[attr])
             elif isinstance(cosResponse[attr], OrderedDict):
                 if "type" in cosResponse[attr].keys():
                     if cosResponse[attr]["type"] == "integer":
-                        retCOS.__setattr__("_" + attr, int(cosResponse[attr]["content"]))
+                        retCOS.__setattr__(attr, int(cosResponse[attr]["content"]))
                     elif cosResponse[attr]["type"] == "array":
                         if attr == "zimbraZimletAvailableZimlets":
-                            retCOS.__setattr__("_" + attr, cosResponse[attr]["zimbraZimletAvailableZimlet"])
+                            retCOS.__setattr__(attr, cosResponse[attr]["zimbraZimletAvailableZimlet"])
                         elif attr == "zimbraMailAlias":
-                            retCOS.__setattr__("_" + attr, cosResponse[attr]["zimbraMailAlias"])
+                            retCOS.__setattr__(attr, cosResponse[attr]["zimbraMailAlias"])
     return retCOS
 
 
