@@ -631,12 +631,11 @@ class Account(GlobalModel):
             if attr == "name" and not allowNameChange:
                 continue
             propattr = getattr(self.__class__, attr, None)
-            if isinstance(propattr, property):
-                if propattr.fset is not None:
-                    if listOfAttr[attr] == "None":
-                        propattr.fset(self, None)
-                    else:
-                        propattr.fset(self, listOfAttr[attr])
+            if isinstance(propattr, property) and propattr.fset is not None:
+                if listOfAttr[attr] == "None":
+                    propattr.fset(self, None)
+                else:
+                    propattr.fset(self, listOfAttr[attr])
 
     def toData(self, checkName = True):
         """
@@ -677,14 +676,14 @@ def importJsonAccount(jsonAccount):
         raise NameException("Adresse mail non présent dans le fichier json")
     account = Account(data["name"])
     for attr in data:
-        if attr != "name":
-            propattr = getattr(account.__class__, attr, None)
-            if isinstance(propattr, property):
-                if propattr.fset is not None:
-                    if data[attr] == "None":
-                        propattr.fset(account, None)
-                    else:
-                        propattr.fset(account, data[attr])
+        if attr == "name":
+            continue
+        propattr = getattr(account.__class__, attr, None)
+        if isinstance(propattr, property) and propattr.fset is not None:
+            if data[attr] == "None":
+                propattr.fset(account, None)
+            else:
+                propattr.fset(account, data[attr])
     return account
 
 
