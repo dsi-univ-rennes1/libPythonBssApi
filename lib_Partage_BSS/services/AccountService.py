@@ -208,17 +208,7 @@ def modifyAccount(account):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if not utils.checkIsMailAddress(account.name):
-        raise NameException("L'adresse mail " + account.name + " n'est pas valide")
-    data = {}
-    for attr in account.__dict__:
-        if attr != "_zimbraZimletAvailableZimlets":
-            if account.__getattribute__(attr) is not None:
-                attrValue = account.__getattribute__(attr)
-                if isinstance(attrValue, bool):
-                    attrValue = utils.changeBooleanToString(attrValue)
-                data[attr[1:]] = attrValue
-    response = callMethod(services.extractDomain(account.name), "ModifyAccount", data)
+    response = callMethod(services.extractDomain(account.name), "ModifyAccount", account.toData())
     if not utils.checkResponseStatus(response["status"]):
         raise ServiceException(response["status"], response["message"])
 
