@@ -19,6 +19,7 @@ class BSSConnexion(object):
     :ivar _timestampOfLastToken: Le timestamp auquel on à obtenue notre dernier token. Permet de renouveller le token avant expiration
     :ivar _token: Le token obtenu via l'API pour utiliser les autres méthodes de l'API
     :ivar _url: L'url vers l'API BSS Partage (https://api.partage.renater.fr/service/domain/)
+    :ivar _ttl: le délai d'expiration des tokens reçus (300 secondes par défaut)
     """
     class __BSSConnexion:
 
@@ -44,6 +45,7 @@ class BSSConnexion(object):
             """Le token obtenu via l'API pour utiliser les autres méthodes"""
             self._url = "https://api.partage.renater.fr/service/domain/"
             """L'url vers l'API BSS Partage"""
+            self._ttl = 300
 
         @property
         def url(self):
@@ -78,6 +80,19 @@ class BSSConnexion(object):
                     domain.com
             """
             return self._domain
+
+        @property
+        def ttl(self):
+            """
+            Lecture de la durée de vie des tokens.
+
+            :return: la durée de vie des tokens, en secondes.
+            """
+            return self._ttl
+
+        @ttl.setter
+        def ttl(self, value):
+            self._ttl = value
 
         def setDomainKey(self, listDomainKey):
             """Getter du domaine
@@ -131,7 +146,7 @@ class BSSConnexion(object):
                     if domain not in self._key:
                         raise DomainException(domain + " : Domaine non initialisé")
                     actualTimestamp = round(time())
-                    if (actualTimestamp - self._timestampOfLastToken[domain]) < 270:
+                    if (actualTimestamp - self._timestampOfLastToken[domain]) < int( self._ttl * .9 ):
                         return self._token[domain]
                     else:
                         self._timestampOfLastToken[domain] = actualTimestamp
