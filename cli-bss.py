@@ -9,6 +9,8 @@ import json
 from lib_Partage_BSS.exceptions import ServiceException, NameException
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
 from lib_Partage_BSS.services import AccountService
+from lib_Partage_BSS.models.COS import COS
+from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 
 printer = pprint.PrettyPrinter(indent=4)
@@ -28,8 +30,9 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n"
-
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n"
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
@@ -37,6 +40,7 @@ parser.add_argument('--email', metavar='jchirac@mondomaine.fr', help="adresse ma
 parser.add_argument('--newEmail', metavar='pdupont@mondomaine.fr', help="nouvelle adresse mail du compte")
 parser.add_argument('--alias', action='append', metavar='fcotton@mondomaine.fr', help="alias pour un compte")
 parser.add_argument('--cosId', metavar='829a2781-c41e-4r4e2-b1a8-69f99dd20', help="identifiant de la classe de service")
+parser.add_argument('--cosName', metavar='staff_l_univ_rennes1', help="nom de la classe de service")
 parser.add_argument('--limit', metavar='150', type=int, default=100, help="nombre d'entrées max pour une requête")
 parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour une requête")
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
@@ -59,6 +63,8 @@ group.add_argument('--closeAccount', action='store_const', const=True, help="fer
 group.add_argument('--addAccountAlias', action='store_const', const=True, help="ajoute des aliases à un compte")
 group.add_argument('--removeAccountAlias', action='store_const', const=True, help="retire des aliases d'un compte")
 group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
+group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
+group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
 
 args = vars(parser.parse_args())
 
@@ -325,6 +331,39 @@ elif args['modifyAccountAliases'] == True:
         sys.exit(2)
 
     print("Les aliases pour le compte %s ont été positionnés à %s" % (args['email'], args['alias']))
+
+elif args['getCos'] == True:
+
+    if not args['cosName']:
+        raise Exception("Missing 'cosName' argument")
+
+    try:
+        cos = COSService.getCOS(args['domain'], args['cosName'])
+
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    if args['asJson']:
+        print(json.dumps(cos.__dict__, sort_keys=True, indent=4))
+
+    else:
+        print("Informations sur la classe de service %s :" % cos.name)
+        print(cos.showAttr())
+
+elif args['getAllCos'] == True:
+
+    try:
+        all_cos = COSService.getAllCOS(domain=args['domain'], limit=args['limit'])
+
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("%d classes de service retournés :" % len(all_cos))
+    for cos in all_cos:
+        print("Classe de service %s :" % cos.name)
+        print(cos.showAttr())
 
 else:
     print("Aucune opération à exécuter")
