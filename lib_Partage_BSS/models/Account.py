@@ -412,6 +412,11 @@ class Account(GlobalModel):
     def quota(self, value):
         if isinstance(value, int) or value is None:
             self._quota = value
+        elif isinstance( value , str ):
+            try:
+                self._quota = int( value )
+            except ValueError:
+                raise TypeError
         else:
             raise TypeError
 
@@ -455,6 +460,11 @@ class Account(GlobalModel):
     def used(self, value):
         if isinstance(value, int) or value is None:
             self._used = value
+        elif isinstance( value , str ):
+            try:
+                self._used = int( value )
+            except ValueError:
+                raise TypeError
         else:
             raise TypeError
 
@@ -532,8 +542,13 @@ class Account(GlobalModel):
 
     @zimbraMailQuota.setter
     def zimbraMailQuota(self, value):
-        if isinstance(value, str) or value is None:
+        if isinstance(value, int) or value is None:
             self._zimbraMailQuota = value
+        elif isinstance(value, str):
+            try:
+                self._zimbraMailQuota = int( value )
+            except ValueError:
+                raise TypeError
         else:
             raise TypeError
 
