@@ -189,3 +189,48 @@ def changeDateToTimestamp(strDate):
         return mktime(datetime.strptime(strDate, '%Y-%m-%d-%H-%M-%S').timetuple())
     else:
         raise TypeError
+
+
+def checkBoolean( v ):
+    """
+    Vérifie si une valeur est un booléen ou peut être convertie en booléen. Il
+    est possible de convertir:
+
+    * les chaînes contenant ``t``, ``true``, ``1``, ``y``, ``yes``, ``on``,
+      ``o``, ``oui``, ``v``, ``vrai``, ``f``, ``false``, ``0``, ``n``, ``no``,
+      ``non``, ``faux`` ou ``off``;
+    * les valeurs numériques;
+    * les instances d'une classe possédant une méthode ``__bool__``
+    """
+    if v is None:
+        return False
+    if isinstance( v , str ):
+        return v.lower( ) in [
+                't' , 'true' , '1' , 'y' , 'yes' , 'on' ,
+                'o', 'oui', 'v', 'vrai' ,
+                'f' , 'false' , 'faux' , '0' , 'n' , 'no' , 'non' , 'off' ]
+    if type( v ) in ( bool , int , long , float ):
+        return True
+    return callable( getattr( v , '__bool__' , None ) )
+
+def convertToBoolean( v ):
+    """
+    Convertit une valeur en booléen.
+
+    Si la valeur à convertir est une chaîne, les valeurs ``true``, ``1``, ``t``,
+    ``y``, ``yes``, ``o``, ``oui``, ``v``, ``vrai`` et ``on`` seront considérées
+    comme vraies.
+
+    Si la valeur à convertir n'est pas une chaîne, la conversion par défaut
+    sera appliquée.
+
+    :param v: la valeur à convertir
+
+    :return: le booléen résultant de la conversion
+    """
+    if isinstance( v , str ):
+        return v.lower( ) in [
+                't' , 'true' , '1' , 'y' , 'yes' , 'on' ,
+                'o', 'oui', 'v', 'vrai' ]
+    return bool( v )
+
