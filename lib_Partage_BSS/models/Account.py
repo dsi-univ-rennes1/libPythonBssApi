@@ -370,8 +370,10 @@ class Account(GlobalModel):
 
     @mavTransformation.setter
     def mavTransformation(self, value):
-        if isinstance(value, bool) or value is None:
-            self._mavTransformation = value
+        if value is None:
+            self._mavTransformation = None
+        elif utils.checkBoolean( value ):
+            self._mavTransformation = utils.convertToBoolean( value )
         else:
             raise TypeError
 
@@ -465,50 +467,66 @@ class Account(GlobalModel):
 
     @zimbraFeatureBriefcasesEnabled.setter
     def zimbraFeatureBriefcasesEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureBriefcasesEnabled = value
+        if value is None:
+            self._zimbraFeatureBriefcasesEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureBriefcasesEnabled = utils.convertToBoolean(
+                    value )
         else:
             raise TypeError
 
     @zimbraFeatureCalendarEnabled.setter
     def zimbraFeatureCalendarEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureCalendarEnabled = value
+        if value is None:
+            self._zimbraFeatureCalendarEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureCalendarEnabled = utils.convertToBoolean( value )
         else:
             raise TypeError
 
     @zimbraFeatureMailEnabled.setter
     def zimbraFeatureMailEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureMailEnabled = value
+        if value is None:
+            self._zimbraFeatureMailEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureMailEnabled = utils.convertToBoolean( value )
         else:
             raise TypeError
 
     @zimbraFeatureMailForwardingEnabled.setter
     def zimbraFeatureMailForwardingEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureMailForwardingEnabled = value
+        if value is None:
+            self._zimbraFeatureMailForwardingEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureMailForwardingEnabled = utils.convertToBoolean(
+                    value )
         else:
             raise TypeError
 
     @zimbraFeatureOptionsEnabled.setter
     def zimbraFeatureOptionsEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureOptionsEnabled = value
+        if value is None:
+            self._zimbraFeatureOptionsEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureOptionsEnabled = utils.convertToBoolean( value )
         else:
             raise TypeError
 
     @zimbraFeatureTasksEnabled.setter
     def zimbraFeatureTasksEnabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraFeatureTasksEnabled = value
+        if value is None:
+            self._zimbraFeatureTasksEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureTasksEnabled = utils.convertToBoolean( value )
         else:
             raise TypeError
 
     @zimbraHideInGal.setter
     def zimbraHideInGal(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraHideInGal = value
+        if value is None:
+            self._zimbraHideInGal = None
+        elif utils.checkBoolean( value ):
+            self._zimbraHideInGal = utils.convertToBoolean( value )
         else:
             raise TypeError
 
@@ -550,8 +568,10 @@ class Account(GlobalModel):
 
     @zimbraPasswordMustChange.setter
     def zimbraPasswordMustChange(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraPasswordMustChange = value
+        if value is None:
+            self._zimbraPasswordMustChange = None
+        elif utils.checkBoolean( value ):
+            self._zimbraPasswordMustChange = utils.convertToBoolean( value )
         else:
             raise TypeError
 
@@ -573,8 +593,11 @@ class Account(GlobalModel):
 
     @zimbraPrefMailLocalDeliveryDisabled.setter
     def zimbraPrefMailLocalDeliveryDisabled(self, value):
-        if isinstance(value, bool) or value is None:
-            self._zimbraPrefMailLocalDeliveryDisabled = value
+        if value is None:
+            self._zimbraPrefMailLocalDeliveryDisabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraPrefMailLocalDeliveryDisabled = utils.convertToBoolean(
+                    value )
         else:
             raise TypeError
 
