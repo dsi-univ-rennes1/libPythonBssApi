@@ -615,6 +615,37 @@ class Account(GlobalModel):
                     else:
                         propattr.fset(self, listOfAttr[attr])
 
+    def toData(self, checkName = True):
+        """
+        Transforme les données du compte en un dictionnaire pouvant être
+        utilisé avec l'API BSS, après avoir éventuellement vérifié
+        l'adresse.
+
+        :param bool checkName: vérifie l'adresse associée au compte
+
+        :raises NameException: exception levée si le nom n'est pas une \
+        adresse mail valide
+
+        :return: le dictionnaire contenant les informations au sujet du \
+        compte et pouvant être passé à l'API BSS.
+        """
+        if self.name is None:
+            raise NameException( 'Aucune adresse mail spécifiée.' )
+        if checkName and not utils.checkIsMailAddress( self.name ):
+            raise NameException("L'adresse mail " + self.name
+                    + " n'est pas valide")
+        data = {}
+        for attr in self.__dict__:
+            if ( attr == "_zimbraZimletAvailableZimlets"
+                    or self.__getattribute__(attr) is None ):
+                continue
+            attrValue = self.__getattribute__(attr)
+            if isinstance(attrValue, bool):
+                attrValue = utils.changeBooleanToString(attrValue)
+            data[attr[1:]] = attrValue
+        return data
+
+
 def importJsonAccount(jsonAccount):
     json_data = open(jsonAccount)
     data = json.load(json_data)
