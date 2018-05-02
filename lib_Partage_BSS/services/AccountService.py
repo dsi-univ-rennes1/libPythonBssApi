@@ -142,6 +142,43 @@ def createAccount(name,userPassword, cosId, account = None):
     return getAccount(name)
 
 
+def createAccountExt(account , password):
+    """
+    Méthode permettant de créer un compte via l'API BSS en lui passant en
+    paramètre les informations concernant un compte ainsi qu'une empreinte de
+    mot de passe.
+
+    :param Account account: l'objet contenant les informations du compte \
+            utilisateur
+    :param str password: l'empreinte du mot de passe de l'utilisateur
+
+    :return: le compte créé, tel qu'il est vu par l'API
+
+    :raises ServiceException: la requête vers l'API a echoué. L'exception \
+            contient le code de l'erreur et le message.
+    :raises NameException: le nom du compte n'est pas une adresse mail valide, \
+            ou le mot de passe spécifié n'est pas une empreinte.
+    :raises DomainException: le domaine de l'adresse mail n'est pas un domaine \
+            valide.
+    """
+
+    if not re.search(r'^\{\S+\}', password):
+        raise NameException("Le format de l'empreinte du mot de passe "
+            + "n'est pas correcte ; format attendu : {algo}empreinte")
+
+    data = account.toData( )
+    data.update({
+        'password': '',
+        'userPassword': password,
+    })
+    response = callMethod( services.extractDomain( account.name ) ,
+            'CreateAccount' , data )
+    if not utils.checkResponseStatus( response['status'] ):
+        raise ServiceException( response['status'], response['message'] )
+
+    return getAccount(account.name)
+
+
 def deleteAccount(name):
     """
     Permet de supprimer un compte
