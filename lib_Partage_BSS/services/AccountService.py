@@ -245,6 +245,8 @@ def modifyPassword(name, newUserPassword):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
+    if not re.search(r'^\{\S+\}', newUserPassword):
+        raise NameException("Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
     if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
     setPassword(name,"valeurPourDeconnecterLesSessions")
