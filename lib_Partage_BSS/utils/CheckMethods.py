@@ -209,7 +209,7 @@ def checkBoolean( v ):
                 't' , 'true' , '1' , 'y' , 'yes' , 'on' ,
                 'o', 'oui', 'v', 'vrai' ,
                 'f' , 'false' , 'faux' , '0' , 'n' , 'no' , 'non' , 'off' ]
-    if type( v ) in ( bool , int , long , float ):
+    if type( v ) in ( bool , int , float ):
         return True
     return callable( getattr( v , '__bool__' , None ) )
 
