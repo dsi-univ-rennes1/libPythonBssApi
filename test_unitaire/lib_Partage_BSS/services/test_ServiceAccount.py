@@ -69,12 +69,12 @@ def initBadResponse():
 @pytest.fixture()
 def create_connexion():
     con = BSSConnexion()
-    con.setDomainKey("domain.com", "keyDeTest")
+    con.setDomainKey({"domain.com": "keyDeTest"})
     return con
 
 def test_init_cas_nom_vallide():
     account = Account("test@domain.com")
-    assert account.getName == "test@domain.com"
+    assert account.name == "test@domain.com"
 
 
 def test_init_cas_nom_non_vallide():
@@ -89,10 +89,10 @@ def test_getAccount_cas_compte_existant(mocker):
     with mocker.patch('requests.post', return_value=response):
         with mocker.patch.object(con, 'token', return_value="test"):
             account = AccountService.getAccount("test@domain.com")
-            assert account.getName == "test@domain.com"
-            print(account.getCarLicense)
-            assert account.getCarLicense == "EPPN"
-            assert account.getZimbraCOSId == "testCOSId"
+            assert account.name == "test@domain.com"
+            print(account.carLicense)
+            assert account.carLicense == "EPPN"
+            assert account.zimbraCOSId == "testCOSId"
 
 
 def test_getAccount_cas_compte_inexistant(mocker):
