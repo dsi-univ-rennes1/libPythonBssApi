@@ -16,6 +16,7 @@ def create_connexion():
     con = BSSConnexion()
     con.setDomainKey({"domain.com": "keyDeTest"})
     con.setDomainKey({"autre.com": "keyDeTest"})
+    con.ttl = 10
     return con
 
 
@@ -95,7 +96,7 @@ def test_getToken_4minApresCreation(mocker):
     with mocker.patch('requests.post', return_value=response):
         token = con.token("domain.com")
         mocker.spy(hmac, 'new')
-        timer.sleep(240)
+        timer.sleep(int( con.ttl * .8 ))
         token = con.token("domain.com")
         assert hmac.new.call_count == 0
     BSSConnexion.instance = None
@@ -108,7 +109,7 @@ def test_getToken_5minApresCreation(mocker):
     with mocker.patch('requests.post', return_value=response):
         token = con.token("domain.com")
         mocker.spy(hmac, 'new')
-        timer.sleep(300)
+        timer.sleep(con.ttl)
         token = con.token("domain.com")
         assert hmac.new.call_count == 1
     BSSConnexion.instance = None
