@@ -14,8 +14,8 @@ from lib_Partage_BSS.services import BSSConnexion
 @pytest.fixture()
 def create_connexion():
     con = BSSConnexion()
-    con.setDomainKey("domain.com", "keyDeTest")
-    con.setDomainKey("autre.com", "keyDeTest")
+    con.setDomainKey({"domain.com": "keyDeTest"})
+    con.setDomainKey({"autre.com": "keyDeTest"})
     return con
 
 
