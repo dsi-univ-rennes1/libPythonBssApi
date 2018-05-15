@@ -152,8 +152,6 @@ def createAccountExt(account , password):
             utilisateur
     :param str password: l'empreinte du mot de passe de l'utilisateur
 
-    :return: le compte créé, tel qu'il est vu par l'API
-
     :raises ServiceException: la requête vers l'API a echoué. L'exception \
             contient le code de l'erreur et le message.
     :raises NameException: le nom du compte n'est pas une adresse mail valide, \
@@ -175,8 +173,6 @@ def createAccountExt(account , password):
             'CreateAccount' , data )
     if not utils.checkResponseStatus( response['status'] ):
         raise ServiceException( response['status'], response['message'] )
-
-    return getAccount(account.name)
 
 
 def deleteAccount(name):
