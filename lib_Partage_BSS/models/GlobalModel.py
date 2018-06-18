@@ -21,6 +21,17 @@ class GlobalModel:
                 ret += (key+" : "+str(self.__dict__[key])+"\n")
         return ret
 
+    def __repr__( self ):
+        """
+        Transforme les données du compte en une chaîne pouvant être utilisée
+        pour le débogage.
+        """
+        return '{}({})'.format( self.__class__.__name__ , ','.join( [
+                '{}={}'.format( k , repr( v ) )
+                    for k,v in self.__dict__.items( )
+                        if v is not None
+            ] ) )
+
     @property
     def name(self):
         """

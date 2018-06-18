@@ -6,7 +6,7 @@ import argparse, sys
 import pprint
 import json
 
-from lib_Partage_BSS.exceptions import ServiceException, NameException
+from lib_Partage_BSS.exceptions import *
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
 from lib_Partage_BSS.models.Group import Group
 from lib_Partage_BSS.services import AccountService , GroupService
@@ -20,6 +20,8 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt " + \
+        "-f name user@x.fr -f zimbraHideInGal oui --userPassword={SSHA}someHash\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --lockAccount --email=user@x.fr\n" + \
@@ -47,13 +49,20 @@ parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour 
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
 parser.add_argument('--jsonData', metavar='/tmp/myAccount.json', type=argparse.FileType('r'), help="fichier contenant des données JSON")
-parser.add_argument( '--fullData' , action = 'store_true' ,
-        help = '''Récupérer toutes les informations dans les requêtes sur les
-                  groupes. Attention, c'est lent.''' )
+parser.add_argument( '--fullData' ,
+    action = 'store_true' ,
+    help = '''Récupérer toutes les informations dans les requêtes sur les
+              groupes. Attention, c'est lent.''' )
+parser.add_argument('--field' , '-f' ,
+    action='append' , nargs=2 ,
+    metavar=('name','value') , help="nom et valeur d'un champ du compte")
 
 group = parser.add_argument_group('Opérations implémentées :')
 group.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
 group.add_argument('--createAccount', action='store_const', const=True, help="créer un compte")
+group.add_argument('--createAccountExt',
+    action='store_const', const=True,
+    help="créer un compte en spécifiant les paramètres via -f ou --jsonData")
 group.add_argument('--modifyAccount', action='store_const', const=True, help="mettre à jour un compte")
 group.add_argument('--renameAccount', action='store_const', const=True, help="renommer un compte")
 group.add_argument('--deleteAccount', action='store_const', const=True, help="supprimer un compte")
@@ -70,12 +79,12 @@ group.add_argument('--modifyAccountAliases', action='store_const', const=True, h
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
 group.add_argument( '--getAllGroups', action = 'store_true' ,
-        help = 'Afficher la liste des groupes et listes de distribution' )
+    help = 'Afficher la liste des groupes et listes de distribution' )
 group.add_argument( '--getGroup' , action = 'store_true' ,
-        help = 'Rechercher un groupe / une liste de distribution' )
+    help = 'Rechercher un groupe / une liste de distribution' )
 group.add_argument( '--getSendAsGroup' , action = 'store_true' ,
-        help = '''Lister les l’ensemble des comptes pouvant utiliser l’adresse
-                  mail du groupe en adresse d’expédition.''' )
+    help = '''Lister les l’ensemble des comptes pouvant utiliser l’adresse
+              mail du groupe en adresse d’expédition.''' )
 
 args = vars(parser.parse_args())
 
@@ -168,6 +177,33 @@ elif args['restorePreDeleteAccount'] == True:
         sys.exit(2)
 
     print("Le compte %s a été rétabli" % args['email'])
+
+elif args['createAccountExt'] == True:
+
+    if not args[ 'userPassword' ]:
+        print("Argument '--userPassword' manquant")
+        sys.exit(1)
+
+    # Objet du compte, éventuellement lu depuis un fichier JSON
+    if args['jsonData']:
+        account = importJsonAccount( args[ 'jsonData' ].name )
+    else:
+        account = Account( None )
+
+    if args[ 'field' ]:
+        account.fillAccount({
+                arg[0] : arg[1] for arg in args[ 'field' ]
+            } , allowNameChange = True)
+
+    try:
+        nAccount = AccountService.createAccountExt( account ,
+                args[ 'userPassword' ] )
+    except ( NameException , ServiceException , DomainException ) as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print( "Le compte %s a été créé" % nAccount.name )
+    print( nAccount.showAttr( ) )
 
 elif args['createAccount'] == True:
 

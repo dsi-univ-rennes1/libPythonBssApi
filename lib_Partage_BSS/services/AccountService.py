@@ -142,6 +142,39 @@ def createAccount(name,userPassword, cosId, account = None):
     return getAccount(name)
 
 
+def createAccountExt(account , password):
+    """
+    Méthode permettant de créer un compte via l'API BSS en lui passant en
+    paramètre les informations concernant un compte ainsi qu'une empreinte de
+    mot de passe.
+
+    :param Account account: l'objet contenant les informations du compte \
+            utilisateur
+    :param str password: l'empreinte du mot de passe de l'utilisateur
+
+    :raises ServiceException: la requête vers l'API a echoué. L'exception \
+            contient le code de l'erreur et le message.
+    :raises NameException: le nom du compte n'est pas une adresse mail valide, \
+            ou le mot de passe spécifié n'est pas une empreinte.
+    :raises DomainException: le domaine de l'adresse mail n'est pas un domaine \
+            valide.
+    """
+
+    if not re.search(r'^\{\S+\}', password):
+        raise NameException("Le format de l'empreinte du mot de passe "
+            + "n'est pas correcte ; format attendu : {algo}empreinte")
+
+    data = account.toData( )
+    data.update({
+        'password': '',
+        'userPassword': password,
+    })
+    response = callMethod( services.extractDomain( account.name ) ,
+            'CreateAccount' , data )
+    if not utils.checkResponseStatus( response['status'] ):
+        raise ServiceException( response['status'], response['message'] )
+
+
 def deleteAccount(name):
     """
     Permet de supprimer un compte
@@ -208,17 +241,7 @@ def modifyAccount(account):
     :raises NameException: Exception levée si le nom n'est pas une adresse mail preSupprimé
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
-    if not utils.checkIsMailAddress(account.name):
-        raise NameException("L'adresse mail " + account.name + " n'est pas valide")
-    data = {}
-    for attr in account.__dict__:
-        if attr != "_zimbraZimletAvailableZimlets":
-            if account.__getattribute__(attr) is not None:
-                attrValue = account.__getattribute__(attr)
-                if isinstance(attrValue, bool):
-                    attrValue = utils.changeBooleanToString(attrValue)
-                data[attr[1:]] = attrValue
-    response = callMethod(services.extractDomain(account.name), "ModifyAccount", data)
+    response = callMethod(services.extractDomain(account.name), "ModifyAccount", account.toData())
     if not utils.checkResponseStatus(response["status"]):
         raise ServiceException(response["status"], response["message"])
 
