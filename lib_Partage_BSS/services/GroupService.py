@@ -1,4 +1,9 @@
 # -*-coding:utf-8 -*
+"""
+Module contenant les méthodes permettant d'appeler les services de l'API BSS
+concernant les groupes et listes de distribution.
+"""
+
 from lib_Partage_BSS.models.Group import Group
 from .GlobalService import callMethod
 from lib_Partage_BSS import services , utils
@@ -9,8 +14,19 @@ from lib_Partage_BSS.exceptions import ( NameException , DomainException ,
 #-------------------------------------------------------------------------------
 # Opérations d'interrogation
 
-
 def getAllGroups( domain , limit = 100 , offset = 0 ):
+    """
+    Lit la liste de tous les groupes depuis le serveur Partage.
+
+    :param domain: le domaine de la recherche
+    :param limit: le nombre maximal d'entrées à renvoyer
+    :param offset: l'index du premier élément à renvoyer
+
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+
+    :return: la liste des groupes, sous la forme d'instances du modèle.
+    """
     data = {
         'limit'  : limit ,
         'offset' : offset ,
@@ -30,6 +46,20 @@ def getAllGroups( domain , limit = 100 , offset = 0 ):
 
 
 def getGroup( name , full_info = False ):
+    """
+    Lit les informations concernant un groupe.
+
+    :param name: l'adresse mail du groupe ou de la liste de distribution
+    :param full_info: une requête additionnelle permettant de lister \
+            les expéditeurs autorisés doit-elle être effectuée ?
+
+    :raises NameException: l'adresse de groupe spécifiée est incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+
+    :return: le groupe, sous la forme d'une instance du modèle, ou bien None \
+            si aucun groupe ne correspond au nom spécifié
+    """
     if not utils.checkIsMailAddress( name ):
         raise NameException( "L'adresse mail {} n'est pas valide".format(
                 name ) )
@@ -49,6 +79,21 @@ def getGroup( name , full_info = False ):
 
 
 def getSendAsGroup( name_or_group ):
+    """
+    Lit la liste des utilisateurs autorisés à expédier du mail en utilisant
+    l'adresse d'un groupe comme expéditeur.
+
+    :param name_or_group: l'adresse d'un groupe ou l'instance correspondant au \
+            groupe pour lequel on veut lire la liste des autorisations. Si une \
+            instance est passée, son champ 'senders' sera mis à jour
+
+    :raises NameException: l'adresse de groupe spécifiée est incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+
+    :return: l'ensemble des utilisateurs autorisés, ou None si le groupe n'a \
+            pas été trouvé
+    """
     if isinstance( name_or_group , Group ):
         name = name_or_group.name
         group = name_or_group
@@ -74,6 +119,24 @@ def getSendAsGroup( name_or_group ):
 # Création & suppression
 
 def createGroup( name_or_group ):
+    """
+    Crée un groupe ou une liste de distribution en se basant sur une instance du
+    modèle, ou simplement en utilisant un nom.
+
+    Si une instance est utilisée et que des alias, des membres ou des
+    autorisations d'expéditions sont présents dans l'instance, ils seront
+    ajoutés au groupe sur Partage après sa création.
+
+    :param name_or_group: le nom du groupe à créer, ou bien une instance du \
+            modèle contenant les informations initiales au sujet du groupe.
+
+    :raises TypeError: si le paramètre n'est ni un nom ni une instance du modèle
+    :raises NameError: si l'adresse du groupe à créer est invalide, ou si \
+            l'une des autres informations de ce type (alias, membres, \
+            autorisation) est incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+    """
     is_group = isinstance( name_or_group , Group )
     if is_group:
         if name_or_group.name is None:
@@ -102,6 +165,16 @@ def createGroup( name_or_group ):
         addGroupSenders( name_or_group.name , name_or_group.senders )
 
 def deleteGroup( name_or_group ):
+    """
+    Supprime un groupe.
+
+    :param name_or_group: le nom du groupe, ou bien l'instance de modèle \
+            correspondante.
+
+    :raises NameException: l'adresse de groupe spécifiée est incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+    """
     if isinstance( name_or_group , Group ):
         if name_or_group.name is None:
             raise NameException( "L'adresse mail n'est pas renseignée" )
@@ -124,6 +197,17 @@ def deleteGroup( name_or_group ):
 # Opération de modification
 
 def modifyGroup( group ):
+    """
+    Modifie les informations concernant un groupe. Les membres, alias et
+    autorisations ne sont pas affectés.
+
+    :param group: l'instance du modèle contenant les nouvelles informations \
+            ainsi que l'adresse du groupe à modifier
+
+    :raises NameException: l'adresse de groupe spécifiée est incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+    """
     response = callMethod( services.extractDomain( group.name ) ,
             'ModifyGroup' , group.to_bss( ) )
     if not utils.checkResponseStatus( response[ 'status' ] ):
@@ -132,6 +216,24 @@ def modifyGroup( group ):
 #-------------------------------------------------------------------------------
 
 def _group_set_op( name_or_group , entries , f_name , op_name ):
+    """
+    Fonction interne utilisée pour effectuer les ajouts ou suppressions sur les
+    listes de membres, d'alias et d'autorisations d'expédition d'un groupe.
+
+    :param name_or_group: le nom du groupe à modifier, ou l'instance du modèle \
+            correspondante
+    :param entries: l'entrée ou les entrées à ajouter ou supprimer
+    :param f_name: le nom du champ tel qu'il doit être envoyé à l'API BSS; si \
+            le nom finit par '[]', toutes les informations seront envoyées \
+            en un seul appel
+    :param op_name: le nom de la méthode distante à utiliser
+
+    :raises TypeError: le groupe n'est ni un nom, ni une instance de modèle
+    :raises NameException: l'adresse de groupe ou l'une des entrées est \
+            incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+    """
     if isinstance( entries , str ):
         entries = [ entries ]
     else:
@@ -140,6 +242,8 @@ def _group_set_op( name_or_group , entries , f_name , op_name ):
     if isinstance( name_or_group , Group ):
         name = name_or_group.name
     else:
+        if not isinstance( name_or_group , str ):
+            raise TypeError
         name = name_or_group
 
     for n in ( name , *entries ):
@@ -156,7 +260,6 @@ def _group_set_op( name_or_group , entries , f_name , op_name ):
                 'name' : name ,
                 f_name : entry ,
             }
-        print( domain , op_name , repr( data ) )
         response = callMethod( domain , op_name , data )
         if not utils.checkResponseStatus( response[ 'status' ] ):
             raise ServiceException( response[ 'status' ] ,
@@ -164,6 +267,28 @@ def _group_set_op( name_or_group , entries , f_name , op_name ):
 
 def _group_diff_op( name_or_group , new_values , a_name , f_name ,
             add_op_name , rem_op_name ):
+    """
+    Fonction interne utilisée pour effectuer les modifications sur les listes de
+    membres, d'alias et d'autorisations d'expédition d'un groupe.
+
+    :param name_or_group: le nom du groupe à modifier, ou l'instance du modèle \
+            correspondante; si seul le nom est passé, getGroup() sera appelée
+    :param new_values: la nouvelle liste des entrées pour le champ concerné
+    :param a_name: le nom du champ dans l'instance de modèle
+    :param f_name: le nom du champ tel qu'il doit être envoyé à l'API BSS; si \
+            le nom finit par '[]', toutes les informations seront envoyées \
+            en un seul appel
+    :param add_op_name: le nom de la méthode distante à utiliser pour ajouter \
+            des entrées
+    :param rem_op_name: le nom de la méthode distante à utiliser pour \
+            supprimer des entrées
+
+    :raises TypeError: le groupe n'est ni un nom, ni une instance de modèle
+    :raises NameException: l'adresse de groupe ou l'une des entrées est \
+            incorrecte
+    :raises ServiceException: la requête vers l'API a echoué
+    :raises DomainException: le domaine n'est pas valide
+    """
     if isinstance( name_or_group , Group ):
         group = name_or_group
     else:
