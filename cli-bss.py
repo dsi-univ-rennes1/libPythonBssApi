@@ -8,7 +8,8 @@ import json
 
 from lib_Partage_BSS.exceptions import ServiceException, NameException
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
-from lib_Partage_BSS.services import AccountService
+from lib_Partage_BSS.models.Group import Group
+from lib_Partage_BSS.services import AccountService , GroupService
 from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
@@ -46,6 +47,9 @@ parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour 
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
 parser.add_argument('--jsonData', metavar='/tmp/myAccount.json', type=argparse.FileType('r'), help="fichier contenant des données JSON")
+parser.add_argument( '--fullData' , action = 'store_true' ,
+        help = '''Récupérer toutes les informations dans les requêtes sur les
+                  groupes. Attention, c'est lent.''' )
 
 group = parser.add_argument_group('Opérations implémentées :')
 group.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
@@ -65,6 +69,13 @@ group.add_argument('--removeAccountAlias', action='store_const', const=True, hel
 group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
+group.add_argument( '--getAllGroups', action = 'store_true' ,
+        help = 'Afficher la liste des groupes et listes de distribution' )
+group.add_argument( '--getGroup' , action = 'store_true' ,
+        help = 'Rechercher un groupe / une liste de distribution' )
+group.add_argument( '--getSendAsGroup' , action = 'store_true' ,
+        help = '''Lister les l’ensemble des comptes pouvant utiliser l’adresse
+                  mail du groupe en adresse d’expédition.''' )
 
 args = vars(parser.parse_args())
 
@@ -364,6 +375,65 @@ elif args['getAllCos'] == True:
     for cos in all_cos:
         print("Classe de service %s :" % cos.name)
         print(cos.showAttr())
+
+elif args[ 'getAllGroups' ]:
+    data = {
+        'domain' : args[ 'domain' ] ,
+        'limit'  : args[ 'limit' ] ,
+    }
+
+    try:
+        all_groups = GroupService.getAllGroups( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+
+    print( "{} groupes retournés".format( len( all_groups ) ) )
+    if 'fullData' in args and args[ 'fullData' ]:
+        print( 'Récupération des informations complètes...' )
+        try:
+            all_groups = [ GroupService.getGroup( g.name , full_info = True )
+                                for g in all_groups ]
+        except Exception as err:
+            print( "Echec d'exécution : {}".format( repr( err ) ) )
+            sys.exit( 2 )
+
+    print( )
+    for group in all_groups:
+        print( "Groupe {} : ".format( group.name ) )
+        print( group.showAttr( ) )
+        print( )
+
+elif args[ 'getGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        data = { 'name' : args[ 'email' ] }
+        if 'fullData' in args:
+            data[ 'full_info' ] = args[ 'fullData' ]
+        group = GroupService.getGroup( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    if group is None:
+        print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
+    else:
+        print( group.showAttr( ) )
+
+elif args[ 'getSendAsGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        senders = GroupService.getSendAsGroup( args[ 'email' ] )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    if senders is None:
+        print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
+    elif not senders:
+        print( "Pas d'utilisateurs autorisés" )
+    else:
+        print( "Utilisateurs autorisés: {}".format( ', '.join( senders ) ) )
 
 else:
     print("Aucune opération à exécuter")
