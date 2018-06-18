@@ -64,6 +64,15 @@ class BSSConnexion(object):
             """
             return self._url
 
+        @url.setter
+        def url(self,url):
+            """Setter de l'url
+
+            :param url:
+                L'url vars l'api BSS par default https://api.partage.renater.fr/service/domaine
+            """
+            self._url = url
+
         @property
         def domain(self):
             """Getter du domaine
