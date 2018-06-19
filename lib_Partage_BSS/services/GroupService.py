@@ -310,41 +310,115 @@ def _group_diff_op( name_or_group , new_values , a_name , f_name ,
 #-------------------------------------------------------------------------------
 
 def addGroupAliases( name_or_group , aliases ):
+    """
+    Ajoute des alias à un groupe ou une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param aliases: un alias sous la forme d'une chaîne, ou une collection \
+            d'alias
+    """
     _group_set_op( name_or_group , aliases ,
             'alias' , 'AddDistributionListAlias' )
 
 def removeGroupAliases( name_or_group , aliases ):
+    """
+    Supprime des alias d'un groupe ou d'une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param aliases: un alias sous la forme d'une chaîne, ou une collection \
+            d'alias
+    """
     _group_set_op( name_or_group , aliases ,
             'alias' , 'RemoveDistributionListAlias' )
 
 def updateGroupAliases( name_or_group , new_aliases ):
+    """
+    Met à jour les alias d'un groupe ou d'une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param aliases: un alias sous la forme d'une chaîne, ou une collection \
+            d'alias
+    """
     _group_diff_op( name_or_group , new_aliases , 'aliases' , 'alias' ,
             'AddDistributionListAlias' , 'RemoveDistributionListAlias' )
 
 #-------------------------------------------------------------------------------
 
 def addGroupMembers( name_or_group , members ):
+    """
+    Ajoute des membres à un groupe ou une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un membre sous la forme d'une chaîne, ou une collection \
+            de membres
+    """
     _group_set_op( name_or_group , members ,
             'members[]' , 'AddGroupMembers' )
 
 def removeGroupMembers( name_or_group , members ):
+    """
+    Supprime des membres d'un groupe ou d'une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un membre sous la forme d'une chaîne, ou une collection \
+            de membres
+    """
     _group_set_op( name_or_group , members ,
             'members[]' , 'RemoveGroupMembers' )
 
 def updateGroupMembers( name_or_group , new_members ):
+    """
+    Met à jour les membres d'un groupe ou d'une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un membre sous la forme d'une chaîne, ou une collection \
+            de membres
+    """
     _group_diff_op( name_or_group , new_members , 'members' , 'members[]' ,
             'AddGroupMembers' , 'RemoveGroupMembers' )
 
 #-------------------------------------------------------------------------------
 
 def addGroupSenders( name_or_group , senders ):
+    """
+    Ajoute des utilisateurs autorisés à un groupe ou une liste de distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un utilisateur autorisé sous la forme d'une chaîne, ou une \
+            collection d'utilisateurs autorisés
+    """
     _group_set_op( name_or_group , senders ,
             'account' , 'AddSendAsGroup' )
 
 def removeGroupSenders( name_or_group , senders ):
+    """
+    Supprime des utilisateurs autorisés d'un groupe ou d'une liste de
+    distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un utilisateur autorisé sous la forme d'une chaîne, ou une \
+            collection d'utilisateurs autorisés
+    """
     _group_set_op( name_or_group , senders ,
             'account' , 'DeleteSendAsGroup' )
 
 def updateGroupSenders( name_or_group , new_senders ):
+    """
+    Met à jour les utilisateurs autorisés d'un groupe ou d'une liste de
+    distribution.
+
+    :param name_or_group: le nom du groupe, ou l'instance de modèle \
+            correspondante
+    :param members: un utilisateur autorisé sous la forme d'une chaîne, ou une \
+            collection d'utilisateurs autorisés
+    """
     _group_diff_op( name_or_group , new_senders , 'senders' , 'account' ,
             'AddSendAsGroup' , 'DeleteSendAsGroup' )
