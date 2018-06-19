@@ -17,6 +17,14 @@ bibliothèque `lib_Partage_BSS` pour mettre en oeuvre le provisioning des compte
 
 ## Installation et prérequis
 
+```
+git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
+cd libPythonBssApi
+python3.5 -m venv venv
+venv/bin/python setup.py install
+./cli-bss.py --help
+```
+
 ## Documentation
 
 ## Exemple
