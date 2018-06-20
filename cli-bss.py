@@ -357,14 +357,8 @@ elif args['getCos'] == True:
         print(cos.showAttr())
 
 elif args['getAllCos'] == True:
-    action_args = {
-            'domain': args[ 'domain' ] ,
-            'limit' : args[ 'limit' ] ,
-            'offset': args[ 'offset' ] ,
-    }
-
     try:
-        all_cos = COSService.getAllCOS( **action_args )
+        all_cos = COSService.getAllCOS( args[ 'domain' ] )
     except Exception as err:
         print("Echec d'exécution : %s" % err)
         sys.exit(2)
