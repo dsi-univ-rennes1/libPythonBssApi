@@ -358,9 +358,9 @@ elif args['getCos'] == True:
 
 elif args['getAllCos'] == True:
     action_args = {
-            domain: args[ 'domain' ] ,
-            limit: args[ 'limit' ] ,
-            offset: args[ 'offset' ] ,
+            'domain': args[ 'domain' ] ,
+            'limit' : args[ 'limit' ] ,
+            'offset': args[ 'offset' ] ,
     }
 
     try:
