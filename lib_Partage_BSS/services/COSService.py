@@ -67,25 +67,17 @@ def getCOS(domain, name):
 
 
 
-def getAllCOS(domain, limit=100, offset=0, ldapQuery=""):
+def getAllCOS(domain):
     """
     Permet de rechercher toutes les classes de service d'un domain
 
     :param domain: le domaine de la recherche
-    :param limit: le nombre de résultats renvoyés (optionnel)
-    :param offset: le nombre à partir duquel les comptes sont renvoyés (optionnel)
-    :param ldapQuery: un filtre ldap pour affiner la rechercher (optionnel)
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
     """
     if not utils.checkIsDomain(domain):
         raise DomainException
-    data = {
-        "limit": limit,
-        "offset": offset,
-        "ldap_query": ldapQuery
-    }
-    response = callMethod(domain, "GetAllCos", data)
+    response = callMethod(domain, "GetAllCos", { } )
     if not utils.checkResponseStatus(response["status"]):
         raise ServiceException(response["status"], response["message"])
     if len(response["coses"]) == 1:
