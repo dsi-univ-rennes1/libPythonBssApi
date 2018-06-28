@@ -44,6 +44,8 @@ parser.add_argument('--alias', action='append', metavar='fcotton@mondomaine.fr',
 parser.add_argument('--cosId', metavar='829a2781-c41e-4r4e2-b1a8-69f99dd20', help="identifiant de la classe de service")
 parser.add_argument('--cosName', metavar='staff_l_univ_rennes1', help="nom de la classe de service")
 parser.add_argument('--limit', metavar='150', type=int, default=100, help="nombre d'entrées max pour une requête")
+parser.add_argument('--offset', metavar='0', type=int, default=0,
+        help="index de la première entrée à récupérer")
 parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour une requête")
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
@@ -86,13 +88,16 @@ except Exception as err:
     sys.exit(2)
 
 if args['getAllAccounts'] == True:
+    action_args = {
+            'domain': args[ 'domain' ] ,
+            'limit': args[ 'limit' ] ,
+            'offset': args[ 'offset' ] ,
+    }
+    if args[ 'ldapQuery' ]:
+        action_args[ 'ldapQuery' ] = args[ 'ldapQuery' ]
 
     try:
-        if args['ldapQuery']:
-            all_accounts = AccountService.getAllAccounts(domain=args['domain'], limit=args['limit'], ldapQuery=args['ldapQuery'])
-        else:
-            all_accounts = AccountService.getAllAccounts(domain=args['domain'], limit=args['limit'])
-
+        all_accounts = AccountService.getAllAccounts( **action_args )
     except Exception as err:
         print("Echec d'exécution : %s" % err)
         sys.exit(2)
@@ -387,10 +392,8 @@ elif args['getCos'] == True:
         print(cos.showAttr())
 
 elif args['getAllCos'] == True:
-
     try:
-        all_cos = COSService.getAllCOS(domain=args['domain'], limit=args['limit'])
-
+        all_cos = COSService.getAllCOS( args[ 'domain' ] )
     except Exception as err:
         print("Echec d'exécution : %s" % err)
         sys.exit(2)
