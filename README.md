@@ -48,9 +48,9 @@ Les arguments `--domain` et `--domainKey` doivent être fournis pour chaque appe
 Exemples d'appel :
 ```
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
-./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt -f name user@x.fr -f zimbraHideInGal oui --userPassword={SSHA}someHash
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyPassword --email=user@x.fr  --userPassword={SSHA}yourHash
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --lockAccount --email=user@x.fr
@@ -65,6 +65,23 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllGroups
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr --fullData
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getSendAsGroup --email=testgroup1@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey ---createGroup --email=testgroup2@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json
+./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupAlias --email=testgroup4@x.fr --alias=alias2@x.fr --alias=alias3@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupMember --email=testgroup1@x.fr --member=member01@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupMember --email=testgroup1@x.fr --member=member01@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupMember --email=testgroup1@x.fr --member=member01@x.fr --member=member02@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr
 ```
 
 ## License
