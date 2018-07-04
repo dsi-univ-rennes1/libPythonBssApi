@@ -36,13 +36,16 @@ def getAllGroups( domain , limit = 100 , offset = 0 ):
     if not utils.checkResponseStatus( response[ 'status' ] ):
         raise ServiceException( response[ 'status' ] , response[ 'message' ] )
 
-    if len( response[ 'groups' ] ) <= 1:
+    # Attention : xmljson retourne un dictionnaire contenant une entrée également par attribut XML
+    # Donc il y a une entrée pour l'attribut "type" de "<groups type="array">"
+    if len( response[ 'groups' ] ) == 1:
         return []
 
     groups = response[ 'groups' ][ 'group' ]
     if isinstance( groups , list ):
         return [ Group.from_bss( e ) for e in groups ]
-    return Group.from_bss( groups )
+    else:
+        return [ Group.from_bss(groups) ]
 
 
 def getGroup( name , full_info = False ):

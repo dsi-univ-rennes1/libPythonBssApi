@@ -35,7 +35,25 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllGroups\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr --fullData\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getSendAsGroup --email=testgroup1@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey ---createGroup --email=testgroup2@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupAlias --email=testgroup4@x.fr --alias=alias2@x.fr --alias=alias3@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupMember --email=testgroup1@x.fr --member=member01@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupMember --email=testgroup1@x.fr --member=member01@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupMember --email=testgroup1@x.fr --member=member01@x.fr --member=member02@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n"
+
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
