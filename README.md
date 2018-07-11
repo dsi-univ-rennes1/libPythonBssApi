@@ -27,7 +27,9 @@ venv/bin/python setup.py install
 
 ## Documentation
 
-## Exemple
+## Exemples
+
+### Se connecter au BSS, rechercher de comptes par filtre et créer un compte
 
 ```
 from lib_Partage_BSS.models.Account import Account
@@ -47,6 +49,32 @@ account = AccountService.getAccount('user@x.fr')
 # Création d'un compte
 AccountService.createAccount(name='user@x.fr', userPassword='{SSHA}yourHash', cosId='yourCos')
 ```
+
+### getAllAccounts en exploitant la pagination
+``````
+from lib_Partage_BSS.services import AccountService
+from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
+
+listDomainKey = {"x.fr": "yourKey"}
+
+bss = BSSConnexion()
+bss.setDomainKey(listDomainKey=listDomainKey)
+
+offset = 0
+limit = 100
+while True:
+
+    print("getAllAccounts(%i)..." % offset)
+    list_accounts_partage = AccountService.getAllAccounts(domain="x.fr", limit=limit, offset=offset, ldapQuery="(!(zimbraHideInGAL=TRUE))")
+
+    if len(list_accounts_partage) == 0:
+        break
+
+    for account_from_all in list_accounts_partage:
+        print("\t%s" % account_from_all.name)
+
+    offset += limit
+``````
 
 ## Client en ligne de commande
 Le script `cli-bss.py` est un client BSS en ligne de commande.
