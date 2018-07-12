@@ -8,7 +8,8 @@ import json
 
 from lib_Partage_BSS.exceptions import *
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
-from lib_Partage_BSS.services import AccountService
+from lib_Partage_BSS.models.Group import Group
+from lib_Partage_BSS.services import AccountService , GroupService
 from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
@@ -34,7 +35,25 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountAliases --email=user@x.fr --alias=alias3@x.fr --alias=alias4@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllGroups\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr --fullData\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getSendAsGroup --email=testgroup1@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey ---createGroup --email=testgroup2@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupAlias --email=testgroup4@x.fr --alias=alias2@x.fr --alias=alias3@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupMember --email=testgroup1@x.fr --member=member01@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupMember --email=testgroup1@x.fr --member=member01@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupMember --email=testgroup1@x.fr --member=member01@x.fr --member=member02@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n"
+
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
@@ -50,9 +69,20 @@ parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour 
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
 parser.add_argument('--jsonData', metavar='/tmp/myAccount.json', type=argparse.FileType('r'), help="fichier contenant des données JSON")
+parser.add_argument( '--fullData' ,
+    action = 'store_true' ,
+    help = '''Récupérer toutes les informations dans les requêtes sur les
+              groupes. Attention, c'est lent.''' )
 parser.add_argument('--field' , '-f' ,
     action='append' , nargs=2 ,
     metavar=('name','value') , help="nom et valeur d'un champ du compte")
+parser.add_argument( '--member' , action = 'append' ,
+    metavar = 'example@example.org' ,
+    help = '''Membre(s) d'un groupe ou d'une liste de distribution.''' )
+parser.add_argument( '--sender' , action = 'append' ,
+    metavar = 'example@example.org' ,
+    help = '''Compte autorisé à utiliser l'adresse mail d'un groupe ou d'une
+              liste de distribution en adresse d'expédition.''' )
 
 group = parser.add_argument_group('Opérations implémentées :')
 group.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
@@ -75,6 +105,45 @@ group.add_argument('--removeAccountAlias', action='store_const', const=True, hel
 group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
+# Requêtes sur les groupes
+group.add_argument( '--getAllGroups', action = 'store_true' ,
+    help = 'Afficher la liste des groupes et listes de distribution' )
+group.add_argument( '--getGroup' , action = 'store_true' ,
+    help = 'Rechercher un groupe / une liste de distribution' )
+group.add_argument( '--getSendAsGroup' , action = 'store_true' ,
+    help = '''Lister les l’ensemble des comptes pouvant utiliser l’adresse
+              mail du groupe en adresse d’expédition.''' )
+# Opérations sur les groupes
+group.add_argument( '--createGroup' , action = 'store_true' ,
+    help = '''Créer un groupe / une liste de distribution.''' )
+group.add_argument( '--createGroupExt', action = 'store_true' ,
+    help = '''Créer un groupe / une liste de distribution en spécifiant les
+              paramètres via -f ou --jsonData''' )
+group.add_argument( '--deleteGroup' , action = 'store_true' ,
+    help = '''Supprimer un groupe / une liste de distribution.''' )
+group.add_argument( '--addGroupAlias' , action = 'store_true' ,
+    help = '''Ajoute des alias à un groupe / une liste de distribution.''' )
+group.add_argument( '--removeGroupAlias' , action = 'store_true' ,
+    help = '''Supprime des alias à un groupe / une liste de distribution.''' )
+group.add_argument( '--setGroupAliases' , action = 'store_true' ,
+    help = '''Modifie les alias à un groupe / une liste de distribution.''' )
+group.add_argument( '--addGroupMember' , action = 'store_true' ,
+    help = '''Ajoute des membres à un groupe / une liste de distribution.''' )
+group.add_argument( '--removeGroupMember' , action = 'store_true' ,
+    help = '''Supprime des membres d'un groupe / d'une liste de
+              distribution.''' )
+group.add_argument( '--setGroupMembers' , action = 'store_true' ,
+    help = '''Modifie les membres d'un groupe / d'une liste de
+              distribution.''' )
+group.add_argument( '--addGroupSender' , action = 'store_true' ,
+    help = '''Ajoute des autorisations d'utilisation de l'adresse du groupe ou
+              de la liste de distribution par des comptes.''' )
+group.add_argument( '--removeGroupSender' , action = 'store_true' ,
+    help = '''Supprime des autorisations d'utilisation de l'adresse du groupe ou
+              de la liste de distribution par des comptes.''' )
+group.add_argument( '--setGroupSenders' , action = 'store_true' ,
+    help = '''Modifie les autorisations d'utilisation de l'adresse du groupe ou
+              de la liste de distribution par des comptes.''' )
 
 args = vars(parser.parse_args())
 
@@ -402,6 +471,229 @@ elif args['getAllCos'] == True:
     for cos in all_cos:
         print("Classe de service %s :" % cos.name)
         print(cos.showAttr())
+
+elif args[ 'getAllGroups' ]:
+    data = {
+        'domain' : args[ 'domain' ] ,
+        'limit'  : args[ 'limit' ] ,
+    }
+
+    try:
+        all_groups = GroupService.getAllGroups( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+
+    print( "{} groupes retournés".format( len( all_groups ) ) )
+    if 'fullData' in args and args[ 'fullData' ]:
+        print( 'Récupération des informations complètes...' )
+        try:
+            all_groups = [ GroupService.getGroup( g.name , full_info = True )
+                                for g in all_groups ]
+        except Exception as err:
+            print( "Echec d'exécution : {}".format( repr( err ) ) )
+            sys.exit( 2 )
+
+    print( )
+    for group in all_groups:
+        print( "Groupe {} : ".format( group.name ) )
+        print( group.showAttr( ) )
+        print( )
+
+elif args[ 'getGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        data = { 'name' : args[ 'email' ] }
+        if 'fullData' in args:
+            data[ 'full_info' ] = args[ 'fullData' ]
+        group = GroupService.getGroup( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    if group is None:
+        print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
+    else:
+        print( group.showAttr( ) )
+
+elif args[ 'getSendAsGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        senders = GroupService.getSendAsGroup( args[ 'email' ] )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    if senders is None:
+        print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
+    elif not senders:
+        print( "Pas d'utilisateurs autorisés" )
+    else:
+        print( "Utilisateurs autorisés: {}".format( ', '.join( senders ) ) )
+
+elif args[ 'createGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        GroupService.createGroup( args[ 'email' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        raise err
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'createGroupExt' ]:
+    try:
+        # Objet du compte, éventuellement lu depuis un fichier JSON
+        if args[ 'jsonData' ]:
+            group = Group.from_json( args[ 'jsonData' ] , is_file = True )
+        else:
+            group = Group( )
+
+        if args[ 'field' ]:
+            group.from_dict({
+                    arg[ 0 ] : arg[ 1 ]
+                        for arg in args[ 'field' ]
+                } , allow_name = True )
+
+        GroupService.createGroup( group )
+        group = GroupService.getGroup( group.name , full_info = True )
+    except Exception as err:
+        raise err
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'deleteGroup' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        GroupService.deleteGroup( args[ 'email' ] )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( "Groupe {} supprimé".format( args[ 'email' ] ) )
+
+elif args[ 'addGroupAlias' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'alias' ]:
+            raise Exception( "Argument 'alias' manquant" )
+        GroupService.addGroupAliases( args[ 'email' ] , args[ 'alias' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'removeGroupAlias' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'alias' ]:
+            raise Exception( "Argument 'alias' manquant" )
+        GroupService.removeGroupAliases( args[ 'email' ] , args[ 'alias' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'setGroupAliases' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'alias' ]:
+            args[ 'alias' ] = ( )
+        GroupService.updateGroupAliases( args[ 'email' ] , args[ 'alias' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        raise err
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'addGroupMember' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'member' ]:
+            raise Exception( "Argument 'member' manquant" )
+        GroupService.addGroupMembers( args[ 'email' ] , args[ 'member' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'removeGroupMember' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'member' ]:
+            raise Exception( "Argument 'member' manquant" )
+        GroupService.removeGroupMembers( args[ 'email' ] , args[ 'member' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'setGroupMembers' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'member' ]:
+            args[ 'member' ] = ( )
+        GroupService.updateGroupMembers( args[ 'email' ] , args[ 'member' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        raise err
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'addGroupSender' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'sender' ]:
+            raise Exception( "Argument 'sender' manquant" )
+        GroupService.addGroupSenders( args[ 'email' ] , args[ 'sender' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'removeGroupSender' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'sender' ]:
+            raise Exception( "Argument 'sender' manquant" )
+        GroupService.removeGroupSenders( args[ 'email' ] , args[ 'sender' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
+
+elif args[ 'setGroupSenders' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        if not args[ 'sender' ]:
+            args[ 'sender' ] = ( )
+        GroupService.updateGroupSenders( args[ 'email' ] , args[ 'sender' ] )
+        group = GroupService.getGroup( args[ 'email' ] , full_info = True )
+    except Exception as err:
+        raise err
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( group.showAttr( ) )
 
 else:
     print("Aucune opération à exécuter")
