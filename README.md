@@ -120,7 +120,7 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr
 ```
 
-## Tests
+## Tests
 
 Vous pouvez exécuter les tests unitaires et les tests d'intégration via l'utilitaire `pytest`.
 
