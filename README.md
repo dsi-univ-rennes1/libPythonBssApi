@@ -29,7 +29,7 @@ venv/bin/python setup.py install
 
 ## Exemples
 
-### Se connecter au BSS, rechercher de comptes par filtre et créer un compte
+### Se connecter au BSS, rechercher de comptes par filtre et créer un compte
 
 ```
 from lib_Partage_BSS.models.Account import Account
