@@ -41,6 +41,7 @@ def test_getToken_8sApresCreation(test_config):
     assert token == token2
     con.instance = None
 
+@pytest.mark.skip(reason="ça prend trop de temps...")
 def test_getToken_5minApresCreation(test_config):
     con = create_connexion(test_config)
     token = con.token(test_config['bss_domain'])
