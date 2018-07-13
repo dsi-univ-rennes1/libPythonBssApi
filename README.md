@@ -120,7 +120,7 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr
 ```
 
-## Tests
+## Tests
 
 Vous pouvez exécuter les tests unitaires et les tests d'intégration via l'utilitaire `pytest`.
 
@@ -185,7 +185,8 @@ test_unitaire/lib_Partage_BSS/utils/test_CheckMethods.py::test_changeToInt_casEx
 test_unitaire/lib_Partage_BSS/utils/test_CheckMethods.py::test_changeTimestampToDate_casOk PASSED                  [ 98%]
 test_unitaire/lib_Partage_BSS/utils/test_CheckMethods.py::test_changeDateToTimestamp_casOk PASSED                  [100%]
 
-=============================================== 50 passed in 18.23 seconds ===============================================```
+=============================================== 50 passed in 18.23 seconds ===============================================
+```
 
 
 L'exécution des tests d'intégration nécessite que vous ayez accès à un environnement BSS fourni par RENATER. Lancer les tests d'intégration :
@@ -239,7 +240,8 @@ test_integration/lib_Partage_BSS/services/test_ServiceGroup.py::test_removeGroup
 test_integration/lib_Partage_BSS/services/test_ServiceGroup.py::test_deleteGroup_cas_normal PASSED                 [ 97%]
 test_integration/lib_Partage_BSS/services/test_ServiceGroup.py::test_deleteGroup_cas_groupe_inexistant PASSED      [100%]
 
-============================================== 40 passed in 377.01 seconds ===============================================```
+============================================== 40 passed in 377.01 seconds ===============================================
+```
 
 Vous pouvez exécuter les tests d'intégration sur l'environnement de préprod de Renater en spécifiant l'argument `--bss_url` à `pytest`.
 
