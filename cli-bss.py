@@ -275,9 +275,6 @@ elif args['createAccount'] == True:
     if not args['userPassword']:
         raise Exception("Missing 'userPassword' argument")
 
-    if not args['cosId']:
-        raise Exception("Missing 'cosId' argument")
-
     try:
         AccountService.createAccount(name=args['email'], userPassword=args['userPassword'], cosId=args['cosId'] )
 

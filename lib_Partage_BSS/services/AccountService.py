@@ -105,7 +105,7 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
 
 
 
-def createAccount(name,userPassword, cosId, account = None):
+def createAccount(name,userPassword, cosId = None, account = None):
     """
     Méthode permettant de créer un compte via l'API BSS en lui passant en paramètre l'empreinte du mot de passe (SSHA) et le cosId
 
