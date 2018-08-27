@@ -82,7 +82,7 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery=""):
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
     """
     if not utils.checkIsDomain(domain):
-        raise DomainException
+        raise DomainException(domain + " n'est pas un nom de domain valide")
     data = {
         "limit": limit,
         "offset": offset,

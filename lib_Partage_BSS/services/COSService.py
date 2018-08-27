@@ -76,7 +76,7 @@ def getAllCOS(domain):
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
     """
     if not utils.checkIsDomain(domain):
-        raise DomainException
+        raise DomainException(domain + " n'est pas un nom de domain valide")
     response = callMethod(domain, "GetAllCos", { } )
     if not utils.checkResponseStatus(response["status"]):
         raise ServiceException(response["status"], response["message"])
