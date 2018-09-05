@@ -382,6 +382,7 @@ def activateAccount(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
     account = models.Account(name)
     account.zimbraAccountStatus = "active"
+    account.zimbraHideInGal = False
     modifyAccount(account)
 
 
