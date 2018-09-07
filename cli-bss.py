@@ -2,7 +2,7 @@
 # This Python file uses the following encoding: utf-8# Script pour faire mes 1er pas en Python
 # O.Salaün (Univ Rennes1) : client en ligne de commande pour lib_Partage_BSS
 
-import argparse, sys
+import argparse, sys, re
 import pprint
 import json
 
@@ -30,6 +30,7 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountList --field zimbraAccountStatus closed\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr\n" + \
@@ -91,6 +92,7 @@ group.add_argument('--createAccountExt',
     action='store_const', const=True,
     help="créer un compte en spécifiant les paramètres via -f ou --jsonData")
 group.add_argument('--modifyAccount', action='store_const', const=True, help="mettre à jour un compte")
+group.add_argument('--modifyAccountList', action='store_const', const=True, help="mettre à jour plusieurs compte")
 group.add_argument('--renameAccount', action='store_const', const=True, help="renommer un compte")
 group.add_argument('--deleteAccount', action='store_const', const=True, help="supprimer un compte")
 group.add_argument('--preDeleteAccount', action='store_const', const=True, help="pré-supprimer un compte (le compte est fermé et renommé)")
@@ -307,6 +309,43 @@ elif args['modifyAccount'] == True:
         sys.exit(2)
 
     print("Le compte %s a été mis à jour" % args['email'])
+
+elif args['modifyAccountList'] == True:
+
+    if not args['field']:
+        raise Exception("Missing 'field' arguments")
+
+    emailList = []
+    for email in sys.stdin:
+       if not re.search(r'@', email):
+           continue
+       emailList.append(email.rstrip())
+
+    #print("Email: %s" % ','.join(emailList))
+
+    for email in emailList:
+        try:
+            account = AccountService.getAccount(email)
+
+        except Exception as err:
+            print("Echec d'exécution pour le compte %s : %s" % (email,err))
+            continue
+
+        if not account:
+            print("Compte %s non trouvé" % email)
+            continue
+
+        for field in args['field']:
+            setattr(account, field[0], field[1])
+
+        try:
+            AccountService.modifyAccount(account=account)
+
+        except Exception as err:
+            print("Echec d'exécution : %s" % err)
+            sys.exit(2)
+
+        print("Le compte %s a été mis à jour" % args['email'])
 
 elif args['renameAccount'] == True:
 
