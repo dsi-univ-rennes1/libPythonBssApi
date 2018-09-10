@@ -345,7 +345,7 @@ elif args['modifyAccountList'] == True:
             print("Echec d'exécution : %s" % err)
             sys.exit(2)
 
-        print("Le compte %s a été mis à jour" % args['email'])
+        print("Le compte %s a été mis à jour" % email)
 
 elif args['renameAccount'] == True:
 
