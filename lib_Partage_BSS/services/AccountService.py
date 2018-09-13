@@ -124,20 +124,27 @@ def createAccount(name,userPassword, cosId = None, account = None):
     if not utils.checkIsMailAddress(name):
         raise NameException("L'adresse mail " + name + " n'est pas valide")
 
-    data = {
+    # Les attributs issus de l'objet account
+    data = {}
+    if account is not None:
+        data = account.toData()
+
+    # Les attributs obligatoires
+    data.update({
             "name": name,
             "password": "",
             "userPassword": userPassword,
             "zimbraHideInGal": "FALSE",
             "zimbraCOSId": cosId
-        }
+        })
+
     response = callMethod(services.extractDomain(name), "CreateAccount", data)
 
     if not utils.checkResponseStatus(response["status"]):
         raise ServiceException(response["status"], response["message"])
 
-    if account is not None:
-        modifyAccount(account)
+    # if account is not None:
+    #     modifyAccount(account)
 
     return getAccount(name)
 
