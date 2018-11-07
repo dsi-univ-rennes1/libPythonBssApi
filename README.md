@@ -41,7 +41,7 @@ bss = BSSConnexion()
 bss.setDomainKey('x.fr', 'yourKey')
 
 # Recherche parmis les comptes
-all_accounts = AccountService.getAllAccounts(domain='x.fr', limit=200, 'mail=u*')
+all_accounts = AccountService.getAllAccounts(domain='x.fr', limit=200, 'mail=u*', , attrs="carLicense,zimbraAccountStatus,zimbraHideInGAL")
 
 # Consultation d'un compte
 account = AccountService.getAccount('user@x.fr')
@@ -85,6 +85,7 @@ Exemples d'appel :
 ```
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*' --attrs='carLicense,zimbraAccountStatus,zimbraHideInGAL'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt -f name user@x.fr -f zimbraHideInGal oui --userPassword={SSHA}someHash
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteAccount --email=user@x.fr
@@ -95,6 +96,7 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountList --field zimbraAccountStatus closed
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --addAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --removeAccountAlias --email=user@x.fr --alias=alias1@x.fr --alias=alias2@x.fr

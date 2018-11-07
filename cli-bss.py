@@ -19,6 +19,7 @@ printer = pprint.PrettyPrinter(indent=4)
 epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*' --attrs='carLicense,zimbraAccountStatus,zimbraHideInGAL'\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt " + \
         "-f name user@x.fr -f zimbraHideInGal oui --userPassword={SSHA}someHash\n" + \
@@ -67,6 +68,7 @@ parser.add_argument('--limit', metavar='150', type=int, default=100, help="nombr
 parser.add_argument('--offset', metavar='0', type=int, default=0,
         help="index de la première entrée à récupérer")
 parser.add_argument('--ldapQuery', metavar='mail=jean*', help="filtre LDAP pour une requête")
+parser.add_argument('--attrs', metavar='attrs=carLicense,zimbraAccountStatus,zimbraHideInGAL', help="sélection des attributs à retourner")
 parser.add_argument('--userPassword', metavar='{ssha}HpqRjlh1WEha+6or95YkqA', help="empreinte du mot de passe utilisateur")
 parser.add_argument('--asJson', action='store_const', const=True, help="option pour exporter un compte au format JSON")
 parser.add_argument('--jsonData', metavar='/tmp/myAccount.json', type=argparse.FileType('r'), help="fichier contenant des données JSON")
@@ -163,6 +165,7 @@ if args['getAllAccounts'] == True:
             'domain': args[ 'domain' ] ,
             'limit': args[ 'limit' ] ,
             'offset': args[ 'offset' ] ,
+            'attrs': args[ 'attrs' ] ,
     }
     if args[ 'ldapQuery' ]:
         action_args[ 'ldapQuery' ] = args[ 'ldapQuery' ]
