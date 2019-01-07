@@ -12,6 +12,7 @@ from lib_Partage_BSS.models.Group import Group
 from lib_Partage_BSS.services import AccountService , GroupService
 from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
+from lib_Partage_BSS.services import DomainService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 
 printer = pprint.PrettyPrinter(indent=4)
@@ -39,10 +40,12 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllGroups\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getDomain\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --countObjects --type=userAccount\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr --fullData\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getSendAsGroup --email=testgroup1@x.fr\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey ---createGroup --email=testgroup2@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroup --email=testgroup2@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr\n" + \
@@ -109,6 +112,10 @@ group.add_argument('--removeAccountAlias', action='store_const', const=True, hel
 group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
+group.add_argument('--getDomain', action='store_const', const=True, help="informations sur un domaine")
+group.add_argument('--countObjects', action='store_const', const=True, help="compter les objets d'un domaine")
+parser.add_argument('--type', metavar='userAccount', help="type d'objet à rechercher (userAccount, alias, dl ou calresource)")
+
 # Requêtes sur les groupes
 group.add_argument( '--getAllGroups', action = 'store_true' ,
     help = 'Afficher la liste des groupes et listes de distribution' )
@@ -510,6 +517,33 @@ elif args['getAllCos'] == True:
     for cos in all_cos:
         print("Classe de service %s :" % cos.name)
         print(cos.showAttr())
+
+elif args['getDomain'] == True:
+    try:
+        domain = DomainService.getDomain( args[ 'domain' ] )
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+    domain_parsed = json.loads(json.dumps(domain))
+
+    if not args['asJson']:
+        print("Informations sur le domaine %s :" % args['domain'])
+
+    print(json.dumps(domain_parsed, sort_keys=True, indent=4))
+
+elif args['countObjects'] == True:
+
+    if not args['type']:
+        raise Exception("Missing 'type' argument")
+
+    try:
+        count = DomainService.countObjects(args['domain'], args['type'])
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Nombre d'objets de type %s dans le domaine %s : %s" % (args['type'], args['domain'], count))
+
 
 elif args[ 'getAllGroups' ]:
     data = {

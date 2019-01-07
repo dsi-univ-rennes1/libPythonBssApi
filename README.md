@@ -104,10 +104,12 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getCos --cosName=etu_s_xx
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllCos
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllGroups
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getDomain
+./cli-bss.py --domain=x.fr --domainKey=yourKey --countObjects --type=userAccount
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getGroup --email=testgroup1@x.fr --fullData
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getSendAsGroup --email=testgroup1@x.fr
-./cli-bss.py --domain=x.fr --domainKey=yourKey ---createGroup --email=testgroup2@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroup --email=testgroup2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr
