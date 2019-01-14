@@ -19,7 +19,8 @@ printer = pprint.PrettyPrinter(indent=4)
 
 epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr\n" + \
-	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
+    "./cli-bss.py --bssUrl=https://api.partage.renater.fr/service/domain --domain=x.fr --domainKey=yourKey --getAllAccounts\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*' --attrs='carLicense,zimbraAccountStatus,zimbraHideInGAL'\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt " + \
@@ -60,6 +61,7 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n"
 
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser.add_argument('--bssUrl', metavar='https://api.partage.renater.fr/service/domain', help="pour spécifier l'URL d'accès au BSS")
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
 parser.add_argument('--email', metavar='jchirac@mondomaine.fr', help="adresse mail passée en argument")
@@ -161,6 +163,8 @@ args = vars(parser.parse_args())
 # Connexion au BSS
 try:
     bss = BSSConnexion()
+    if args['bssUrl']:
+        bss.url = args['bssUrl']
     bss.setDomainKey(listDomainKey={args['domain']: args['domainKey']})
 
 except Exception as err:
