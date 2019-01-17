@@ -86,6 +86,7 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAccount --email=user@x.fr
 ./cli-bss.py --bssUrl=https://api.partage.renater.fr/service/domain --domain=x.fr --domainKey=yourKey --getAllAccounts
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*'
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --sortBy=mail
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --getAllAccounts --limit=200 --ldapQuery='mail=u*' --attrs='carLicense,zimbraAccountStatus,zimbraHideInGAL'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccount --email=user@x.fr --cosId=yourCos --userPassword={SSHA}yourHash
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createAccountExt -f name user@x.fr -f zimbraHideInGal oui --userPassword={SSHA}someHash
