@@ -158,6 +158,8 @@ def changeToInt(value):
                 return int(value["content"])
             else:
                 raise TypeError
+        elif isinstance (value, int):
+            return value
         else:
             raise TypeError
     else:

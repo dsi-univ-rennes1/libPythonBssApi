@@ -186,8 +186,7 @@ if args['getAllAccounts'] == True:
     try:
         all_accounts = AccountService.getAllAccounts( **action_args )
     except Exception as err:
-        print("Echec d'exécution : %s" % err)
-        sys.exit(2)
+        raise err
 
     print("%d comptes retournés :" % len(all_accounts))
     for account in all_accounts:

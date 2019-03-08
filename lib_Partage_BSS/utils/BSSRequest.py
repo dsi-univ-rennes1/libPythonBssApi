@@ -2,12 +2,11 @@
 """
 Module permettant de faire des requêtes HTTP vers l'API BSS et de parser la réponse
 """
-import xml.etree.ElementTree as et
-from xmljson import yahoo as ya
-import requests
-
 from lib_Partage_BSS.exceptions import ServiceException
-
+import xml.etree.ElementTree as et
+from xml.etree.ElementTree import ParseError
+from xmljson import yahoo as ya
+import requests,datetime,time
 
 def parseResponse(stringXml):
     """
@@ -16,13 +15,20 @@ def parseResponse(stringXml):
     :param stringXml: la chaine XML à transformer en objet python
     :return: l'objet response obtenu
     """
-    response = ya.data(et.fromstring(stringXml))
-    if "Response" in response:
-        return response["Response"]
-    elif "response" in response:
-        return response["response"]
-    else:
-        raise ServiceException(3,"Problème format réponse")
+    try:
+        response = ya.data(et.fromstring(stringXml))
+        if "Response" in response:
+            return response["Response"]
+        else:
+            return response["response"]
+
+    except ParseError as e:
+        ts = time.time()
+        dump_file = '/tmp/bss_incorrect_response.%s' % datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H:%M:%S')
+        with open(dump_file, 'w') as dump:
+            dump.write(stringXml)
+
+            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file + " : " + str(e)) from e
 
 
 def postBSS(url, data):
