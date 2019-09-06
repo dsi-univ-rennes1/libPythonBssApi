@@ -564,6 +564,8 @@ class Account(GlobalModel):
         if isinstance(value, str) or value is None:
             if utils.checkIsMailAddress(value):
                 self._zimbraMailCanonicalAddress = value
+            else:
+                raise NameException("L'adresse mail " + value + " n'est pas une adresse mail valide")
         else:
             raise TypeError
 
@@ -602,6 +604,8 @@ class Account(GlobalModel):
         if isinstance(value, str) or value is None:
             if utils.checkIsMailAddress(value):
                 self._zimbraPrefMailForwardingAddress = value
+            else:
+                raise NameException("L'adresse mail " + value + " n'est pas une adresse mail valide")
         else:
             raise TypeError
 

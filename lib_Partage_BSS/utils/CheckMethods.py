@@ -40,7 +40,8 @@ def checkIsMailAddress(value):
     if value is None:
         return True
     if isinstance(value, str):
-        if value == "" or re.match("^[^\W][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]+)*\@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*\.[a-zA-Z]{2,4}$", value):
+        # Expression régulière publiée sur https://www.regular-expressions.info/email.html
+        if value == "" or re.match("\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$", value):
             return True
         else:
             return False

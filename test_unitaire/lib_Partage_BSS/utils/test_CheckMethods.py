@@ -50,6 +50,14 @@ def test_checkIsMailAddress_casTrueAvecDebutEn2Parties():
     assert checkIsMailAddress("super.test@domain.com")
 
 
+def test_checkIsMailAddress_casTrueAvecApostrophe():
+    assert checkIsMailAddress("super'test@domain.com")
+
+
+def test_checkIsMailAddress_casTrueAvecPlus():
+    assert checkIsMailAddress("super+test@domain.com")
+
+
 def test_checkIsMailAddress_casTrueVide():
     assert checkIsMailAddress("")
 
@@ -64,14 +72,6 @@ def test_checkIsMailAddress_casFalseSansExtensionDeDomain():
 
 def test_checkIsMailAddress_casFalseSansAdresseMaisAvecDomaine():
     assert not checkIsMailAddress("@domain.fr")
-
-
-def test_checkIsMailAddress_casFalseDomainTropCourt():
-    assert not checkIsMailAddress("test@domain.f")
-
-
-def test_checkIsMailAddress_casFalseDomainTropLong():
-    assert not checkIsMailAddress("test@domain.france")
 
 
 def test_checkIsDomain_casTrueDomainAvecExtension2caracteres():
