@@ -7,8 +7,8 @@ from collections import OrderedDict
 from time import time
 
 from lib_Partage_BSS import models, utils, services
-from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException
-from .GlobalService import callMethod
+from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
+from .GlobalService import callMethod, checkResponseStatus
 
 
 def getDomain(domain):
@@ -24,13 +24,15 @@ def getDomain(domain):
     data = {
     }
     response = callMethod(domain, "GetDomain", data)
-    if utils.checkResponseStatus(response["status"]):
-        domain = response["domain"]
-        return domain
-    elif re.search(".*no such domain.*", response["message"]):
+
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    else:
-        raise ServiceException(response["status"], response["message"])
+
+    domain = response["domain"]
+    return domain
+
 
 def countObjects(domain, type):
     """
@@ -46,12 +48,11 @@ def countObjects(domain, type):
         "type": type
     }
     response = callMethod(domain, "CountObjects", data)
-    if utils.checkResponseStatus(response["status"]):
-        count = response["count"]["content"]
-        return count
-    elif re.search(".*no such domain.*", response["message"]):
+
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    else:
-        raise ServiceException(response["status"], response["message"])
 
-
+    count = response["count"]["content"]
+    return count

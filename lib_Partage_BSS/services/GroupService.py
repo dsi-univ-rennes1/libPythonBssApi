@@ -5,10 +5,10 @@ concernant les groupes et listes de distribution.
 """
 
 from lib_Partage_BSS.models.Group import Group
-from .GlobalService import callMethod
+from .GlobalService import callMethod, checkResponseStatus
 from lib_Partage_BSS import services , utils
-from lib_Partage_BSS.exceptions import ( NameException , DomainException ,
-                                         ServiceException )
+from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
+
 
 
 #-------------------------------------------------------------------------------
@@ -33,8 +33,7 @@ def getAllGroups( domain , limit = 100 , offset = 0 ):
     }
 
     response = callMethod( domain , 'GetAllGroups' , data )
-    if not utils.checkResponseStatus( response[ 'status' ] ):
-        raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+    checkResponseStatus( response)
 
     # Attention : xmljson retourne un dictionnaire contenant une entrée également par attribut XML
     # Donc il y a une entrée pour l'attribut "type" de "<groups type="array">"
@@ -71,14 +70,15 @@ def getGroup( name , full_info = False ):
     domain = services.extractDomain( name )
     response = callMethod( domain , 'GetGroup' , data )
 
-    if utils.checkResponseStatus( response[ 'status' ] ):
-        group = Group.from_bss( response[ 'group' ] )
-        if full_info:
-            getSendAsGroup( group )
-        return group
-    if 'no such distribution list' in response[ 'message' ]:
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+
+    group = Group.from_bss( response[ 'group' ] )
+    if full_info:
+        getSendAsGroup( group )
+    return group
 
 
 def getSendAsGroup( name_or_group ):
@@ -111,11 +111,12 @@ def getSendAsGroup( name_or_group ):
     domain = services.extractDomain( name )
     response = callMethod( domain , 'GetSendAsGroup' , data )
 
-    if utils.checkResponseStatus( response[ 'status' ] ):
-        return group.senders_from_bss( response )
-    if 'no such distribution list' in response[ 'message' ]:
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+
+    return group.senders_from_bss(response)
 
 
 #-------------------------------------------------------------------------------
@@ -155,8 +156,7 @@ def createGroup( name_or_group ):
 
     domain = services.extractDomain( data[ 'name' ] )
     response = callMethod( domain , 'CreateGroup' , data )
-    if not utils.checkResponseStatus( response[ 'status' ] ):
-        raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+    checkResponseStatus( response)
 
     if not is_group:
         return
@@ -192,8 +192,7 @@ def deleteGroup( name_or_group ):
 
     domain = services.extractDomain( data[ 'name' ] )
     response = callMethod( domain , 'DeleteGroup' , data )
-    if not utils.checkResponseStatus( response[ 'status' ] ):
-        raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+    checkResponseStatus( response)
 
 
 #-------------------------------------------------------------------------------
@@ -213,8 +212,7 @@ def modifyGroup( group ):
     """
     response = callMethod( services.extractDomain( group.name ) ,
             'ModifyGroup' , group.to_bss( ) )
-    if not utils.checkResponseStatus( response[ 'status' ] ):
-        raise ServiceException( response[ 'status' ] , response[ 'message' ] )
+    checkResponseStatus( response)
 
 #-------------------------------------------------------------------------------
 
@@ -264,9 +262,8 @@ def _group_set_op( name_or_group , entries , f_name , op_name ):
                 f_name : entry ,
             }
         response = callMethod( domain , op_name , data )
-        if not utils.checkResponseStatus( response[ 'status' ] ):
-            raise ServiceException( response[ 'status' ] ,
-                    response[ 'message' ] )
+        checkResponseStatus( response)
+
 
 def _group_diff_op( name_or_group , new_values , a_name , f_name ,
             add_op_name , rem_op_name ):

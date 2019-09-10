@@ -7,8 +7,6 @@ from collections import OrderedDict
 from datetime import datetime
 from time import mktime
 
-from lib_Partage_BSS.exceptions import NameException
-
 
 def checkIsNum(value):
     """
@@ -86,20 +84,6 @@ def checkIsPreDeleteAccount(value):
                 return False
     else:
         raise TypeError
-
-
-def checkResponseStatus(statuscode):
-    """
-    Vérifie si le code status passé est un code de réussite ou pas (réussite = 0)
-
-    :param statuscode: le code status à tester
-    :return: True si le code est 0 False sinon
-    :raises TypeError: Exception levée si le paramètre n'est pas un OrderedDict et si il ne possède pas un champs type avec la valeur integer
-    """
-    try:
-        return changeToInt(statuscode) == 0
-    except TypeError:
-        return False
 
 
 def changeBooleanToString(boolean):

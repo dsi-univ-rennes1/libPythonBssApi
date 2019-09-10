@@ -3,7 +3,7 @@ from collections import OrderedDict
 import pytest
 
 from lib_Partage_BSS.utils import checkIsNum, checkIsMailAddress, checkIsDomain, checkIsPreDeleteAccount, \
-    checkResponseStatus, changeBooleanToString, changeStringToBoolean, changeToInt, changeTimestampToDate, \
+    changeBooleanToString, changeStringToBoolean, changeToInt, changeTimestampToDate, \
     changeDateToTimestamp
 
 
@@ -112,21 +112,6 @@ def test_checkIsPreDeleteAccount_casFalseDateIncomplete():
 
 def test_checkIsPreDeleteAccount_casFalsePasAdresseMailALaFin():
     assert not checkIsPreDeleteAccount("readytodelete_2018-03-09-12-00_test")
-
-
-def test_checkResponseStatus_casTrue0():
-    test_int = OrderedDict()
-    test_int["type"] = "integer"
-    test_int["content"] = "0"
-    assert checkResponseStatus(test_int)
-
-
-def test_checkResponseStatus_casFalse1():
-    test_int = OrderedDict()
-    test_int["type"] = "integer"
-    test_int["content"] = "1"
-    assert not checkResponseStatus(test_int)
-
 
 def test_changeBooleanToString_casTrueParamTrue():
     assert changeBooleanToString(True) == "TRUE"

@@ -5,7 +5,10 @@ from requests import Response
 
 from lib_Partage_BSS.models.Account import Account
 from lib_Partage_BSS.exceptions.NameException import NameException
+from lib_Partage_BSS.exceptions.DomainException import DomainException
 from lib_Partage_BSS.exceptions.ServiceException import ServiceException
+from lib_Partage_BSS.exceptions.TmpServiceException import TmpServiceException
+from lib_Partage_BSS.exceptions.NotFoundException import NotFoundException
 from lib_Partage_BSS.services import AccountService, BSSConnexion, BSSConnexionService
 
 

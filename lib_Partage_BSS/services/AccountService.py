@@ -7,8 +7,8 @@ from collections import OrderedDict
 from time import time
 
 from lib_Partage_BSS import models, utils, services
-from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException
-from .GlobalService import callMethod
+from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
+from .GlobalService import callMethod, checkResponseStatus
 
 
 def fillAccount(accountResponse):
@@ -59,15 +59,14 @@ def getAccount(name):
         "name": name
     }
     response = callMethod(services.extractDomain(name), "GetAccount", data)
-    if utils.checkResponseStatus(response["status"]):
-        account = response["account"]
-        return fillAccount(account)
-    elif re.search(".*no such account.*", response["message"]):
+
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    else:
-        raise ServiceException(response["status"], response["message"])
 
-
+    account = response["account"]
+    return fillAccount(account)
 
 
 def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy=""):
@@ -93,8 +92,8 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy="
         "sortby": sortBy
     }
     response = callMethod(domain, "GetAllAccounts", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
+
     if len(response["accounts"]) == 1:
         return []
     else:
@@ -144,8 +143,7 @@ def createAccount(name,userPassword, cosId = None, account = None):
 
     response = callMethod(services.extractDomain(name), "CreateAccount", data)
 
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
 
     # if account is not None:
     #     modifyAccount(account)
@@ -182,8 +180,7 @@ def createAccountExt(account , password):
     })
     response = callMethod( services.extractDomain( account.name ) ,
             'CreateAccount' , data )
-    if not utils.checkResponseStatus( response['status'] ):
-        raise ServiceException( response['status'], response['message'] )
+    checkResponseStatus(response)
 
 
 def deleteAccount(name):
@@ -201,10 +198,7 @@ def deleteAccount(name):
         "name": name
     }
     response = callMethod(services.extractDomain(name), "DeleteAccount", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
-
-
+    checkResponseStatus(response)
 
 
 def preDeleteAccount(name):
@@ -253,8 +247,7 @@ def modifyAccount(account):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     response = callMethod(services.extractDomain(account.name), "ModifyAccount", account.toData())
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
 
 
 def setPassword(name, newPassword):
@@ -265,8 +258,7 @@ def setPassword(name, newPassword):
         "password": newPassword
     }
     response = callMethod(services.extractDomain(name), "SetPassword", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
 
 def modifyPassword(name, newUserPassword):
     """
@@ -289,8 +281,7 @@ def modifyPassword(name, newUserPassword):
         "userPassword": newUserPassword
     }
     response = callMethod(services.extractDomain(name), "ModifyAccount", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
 
 
 
@@ -311,9 +302,7 @@ def addAccountAlias(name, newAlias):
         "alias": newAlias
     }
     response = callMethod(services.extractDomain(name), "AddAccountAlias", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
-
+    checkResponseStatus(response)
 
 
 
@@ -334,8 +323,7 @@ def removeAccountAlias(name, aliasToDelete):
         "alias": aliasToDelete
     }
     response = callMethod(services.extractDomain(name), "RemoveAccountAlias", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
 
 
 
@@ -452,5 +440,4 @@ def renameAccount(name, newName):
         "newname": newName
     }
     response = callMethod(services.extractDomain(name), "RenameAccount", data)
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)

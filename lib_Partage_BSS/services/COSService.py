@@ -7,8 +7,8 @@ from collections import OrderedDict
 from time import time
 
 from lib_Partage_BSS import models, utils, services
-from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException
-from .GlobalService import callMethod
+from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
+from .GlobalService import callMethod, checkResponseStatus
 
 
 def fillCOS(cosResponse):
@@ -56,15 +56,14 @@ def getCOS(domain, name):
         "name": name
     }
     response = callMethod(domain, "GetCos", data)
-    if utils.checkResponseStatus(response["status"]):
-        cos = response["cos"]
-        return fillCOS(cos)
-    elif re.search(".*no such cos.*", response["message"]):
+
+    try:
+        checkResponseStatus(response)
+    except NotFoundException:
         return None
-    else:
-        raise ServiceException(response["status"], response["message"])
 
-
+    cos = response["cos"]
+    return fillCOS(cos)
 
 
 def getAllCOS(domain):
@@ -78,8 +77,7 @@ def getAllCOS(domain):
     if not utils.checkIsDomain(domain):
         raise DomainException(domain + " n'est pas un nom de domain valide")
     response = callMethod(domain, "GetAllCos", { } )
-    if not utils.checkResponseStatus(response["status"]):
-        raise ServiceException(response["status"], response["message"])
+    checkResponseStatus(response)
     if len(response["coses"]) == 1:
         return []
     else:
