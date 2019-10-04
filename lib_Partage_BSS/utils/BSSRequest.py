@@ -15,16 +15,21 @@ def parseResponse(stringXml):
     :param stringXml: la chaine XML à transformer en objet python
     :return: l'objet response obtenu
     """
+    ts = time.time()
+    dump_file = '/tmp/bss_incorrect_response.%s' % datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H:%M:%S')
     try:
         response = ya.data(et.fromstring(stringXml))
         if "Response" in response:
             return response["Response"]
-        else:
+        elif "response" in response:
             return response["response"]
+        else:
+            with open(dump_file, 'w') as dump:
+                dump.write(stringXml)
+
+            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file + " : " + str(e))
 
     except ParseError as e:
-        ts = time.time()
-        dump_file = '/tmp/bss_incorrect_response.%s' % datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H:%M:%S')
         with open(dump_file, 'w') as dump:
             dump.write(stringXml)
 
