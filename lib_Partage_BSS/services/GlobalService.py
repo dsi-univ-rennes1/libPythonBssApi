@@ -53,7 +53,7 @@ def checkResponseStatus(response):
 
     if status != 0:
         # On essaie de déterminer les erreurs temporaires versus définitives, à partir du contenu de response["message"]
-        if re.search('(unable to get connection|Invalid token| erreur système)', response["message"]):
+        if re.search('(unable to get connection|Invalid token)', response["message"]):
             raise TmpServiceException(response["status"], response["message"])
         elif re.search('(no such account|no such domain|no such distribution list|no such cos)', response["message"]):
             raise NotFoundException(response["status"], response["message"])

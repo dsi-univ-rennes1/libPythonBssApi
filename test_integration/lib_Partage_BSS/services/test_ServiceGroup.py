@@ -1,6 +1,7 @@
 import pytest
 from lib_Partage_BSS.models.Group import Group
 from lib_Partage_BSS.exceptions.ServiceException import ServiceException
+from lib_Partage_BSS.exceptions.NotFoundException import NotFoundException
 from lib_Partage_BSS.services import AccountService, GroupService, BSSConnexion
 import time as timer
 
@@ -138,7 +139,7 @@ def test_addGroupSenders_cas_Normal(test_config):
 
 def test_addGroupSenders_cas_compte_inconnu(test_config):
     con = create_connexion(test_config)
-    with pytest.raises(ServiceException):
+    with pytest.raises(NotFoundException):
         GroupService.addGroupSenders(groupname, "inexistant" + '@' + test_config['bss_domain'])
         con.instance = None
 
