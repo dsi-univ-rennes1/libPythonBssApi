@@ -27,7 +27,7 @@ def parseResponse(stringXml):
             with open(dump_file, 'w') as dump:
                 dump.write(stringXml)
 
-            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file + " : " + str(e))
+            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file)
 
     except ParseError as e:
         with open(dump_file, 'w') as dump:
