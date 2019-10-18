@@ -20,13 +20,13 @@ def close_connexion(con):
 def test_getToken_casNormal(test_config):
     con = create_connexion(test_config)
     assert re.match("[0-9a-z]{32}", con.token(test_config['bss_domain']))
-    con.instance = None
+    close_connexion(con)
 
 def test_getToken_casDomainFaux(test_config):
     con = create_connexion(test_config)
     with pytest.raises(DomainException):
        con.token("not_a_domain")
-    con.instance = None
+    close_connexion(con)
 
 def test_getToken_casDomainNonPresent(test_config):
     con = create_connexion(test_config)
@@ -39,7 +39,7 @@ def test_getToken_8sApresCreation(test_config):
     timer.sleep(8)
     token2 = con.token(test_config['bss_domain'])
     assert token == token2
-    con.instance = None
+    close_connexion(con)
 
 @pytest.mark.skip(reason="ça prend trop de temps...")
 def test_getToken_5minApresCreation(test_config):
@@ -48,6 +48,6 @@ def test_getToken_5minApresCreation(test_config):
     timer.sleep(5 * 60)
     token2 = con.token(test_config['bss_domain'])
     assert token != token2
-    con.instance = None
+    close_connexion(con)
 
 
