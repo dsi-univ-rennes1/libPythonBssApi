@@ -53,39 +53,23 @@ def test_getAccount_cas_compte_inexistant(test_config):
     assert account == None
 
 def test_modifyAccount_cas_Normal(test_config):
+    account_as_dict = { 'displayName': "Test2",
+                        'telephoneNumber': "0223232323",
+                        'carLicense': "test@DOMAIN",
+                        'givenName': "prénom",
+                        'sn': "nom accentué",
+                        }
     account = AccountService.getAccount(accountname)
-    account.displayName = "Test2"
-    AccountService.modifyAccount(account)
-    account = AccountService.getAccount(accountname)
-    assert account.displayName == "Test2"
+    for attribute in account_as_dict:
+        setattr(account, "_" + attribute, account_as_dict[attribute])
 
-def test_set_telephone_number(test_config):
-    account = AccountService.getAccount(accountname)
-    account.telephoneNumber = "0223232323"
     AccountService.modifyAccount(account)
     account = AccountService.getAccount(accountname)
-    assert account.telephoneNumber == "0223232323"
-
-def test_set_car_license(test_config):
-    account = AccountService.getAccount(accountname)
-    account.carLicense = "test@DOMAIN"
-    AccountService.modifyAccount(account)
-    account = AccountService.getAccount(accountname)
-    assert account.carLicense == "test@DOMAIN"
-
-def test_set_given_name(test_config):
-    account = AccountService.getAccount(accountname)
-    account.givenName = "prénom"
-    AccountService.modifyAccount(account)
-    account = AccountService.getAccount(accountname)
-    assert account.givenName == "prénom"
-
-def test_set_surname(test_config):
-    account = AccountService.getAccount(accountname)
-    account.sn = "nom accentué"
-    AccountService.modifyAccount(account)
-    account = AccountService.getAccount(accountname)
-    assert account.sn == "nom accentué"
+    errors = 0
+    for attribute in account_as_dict:
+        if getattr(account, "_" + attribute) != account_as_dict[attribute]:
+            errors = errors + 1
+    assert errors == 0
 
 def test_modifyAliases_cas_departVideAjout1Alias(test_config):
     AccountService.modifyAccountAliases(accountname, [accountalias])
