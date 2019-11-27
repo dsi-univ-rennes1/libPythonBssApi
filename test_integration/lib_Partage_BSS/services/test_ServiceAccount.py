@@ -1,8 +1,6 @@
 import pytest
-from lib_Partage_BSS.models.Account import Account
 from lib_Partage_BSS.exceptions.ServiceException import ServiceException
-from lib_Partage_BSS.services import AccountService, BSSConnexion
-import time as timer
+from lib_Partage_BSS.services import AccountService
 
 def create_account(name):
     account = AccountService.getAccount(name)
@@ -14,39 +12,23 @@ def delete_account(name):
     if account != None:
         AccountService.deleteAccount(name)
 
-def create_connexion(config):
-    timer.sleep(1)
-    con = BSSConnexion()
-    if 'bss_url' in config:
-        con.url = config['bss_url']
-    con.setDomainKey({config['bss_domain']: config['bss_domain_key']})
-    return BSSConnexion()
-
-def test_init_variables(test_config):
-    global accountname, autre_accountname, accountalias, autre_accountalias, con
-    con = create_connexion(test_config)
-    accountname = "test_creation_lib_python" + '@' + test_config['bss_domain']
-    accountalias = "alias_" + accountname
-    autre_accountalias = "alias_" + accountname
-    autre_accountname = "autre_account_test_creation_lib_python" + '@' + test_config['bss_domain']
-
 def test_cleanup_bss_environment(test_config):
     print("Cleanup BSS environment before running tests...")
-    delete_account(accountname)
-    delete_account(autre_accountname)
+    delete_account(test_config['accountname'])
+    delete_account(test_config['autre_accountname'])
 
 def test_createAccount_cas_normal(test_config):
-    AccountService.createAccount(accountname, "{ssha}BIDON")
-    account = AccountService.getAccount(accountname)
-    assert account.name == accountname
+    AccountService.createAccount(test_config['accountname'], "{ssha}BIDON")
+    account = AccountService.getAccount(test_config['accountname'])
+    assert account.name == test_config['accountname']
 
 def test_createAccount_cas_compteExistant(test_config):
     with pytest.raises(ServiceException):
-        AccountService.createAccount(accountname, "{ssha}BIDON")
+        AccountService.createAccount(test_config['accountname'], "{ssha}BIDON")
 
 def test_getAccount_cas_normal(test_config):
-    account = AccountService.getAccount(accountname)
-    assert account.name == accountname
+    account = AccountService.getAccount(test_config['accountname'])
+    assert account.name == test_config['accountname']
 
 def test_getAccount_cas_compte_inexistant(test_config):
     account = AccountService.getAccount("inexistant" + '@' + test_config['bss_domain'])
@@ -59,12 +41,12 @@ def test_modifyAccount_cas_Normal(test_config):
                         'givenName': "prénom",
                         'sn': "nom accentué",
                         }
-    account = AccountService.getAccount(accountname)
+    account = AccountService.getAccount(test_config['accountname'])
     for attribute in account_as_dict:
         setattr(account, "_" + attribute, account_as_dict[attribute])
 
     AccountService.modifyAccount(account)
-    account = AccountService.getAccount(accountname)
+    account = AccountService.getAccount(test_config['accountname'])
     errors = 0
     for attribute in account_as_dict:
         if getattr(account, "_" + attribute) != account_as_dict[attribute]:
@@ -72,26 +54,26 @@ def test_modifyAccount_cas_Normal(test_config):
     assert errors == 0
 
 def test_modifyAliases_cas_departVideAjout1Alias(test_config):
-    AccountService.modifyAccountAliases(accountname, [accountalias])
-    account = AccountService.getAccount(accountname)
-    assert account.zimbraMailAlias == accountalias
+    AccountService.modifyAccountAliases(test_config['accountname'], [test_config['accountalias']])
+    account = AccountService.getAccount(test_config['accountname'])
+    assert account.zimbraMailAlias == test_config['accountalias']
 
 def test_modifyAliases_cas_depart1AliasPassageA2Alias(test_config):
-    AccountService.modifyAccountAliases(accountname, [accountalias, autre_accountalias])
-    account = AccountService.getAccount(accountname)
-    assert (accountalias in account.zimbraMailAlias) and (autre_accountalias in account.zimbraMailAlias)
+    AccountService.modifyAccountAliases(test_config['accountname'], [test_config['accountalias'], test_config['autre_accountalias']])
+    account = AccountService.getAccount(test_config['accountname'])
+    assert (test_config['accountalias'] in account.zimbraMailAlias) and (test_config['autre_accountalias'] in account.zimbraMailAlias)
 
 def test_modifyAliases_cas_depart2AliasPassageA1Alias(test_config):
-    AccountService.modifyAccountAliases(accountname, [autre_accountalias])
-    account = AccountService.getAccount(accountname)
-    assert account.zimbraMailAlias == autre_accountalias
+    AccountService.modifyAccountAliases(test_config['accountname'], [test_config['autre_accountalias']])
+    account = AccountService.getAccount(test_config['accountname'])
+    assert account.zimbraMailAlias == test_config['autre_accountalias']
 
 def test_deleteAccount_cas_Normal(test_config):
-    AccountService.deleteAccount(accountname)
-    account = AccountService.getAccount(accountname)
+    AccountService.deleteAccount(test_config['accountname'])
+    account = AccountService.getAccount(test_config['accountname'])
     assert account == None
 
 def test_deleteAccount_cas_compteInexistant(test_config):
     with pytest.raises(ServiceException):
-        AccountService.deleteAccount(accountname)
+        AccountService.deleteAccount(test_config['accountname'])
 
