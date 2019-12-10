@@ -2,7 +2,7 @@
 """
 Module permettant de faire des requêtes HTTP vers l'API BSS et de parser la réponse
 """
-from lib_Partage_BSS.exceptions import ServiceException
+from lib_Partage_BSS.exceptions import TmpServiceException
 import xml.etree.ElementTree as et
 from xml.etree.ElementTree import ParseError
 from xmljson import yahoo as ya
@@ -27,13 +27,13 @@ def parseResponse(stringXml):
             with open(dump_file, 'w') as dump:
                 dump.write(stringXml)
 
-            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file)
+            raise TmpServiceException.TmpServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file)
 
     except ParseError as e:
         with open(dump_file, 'w') as dump:
             dump.write(stringXml)
 
-            raise ServiceException.ServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file + " : " + str(e)) from e
+            raise TmpServiceException.TmpServiceException(3,"Problème format réponse BSS ; réponse sauvegardée dans " + dump_file + " : " + str(e)) from e
 
 
 def postBSS(url, data):
