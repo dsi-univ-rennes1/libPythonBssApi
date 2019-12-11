@@ -6,7 +6,7 @@ import re
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.services import BSSConnexion
 from lib_Partage_BSS.utils.BSSRequest import postBSS
-from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
+from lib_Partage_BSS.exceptions import NameException, DomainException, BSSConnexionException, ServiceException, TmpServiceException, NotFoundException
 
 
 def extractDomain(mailAddress):
@@ -35,7 +35,17 @@ def callMethod(domain, methodName, data):
     :raises DomainException: Exception levée si le domaine de l'adresse mail n'est pas un domaine valide
     """
     con = BSSConnexion()
-    return postBSS(con.url+"/"+methodName+"/"+con.token(domain), data)
+    token = None
+    try:
+        token = con.token(domain)
+
+    except BSSConnexionException as e:
+        raise TmpServiceException(3, "Problème authentification BSS : " + str(e))
+
+    except DomainException as e:
+        raise ServiceException(3,"Problème authentification BSS : "+ str(e))
+
+    return postBSS(con.url+"/"+methodName+"/"+token, data)
 
 def checkResponseStatus(response):
     """
