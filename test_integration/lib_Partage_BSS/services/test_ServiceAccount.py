@@ -53,6 +53,13 @@ def test_modifyAccount_cas_Normal(test_config):
             errors = errors + 1
     assert errors == 0
 
+def test_modifyAccount_cas_addZimlet(test_config):
+    account = AccountService.getAccount(test_config['accountname'])
+    account.addZimbraZimletAvailableZimlets("com_zimbra_emaildownloader")
+    AccountService.modifyAccount(account)
+    account = AccountService.getAccount(test_config['accountname'])
+    assert "com_zimbra_emaildownloader" in account.zimbraZimletAvailableZimlets
+
 def test_modifyAliases_cas_departVideAjout1Alias(test_config):
     AccountService.modifyAccountAliases(test_config['accountname'], [test_config['accountalias']])
     account = AccountService.getAccount(test_config['accountname'])

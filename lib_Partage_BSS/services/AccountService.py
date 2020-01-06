@@ -137,9 +137,10 @@ def createAccount(name,userPassword, cosId = None, account = None):
             "name": name,
             "password": "",
             "userPassword": userPassword,
-            "zimbraHideInGal": "FALSE",
-            "zimbraCOSId": cosId
+            "zimbraHideInGal": "FALSE"
         })
+    if cosId is not None:
+        data["zimbraCOSId"]= cosId
 
     response = callMethod(services.extractDomain(name), "CreateAccount", data)
 

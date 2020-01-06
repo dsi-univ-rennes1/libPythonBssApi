@@ -4,7 +4,7 @@ import json
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.exceptions.NameException import NameException
 from lib_Partage_BSS.models.GlobalModel import GlobalModel
-
+from collections import OrderedDict
 
 class Account(GlobalModel):
     """
@@ -676,13 +676,21 @@ class Account(GlobalModel):
                     + " n'est pas valide")
         data = {}
         for attr in self.__dict__:
-            if ( attr == "_zimbraZimletAvailableZimlets"
-                    or self.__getattribute__(attr) is None ):
-                continue
             attrValue = self.__getattribute__(attr)
+
+            # On ne prend pas le préfixe '_'
+            attrKey = attr[1:]
+
+            if (self.__getattribute__(attr) is None ):
+                continue
+
+            if isinstance(attrValue, list):
+                attrKey = attrKey+'[]'
+
             if isinstance(attrValue, bool):
                 attrValue = utils.changeBooleanToString(attrValue)
-            data[attr[1:]] = attrValue
+
+            data[attrKey] = attrValue
         return data
 
 

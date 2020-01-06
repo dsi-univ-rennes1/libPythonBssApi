@@ -44,4 +44,4 @@ def postBSS(url, data):
     :param data: le body de la requête post
     :return: BSSResponse la réponse de l'API BSS
     """
-    return parseResponse(requests.post(url, data).text)
+    return parseResponse(requests.post(url, data=data).text)

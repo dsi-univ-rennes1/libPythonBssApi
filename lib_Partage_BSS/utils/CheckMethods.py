@@ -177,7 +177,6 @@ def changeDateToTimestamp(strDate):
     else:
         raise TypeError
 
-
 def checkBoolean( v ):
     """
     Vérifie si une valeur est un booléen ou peut être convertie en booléen. Il
