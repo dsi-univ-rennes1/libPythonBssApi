@@ -6,7 +6,7 @@ setup(
     packages=['lib_Partage_BSS',
               'lib_Partage_BSS.utils', 'lib_Partage_BSS.exceptions', 'lib_Partage_BSS.models','lib_Partage_BSS.services',
               ],
-    url='https://gitlab.univ-rennes1.fr/57NUM/libPythonBssApi',
+    url='git@github.com:dsi-univ-rennes1/libPythonBssApi.git',
     license='',
     author='rpeillet',
     author_email='',
