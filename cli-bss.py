@@ -34,6 +34,7 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZimbraZimletAvailableZimlets --email=account_x@x.fr\n" + \
+	"cat liste_emails.txt | ./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZimbraZimletAvailableZimlets\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountList --field zimbraAccountStatus closed\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
@@ -246,25 +247,36 @@ elif args['preDeleteAccount'] == True:
 
 elif args['resetZimbraZimletAvailableZimlets'] == True:
 
-    if not args['email']:
-        raise Exception("Missing 'email' argument")
+    emailList = []
+    if args['email']:
+        emailList.append(args['email'])
+    else:
+        emailList = []
+        for email in sys.stdin:
+            if not re.search(r'@', email):
+                continue
+            emailList.append(email.rstrip())
 
-    try:
-        account = AccountService.getAccount(args['email'])
+    countDone = 0
+    for email in emailList:
 
-    except Exception as err:
-        print("Echec d'exécution : %s" % err)
-        sys.exit(2)
+        try:
+            account = AccountService.getAccount(email)
 
-    try:
-        account.resetZimbraZimletAvailableZimlets()
-        AccountService.modifyAccount(account)
+        except Exception as err:
+            print("Echec d'exécution pour compte %s : %s" % (email, err))
+            continue
 
-    except Exception as err:
-        print("Echec d'exécution : %s" % err)
-        sys.exit(2)
+        try:
+            account.resetZimbraZimletAvailableZimlets()
+            AccountService.modifyAccount(account)
+            countDone = countDone + 1
 
-    print("Les zimlets ont été réinitialisées pour le compte %s ; les zimlets de la classe de services s'appliquent maintenant" % args['email'])
+        except Exception as err:
+            print("Echec d'exécution pour compte %s : %s" % (email, err))
+            continue
+
+    print("Les zimlets ont été réinitialisées pour les %d comptes ; les zimlets de la classe de services s'appliquent maintenant" % countDone)
 
 
 elif args['restorePreDeleteAccount'] == True:
