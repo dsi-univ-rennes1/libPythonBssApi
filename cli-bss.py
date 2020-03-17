@@ -33,6 +33,7 @@ epilog = "Exemples d'appel :\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --closeAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZimbraZimletAvailableZimlets --email=account_x@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountList --field zimbraAccountStatus closed\n" + \
 	"./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr\n" + \
@@ -114,6 +115,7 @@ group.add_argument('--closeAccount', action='store_const', const=True, help="fer
 group.add_argument('--addAccountAlias', action='store_const', const=True, help="ajoute des aliases à un compte")
 group.add_argument('--removeAccountAlias', action='store_const', const=True, help="retire des aliases d'un compte")
 group.add_argument('--modifyAccountAliases', action='store_const', const=True, help="positionne une liste d'aliases pour un compte (supprime des aliases existants si non mentionnés)")
+group.add_argument('--resetZimbraZimletAvailableZimlets', action='store_const', const=True, help="réinitialise la liste des zimlets pour un compte (utile pour hériter du paramètre de la classe de services)")
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
 group.add_argument('--getDomain', action='store_const', const=True, help="informations sur un domaine")
@@ -241,6 +243,28 @@ elif args['preDeleteAccount'] == True:
         sys.exit(2)
 
     print("Le compte %s a été préparé pour une suppression ultérieure" % args['email'])
+
+elif args['resetZimbraZimletAvailableZimlets'] == True:
+
+    if not args['email']:
+        raise Exception("Missing 'email' argument")
+
+    try:
+        account = AccountService.getAccount(args['email'])
+
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    try:
+        account.resetZimbraZimletAvailableZimlets()
+        AccountService.modifyAccount(account)
+
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Les zimlets ont été réinitialisées pour le compte %s ; les zimlets de la classe de services s'appliquent maintenant" % args['email'])
 
 
 elif args['restorePreDeleteAccount'] == True:

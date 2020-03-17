@@ -642,6 +642,9 @@ class Account(GlobalModel):
         else:
             raise TypeError
 
+    def resetZimbraZimletAvailableZimlets(self):
+        self._zimbraZimletAvailableZimlets = 'DELETE_ARRAY'
+
     def fillAccount(self, listOfAttr, allowNameChange=False):
         if not isinstance(listOfAttr, dict) and not isinstance(listOfAttr, list):
             raise TypeError
@@ -684,7 +687,11 @@ class Account(GlobalModel):
             if (self.__getattribute__(attr) is None ):
                 continue
 
-            if isinstance(attrValue, list):
+            if isinstance(attrValue, list) or attrValue == 'DELETE_ARRAY':
+                # On prévoit une valeur spéciale 'DELETE_ARRAY' pour effacer un attribut de type tableau
+                if attrValue == 'DELETE_ARRAY':
+                    attrValue = ''
+
                 attrKey = attrKey+'[]'
 
             if isinstance(attrValue, bool):
@@ -705,9 +712,11 @@ def importJsonAccount(jsonAccount):
         if attr == "name":
             continue
         propattr = getattr(account.__class__, attr, None)
-        if isinstance(propattr, property) and propattr.fset is not None:
+        if isinstance(propattr, property):
+                #and propattr.fset is not None:
             if data[attr] == "None":
-                propattr.fset(account, None)
+                delattr(account,attr)
+                #propattr.fset(account, None)
             else:
                 propattr.fset(account, data[attr])
     return account

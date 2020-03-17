@@ -60,6 +60,13 @@ def test_modifyAccount_cas_addZimlet(test_config):
     account = AccountService.getAccount(test_config['accountname'])
     assert "com_zimbra_emaildownloader" in account.zimbraZimletAvailableZimlets
 
+def test_modifyAccount_cas_resetZimlet(test_config):
+    account = AccountService.getAccount(test_config['accountname'])
+    account.resetZimbraZimletAvailableZimlets()
+    AccountService.modifyAccount(account)
+    account = AccountService.getAccount(test_config['accountname'])
+    assert "com_zimbra_emaildownloader" not in account.zimbraZimletAvailableZimlets
+
 def test_modifyAliases_cas_departVideAjout1Alias(test_config):
     AccountService.modifyAccountAliases(test_config['accountname'], [test_config['accountalias']])
     account = AccountService.getAccount(test_config['accountname'])
