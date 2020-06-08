@@ -9,8 +9,8 @@ requests = "*"
 wheel = "*"
 
 [dev-packages]
-pytest = "*"
-pytest-mock = "*"
+pytest = "==3.6.4"
+pytest-mock = "==1.10.0"
 
 [requires]
 python_version = "3.6"
