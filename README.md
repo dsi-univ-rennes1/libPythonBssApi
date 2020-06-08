@@ -253,4 +253,4 @@ Vous pouvez exécuter les tests d'intégration sur l'environnement de préprod d
 
 ## License
 
-La bibilothèque `lib_Partage_BSS` est distribuée sous [la license Apache 2.0](https://www.apache.org/licenses/)
+La bibliothèque `lib_Partage_BSS` est distribuée sous [la license Apache 2.0](https://www.apache.org/licenses/)
