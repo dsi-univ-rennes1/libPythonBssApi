@@ -1,8 +1,5 @@
-atomicwrites==1.4.0
-attrs==19.3.0
-more-itertools==8.3.0
-pluggy==0.7.1
-py==1.8.1
+xmljson
+requests
+wheel
 pytest-mock==1.10.0
 pytest==3.6.4
-six==1.15.0
