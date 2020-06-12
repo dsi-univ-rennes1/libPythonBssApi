@@ -21,8 +21,19 @@ bibliothèque `lib_Partage_BSS` pour mettre en oeuvre le provisioning des compte
 git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
 cd libPythonBssApi
 python3.5 -m venv venv
-venv/bin/python setup.py install
+source venv/bin/activate
+pip install --requirement requirements.txt
+desactivate
 ./cli-bss.py --help
+```
+
+### Méthode alternative: pipenv
+```
+pip3 install pipenv
+git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
+cd libPythonBssApi
+pipenv install --dev
+pipenv run ./cli-bss.py --help
 ```
 
 ## Documentation
@@ -132,7 +143,7 @@ Vous pouvez exécuter les tests unitaires et les tests d'intégration via l'util
 
 Lancer les tests unitaires :
 ```
-pipenv run pytest -v test_unitaire/
+venv/bin/pytest -v test_unitaire/
 ================================================== test session starts ===================================================
 platform linux -- Python 3.5.2, pytest-3.6.3, py-1.5.4, pluggy-0.6.0 -- /home/salaun/PycharmProjects/libPythonBssApi/venv/bin/python
 cachedir: .pytest_cache
@@ -197,7 +208,7 @@ test_unitaire/lib_Partage_BSS/utils/test_CheckMethods.py::test_changeDateToTimes
 
 L'exécution des tests d'intégration nécessite que vous ayez accès à un environnement BSS fourni par RENATER. Lancer les tests d'intégration :
 ```
-$ pipenv run pytest -v --bss_domain=x.fr --bss_domain_key=yourKey test_integration/lib_Partage_BSS/services/
+$ venv/bin/pytest -v --bss_domain=x.fr --bss_domain_key=yourKey test_integration/lib_Partage_BSS/services/
 ================================================== test session starts ===================================================
 platform linux -- Python 3.5.2, pytest-3.6.3, py-1.5.4, pluggy-0.6.0 -- /home/salaun/PycharmProjects/libPythonBssApi/venv/bin/python
 cachedir: .pytest_cache
