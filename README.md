@@ -33,7 +33,7 @@ pip3 install pipenv
 git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
 cd libPythonBssApi
 pipenv install --dev
-pipenv run ./cli-bss.py --help
+pipenv run python ./cli-bss.py --help
 ```
 
 ## Documentation
