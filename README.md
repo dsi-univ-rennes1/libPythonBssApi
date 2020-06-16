@@ -21,8 +21,17 @@ bibliothèque `lib_Partage_BSS` pour mettre en oeuvre le provisioning des compte
 git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
 cd libPythonBssApi
 python3.5 -m venv venv
-venv/bin/python setup.py install
+venv/bin/pip install --requirement requirements.txt
 ./cli-bss.py --help
+```
+
+### Méthode alternative: pipenv
+```
+pip3 install pipenv
+git clone https://github.com/dsi-univ-rennes1/libPythonBssApi.git
+cd libPythonBssApi
+pipenv install --dev
+pipenv run python ./cli-bss.py --help
 ```
 
 ## Documentation
@@ -253,4 +262,4 @@ Vous pouvez exécuter les tests d'intégration sur l'environnement de préprod d
 
 ## License
 
-La bibilothèque `lib_Partage_BSS` est distribuée sous [la license Apache 2.0](https://www.apache.org/licenses/)
+La bibliothèque `lib_Partage_BSS` est distribuée sous [la license Apache 2.0](https://www.apache.org/licenses/)

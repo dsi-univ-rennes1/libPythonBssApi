@@ -1,0 +1,5 @@
+xmljson
+requests
+wheel
+pytest-mock==1.10.0
+pytest==3.6.4

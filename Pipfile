@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+xmljson = "*"
+requests = "*"
+wheel = "*"
+
+[dev-packages]
+pytest = "==3.6.4"
+pytest-mock = "==1.10.0"
+
+[requires]
+python_version = "3.5"

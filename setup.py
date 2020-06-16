@@ -1,15 +1,23 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    name='lib_Partage_BSS',
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name='lib_Partage_BSS-univ-rennes',
     version='2.2.1',
-    packages=['lib_Partage_BSS',
-              'lib_Partage_BSS.utils', 'lib_Partage_BSS.exceptions', 'lib_Partage_BSS.models','lib_Partage_BSS.services',
-              ],
-    url='git@github.com:dsi-univ-rennes1/libPythonBssApi.git',
-    license='',
-    author='rpeillet',
+    author='DSI Univ Rennes1',
     author_email='',
-    description='Bibliothèque permettant l\'intégoration de l\'API BSS PAratage de RENATER',
-    install_requires=['xmljson', 'requests','pytest','pytest-mock']
+    description="Bibliothèque permettant l'interrogation de l'API BSS Partage de RENATER",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url='https://github.com/dsi-univ-rennes1/libPythonBssApi',
+    packages=setuptools.find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Natural Language :: French",
+    ],
+    python_requires='>=3.5',
 )
