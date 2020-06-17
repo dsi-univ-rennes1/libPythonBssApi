@@ -12,3 +12,6 @@ lib_Partage_BSS/services/__pycache__/
 DeleteOldAccount.py
 venv/
 *.pyc
+build/
+dist/
+
