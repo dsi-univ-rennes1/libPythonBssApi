@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='lib_Partage_BSS-univ-rennes',
-    version='2.3.0',
+    version='2.3.1',
     author='DSI Univ Rennes1',
     author_email='',
     description="Bibliothèque permettant l'interrogation de l'API BSS Partage de RENATER",
@@ -19,5 +19,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Natural Language :: French",
     ],
+    scripts=['cli-bss.py'],
     python_requires='>=3.5',
 )
