@@ -402,7 +402,9 @@ class Account(GlobalModel):
 
     @postalCode.setter
     def postalCode(self, value):
-        if isinstance(value, str) or value is None:
+        if isinstance(value, int):
+            self._postalCode = str(value)
+        elif isinstance(value, str) or value is None:
             if utils.checkIsNum(value):
                 self._postalCode = value
         else:
@@ -412,9 +414,9 @@ class Account(GlobalModel):
     def quota(self, value):
         if isinstance(value, int) or value is None:
             self._quota = value
-        elif isinstance( value , str ):
+        elif isinstance(value , str):
             try:
-                self._quota = int( value )
+                self._quota = int(value)
             except ValueError:
                 raise TypeError
         else:
@@ -720,5 +722,3 @@ def importJsonAccount(jsonAccount):
             else:
                 propattr.fset(account, data[attr])
     return account
-
-
