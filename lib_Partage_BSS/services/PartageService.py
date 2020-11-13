@@ -3,8 +3,6 @@
 Module contenant les méthodes permettant d'appeler les services de l'API BSS concernant les partages
 """
 
-import json
-
 from lib_Partage_BSS import models, utils, services
 from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
 from .GlobalService import callMethod, checkResponseStatus
@@ -41,8 +39,8 @@ def addRootShare(account,recipients=[],rights=["sendAs"]):
         # Préparation des attributs 
         data.update({
                 "account": account,
-                "recipients": recipients,
-                "rights": rights
+                "recipients[]": recipients,
+                "rights[]": rights
             })
         
         response = callMethod(services.extractDomain(account), "/account/AddRootShare", data)
@@ -74,7 +72,7 @@ def RemoveRecipientsFromRootShare(account,recipients=[]):
         # Préparation des attributs 
         data.update({
                 "account": account,
-                "recipients": recipients
+                "recipients[]": recipients
             })
 
         response = callMethod(services.extractDomain(account), "/account/RemoveRecipientsFromRootShare", data)
