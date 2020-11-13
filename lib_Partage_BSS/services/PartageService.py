@@ -6,10 +6,6 @@ Module contenant les méthodes permettant d'appeler les services de l'API BSS co
 from lib_Partage_BSS import models, utils, services
 from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceException, TmpServiceException, NotFoundException
 from .GlobalService import callMethod, checkResponseStatus
-import logging
-
-log = logging.getLogger("my-logger")
-log.setLevel(logging.DEBUG)
 
 #-------------------------------------------------------------------------------
 
