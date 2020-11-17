@@ -14,6 +14,7 @@ from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services import DomainService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
+from lib_Partage_BSS.services import PartageService
 
 printer = pprint.PrettyPrinter(indent=4)
 
@@ -61,13 +62,16 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupMember --email=testgroup1@x.fr --member=member01@x.fr --member=member02@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs\n"
 
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--bssUrl', metavar='https://api.partage.renater.fr/service/domain', help="pour spécifier l'URL d'accès au BSS")
 parser.add_argument('--domain', required=True, metavar='mondomaine.fr', help="domaine cible sur le serveur Partage")
 parser.add_argument('--domainKey', required=True, metavar="6b7ead4bd425836e8c", help="clé du domaine cible")
 parser.add_argument('--email', metavar='jchirac@mondomaine.fr', help="adresse mail passée en argument")
+parser.add_argument('--recipients', metavar='sendAs', help="droits à attribuer")
+parser.add_argument('--rights', metavar='autreuser@mondomaine.fr', help="adresse mail passée en argument")
 parser.add_argument('--newEmail', metavar='pdupont@mondomaine.fr', help="nouvelle adresse mail du compte")
 parser.add_argument('--alias', action='append', metavar='fcotton@mondomaine.fr', help="alias pour un compte")
 parser.add_argument('--cosId', metavar='829a2781-c41e-4r4e2-b1a8-69f99dd20', help="identifiant de la classe de service")
@@ -162,7 +166,8 @@ group.add_argument( '--removeGroupSender' , action = 'store_true' ,
 group.add_argument( '--setGroupSenders' , action = 'store_true' ,
     help = '''Modifie les autorisations d'utilisation de l'adresse du groupe ou
               de la liste de distribution par des comptes.''' )
-
+group.add_argument('--addRootShare', action='store_true',
+                   help='''Ajouter un partage root d'une boites de service à un ou plusieurs utilisateurs''')
 args = vars(parser.parse_args())
 
 # Connexion au BSS
@@ -808,6 +813,22 @@ elif args[ 'setGroupSenders' ]:
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
+
+elif args[ 'addRootShare' ]:
+    if not args['email']:
+        raise Exception("Argument 'email' manquant")
+    if not args['recipients']:
+        raise Exception("Argument 'recipients' manquant")
+    if not args['rights']:
+        raise Exception("Argument 'rights' manquant")
+
+    try:
+        PartageService.addRootShare(args['email'], [args['recipients']], [args['rights']])
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Partage de la boîte %s avec %s mise en place avec les droits %s" % (args['email'],args['recipients'],args['rights']))
 
 else:
     print("Aucune opération à exécuter")
