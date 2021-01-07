@@ -217,6 +217,13 @@ def preDeleteAccount(name):
     closeAccount(name)
     newname = "readytodelete_"+utils.changeTimestampToDate(round(time()))+"_"+name
     renameAccount(name, newname)
+
+    # On altère l'EPPN (champ carLicense) pour éviter un conflit en cas de création d'un compte avec même EPPN
+    account = getAccount(newname)
+    account2 = models.Account(newname)
+    account2.carLicense = "DISABLED_" + account.carLicense
+    modifyAccount(account2)
+
     return newname
 
 
