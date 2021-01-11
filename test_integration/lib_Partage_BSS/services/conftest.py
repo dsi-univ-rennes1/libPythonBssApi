@@ -42,6 +42,10 @@ def test_config(request):
     config['groupname'] = "test_group_lib_python" + '@' + config['bss_domain']
     config['groupalias'] = "alias_test_group_lib_python" + '@' + config['bss_domain']
     config['autre_groupalias'] = "autre_alias_test_group_lib_python" + '@' + config['bss_domain']
+    config['resourcename'] = "test_resource_lib_python" + '@' + config['bss_domain']
+    config['userPassword']="{SSHA}94S7kyTEEfkS5YMwL0YMhgkjKuPJQWEm"
+    config['zimbraCalResType']="Location"
+    config['displayName']="Test"
 
     return config
 

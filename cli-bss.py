@@ -9,7 +9,7 @@ import json
 from lib_Partage_BSS.exceptions import *
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
 from lib_Partage_BSS.models.Group import Group
-from lib_Partage_BSS.services import AccountService , GroupService
+from lib_Partage_BSS.services import AccountService , GroupService, ResourceService
 from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services import DomainService
@@ -63,7 +63,12 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --getResource --email=test_resource08012021@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --deleteResource --email=test_resource08012021@x.fr\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --createResource --email=test_resource08012021@x.fr --userPassword=xxxxxxxx --zimbraCalResType=Location --displayName='Ressource de test'\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --modifyResource --email=test_resource08012021@x.fr --field displayName 'New displayName'\n"
 
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--bssUrl', metavar='https://api.partage.renater.fr/service/domain', help="pour spécifier l'URL d'accès au BSS")
@@ -99,6 +104,8 @@ parser.add_argument( '--sender' , action = 'append' ,
     metavar = 'example@example.org' ,
     help = '''Compte autorisé à utiliser l'adresse mail d'un groupe ou d'une
               liste de distribution en adresse d'expédition.''' )
+parser.add_argument('--zimbraCalResType', metavar='Location', help="Type de la resource")
+parser.add_argument('--displayName', metavar='Resource', help="Nom de la resource")
 
 group = parser.add_argument_group('Opérations implémentées :')
 group.add_argument('--getAccount', action='store_const', const=True, help="rechercher un compte")
@@ -126,6 +133,11 @@ group.add_argument('--getAllCos', action='store_const', const=True, help="recher
 group.add_argument('--getDomain', action='store_const', const=True, help="informations sur un domaine")
 group.add_argument('--countObjects', action='store_const', const=True, help="compter les objets d'un domaine")
 parser.add_argument('--type', metavar='userAccount', help="type d'objet à rechercher (userAccount, alias, dl ou calresource)")
+group.add_argument('--getResource', action='store_const', const=True, help="rechercher une resource")
+group.add_argument('--getAllResources', action='store_const', const=True, help="rechercher toutes les resources")
+group.add_argument('--deleteResource', action='store_const', const=True, help="Supprimer une resource")
+group.add_argument('--modifyResource', action='store_const', const=True, help="Modifier une resource")
+group.add_argument('--createResource', action='store_const', const=True, help="Créer une resource")
 
 # Requêtes sur les groupes
 group.add_argument( '--getAllGroups', action = 'store_true' ,
@@ -829,6 +841,98 @@ elif args[ 'addRootShare' ]:
         sys.exit(2)
 
     print("Partage de la boîte %s avec %s mise en place avec les droits %s" % (args['email'],args['recipients'],args['rights']))
+
+elif args[ 'getResource' ]:
+    if not args['email']:
+        raise Exception("Argument 'email' manquant")
+
+    try:
+        data = { 'name' : args[ 'email' ] }
+        resource = ResourceService.getResource( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    if resource is None:
+        print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
+    else:
+        print( resource.showAttr( ) )
+
+elif args[ 'getAllResources' ]:
+    data = {
+        'domain' : args[ 'domain' ] ,
+        'limit'  : args[ 'limit' ]
+    }
+
+    try:
+        all_resources = ResourceService.getAllResources( **data )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+
+    print( "{} groupes retournés".format( len( all_resources ) ) )
+
+    print( )
+    for resource in all_resources:
+        print( "Resource {} : ".format( resource.name ) )
+        print( resource.showAttr( ) )
+        print( )
+
+elif args[ 'deleteResource' ]:
+    try:
+        if not args[ 'email' ]:
+            raise Exception( "Argument 'email' manquant" )
+        ResourceService.deleteResource( args[ 'email' ] )
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+    print( "Ressource {} supprimé".format( args[ 'email' ] ) )
+
+elif args['createResource']:
+
+    if not args['email']:
+        raise Exception("Missing 'email' argument")
+
+    if not args['userPassword']:
+        raise Exception("Missing 'userPassword' argument")
+
+    if not args['zimbraCalResType']:
+        raise Exception("Missing 'zimbraCalResType' argument")
+
+    if not args['displayName']:
+        raise Exception("Missing 'displayName' argument")
+
+    try:
+        ResourceService.createResource(name=args['email'], zimbraCalResType=args['zimbraCalResType'],displayName=args['displayName'],password=args['userPassword'], )
+
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("La Ressource %s a été créé" % args['email'])
+
+elif args[ 'modifyResource' ]:
+
+    if not args['field']:
+        raise Exception("Missing 'field' arguments")
+
+    if not args['email']:
+        raise Exception("Argument 'email' manquant")
+
+    try:
+        resource = ResourceService.getResource(args['email'])
+
+        for field in args['field']:
+            setattr(resource, field[0], field[1])
+    except Exception as err:
+        print( "Echec d'exécution : {}".format( repr( err ) ) )
+        sys.exit( 2 )
+
+    try:
+        ResourceService.modifyResource(resource)
+    except Exception as err:
+        print("Echec d'exécution 1 : {}".format(repr(err)))
+        sys.exit(2)
+    print( "Ressource {} bien Modifié".format( resource.name ) )
 
 else:
     print("Aucune opération à exécuter")
