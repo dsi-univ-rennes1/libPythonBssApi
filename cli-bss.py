@@ -65,6 +65,7 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources --ldapQuery='(zimbraCalResType=Location)'\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --getResource --email=test_resource08012021@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --deleteResource --email=test_resource08012021@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --createResource --email=test_resource08012021@x.fr --userPassword=xxxxxxxx --zimbraCalResType=Location --displayName='Ressource de test'\n" + \
@@ -862,6 +863,9 @@ elif args[ 'getAllResources' ]:
         'domain' : args[ 'domain' ] ,
         'limit'  : args[ 'limit' ]
     }
+
+    if args['ldapQuery']:
+        data['ldap_query']= args['ldapQuery']
 
     try:
         all_resources = ResourceService.getAllResources( **data )

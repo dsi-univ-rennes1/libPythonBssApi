@@ -15,13 +15,14 @@ from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceEx
 #-------------------------------------------------------------------------------
 # Opérations d'interrogation
 
-def getAllResources( domain , limit = 100 , offset = 0 ):
+def getAllResources( domain , limit = 100 , offset = 0, ldap_query = None):
     """
     Lit la liste de toutes les resources depuis le serveur Partage.
 
     :param domain: le domaine de la recherche
     :param limit: le nombre maximal d'entrées à renvoyer
     :param offset: l'index du premier élément à renvoyer
+    :param ldap_query: Filtre LDAP de recherche. Exemple: (zimbraCalResType=Equipment)
 
     :raises ServiceException: la requête vers l'API a echoué
     :raises DomainException: le domaine n'est pas valide
@@ -33,6 +34,8 @@ def getAllResources( domain , limit = 100 , offset = 0 ):
         'offset' : offset ,
         'sortby' : 'mail'
     }
+    if ldap_query:
+        data['ldap_query'] = ldap_query
 
     response = callMethod( domain , 'GetAllResources' , data )
     try:
