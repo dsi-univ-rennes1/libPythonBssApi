@@ -109,24 +109,26 @@ def createResource( name, displayName=None, userPassword=None, zimbraCalResType=
     if resource is not None:
         data = resource.toData()
 
-    # Les attributs obligatoires
-    if password is not None:
-        data.update({'name': name,
-                     'password': password,
-                     'zimbraCalResType': zimbraCalResType,
-                     'zimbraAccountStatus': "active",
-                     'displayName': displayName
-                     })
     else:
-        if not re.search(r'^\{\S+\}', userPassword):
-            raise NameException(
-                "Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
-        data.update({'name': name,
-                'userPassword': userPassword,
-                'zimbraCalResType': zimbraCalResType,
-                'zimbraAccountStatus': "active",
-                'displayName': displayName
-                })
+        # Les attributs obligatoires
+        if password is not None:
+            data.update({'name': name,
+                         'password': password,
+                         'zimbraCalResType': zimbraCalResType,
+                         'zimbraAccountStatus': "active",
+                         'displayName': displayName
+                         })
+        else:
+            if not re.search(r'^\{\S+\}', userPassword):
+                raise NameException(
+                    "Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
+            data.update({'name': name,
+                    'userPassword': userPassword,
+                    'zimbraCalResType': zimbraCalResType,
+                    'zimbraAccountStatus': "active",
+                    'displayName': displayName
+                    })
+
     if not utils.checkIsMailAddress( data[ 'name' ] ):
         raise NameException( "L'adresse mail {} n'est pas valide".format( name ) )
 
