@@ -83,13 +83,17 @@ def getResource( name ):
 #-------------------------------------------------------------------------------
 # Création & suppression
 
-def createResource( name, displayName, userPassword=None, zimbraCalResType="Location", password=None, resource=None ):
+def createResource( name, displayName=None, userPassword=None, zimbraCalResType="Location", password=None, resource=None ):
     """
     Crée une ressource en se basant sur une instance du
     modèle, ou simplement en utilisant un nom.
 
-    :param name_or_resource: le nom de la resource à créer, ou bien une instance du \
-            modèle contenant les informations initiales au sujet de la resource.
+    :param name: identifiant de la ressource
+    :param displayName: nom affiché
+    :param userPassword: empreinte du mot de passe
+    :param zimbraCalResType: type de la ressource
+    :param password: mot de passe en clair
+    :param resource: objet Resource pour initialiser les données
 
     :raises TypeError: si le paramètre n'est ni un nom ni une instance du modèle
     :raises NameError: si l'adresse de la ressource à créer est invalide
