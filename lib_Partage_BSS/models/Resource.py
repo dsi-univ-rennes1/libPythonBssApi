@@ -49,7 +49,7 @@ class Resource( GlobalModel ):
             'zimbraCalResSite' , 'zimbraCalResBuilding' , 'zimbraCalResFloor' ,
             'zimbraCalResRoom' , 'zimbraCalResCapacity' , 'zimbraCalResAutoAcceptDecline' ,
             'zimbraCalResAutoDeclineIfBusy' , 'zimbraCalResAutoDeclineRecurring' ,
-            'zimbraCalResContactEmail' , 'zimbraCalResContactName' , 'zimbraNotes' ,
+            'zimbraCalResContactEmail' , 'zimbraCalResContactName' ,'zimbraCalResContactPhone', 'zimbraNotes' ,
             'zimbraPrefCalendarForwardInvitesTo'
         )
 
@@ -178,7 +178,7 @@ class Resource( GlobalModel ):
 
     def toData(self, checkName = True):
         """
-        Transforme les données d'une resource en un dictionnaire pouvant être
+        Transforme les données d'une ressource' en un dictionnaire pouvant être
         utilisé avec l'API BSS, après avoir éventuellement vérifié
         l'adresse.
 
@@ -200,15 +200,16 @@ class Resource( GlobalModel ):
             attrValue = self.__getattribute__(attr)
 
             # On ne prend pas le préfixe '_'
-            if re.search(r'^_', attr):
-                attrKey = attr[1:]
-            else:
-                attrKey = attr
+            attrKey = attr[1:]
 
             if (self.__getattribute__(attr) is None ):
                 continue
 
-            if isinstance(attrValue, list):
+            if isinstance(attrValue, list) or attrValue == 'DELETE_ARRAY':
+                # On prévoit une valeur spéciale 'DELETE_ARRAY' pour effacer un attribut de type tableau
+                if attrValue == 'DELETE_ARRAY':
+                    attrValue = ''
+
                 attrKey = attrKey+'[]'
 
             if isinstance(attrValue, bool):
@@ -351,6 +352,18 @@ class Resource( GlobalModel ):
     #---------------------------------------------------------------------------
 
     @property
+    def zimbraCalResType(self):
+        return self.zimbraCalResType
+
+    @zimbraCalResType.setter
+    def zimbraCalResType(self, value):
+        if isinstance(value, str) or value is None:
+            self._zimbraCalResType = value
+        else:
+            raise TypeError("zimbraCalResType")
+
+    # ---------------------------------------------------------------------------
+    @property
     def co(self):
         return self._co
 
@@ -382,16 +395,10 @@ class Resource( GlobalModel ):
 
     @postalCode.setter
     def postalCode(self, value):
-        val = None
-        if isinstance(value, collections.OrderedDict):
-            if utils.checkIsNum(value['content']):
-                val = value['content']
-        elif isinstance(value, str) or value is None:
-            if utils.checkIsNum(value):
-                val = value
+        if isinstance(value, str) or value is None:
+            self._postalCode = value
         else:
             raise TypeError("postalCode")
-        self._postalCode = val
 
 
     # ---------------------------------------------------------------------------
@@ -478,16 +485,10 @@ class Resource( GlobalModel ):
 
     @zimbraCalResFloor.setter
     def zimbraCalResFloor(self, value):
-        val = None
-        if isinstance(value, collections.OrderedDict):
-            if utils.checkIsNum(value['content']):
-                val = value['content']
-        elif isinstance(value, str) or value is None:
-            if utils.checkIsNum(value):
-                val = value
+        if isinstance(value, str) or value is None:
+            self._zimbraCalResFloor = value
         else:
             raise TypeError("zimbraCalResFloor")
-        self._zimbraCalResFloor = val
 
     # ---------------------------------------------------------------------------
 
@@ -497,16 +498,10 @@ class Resource( GlobalModel ):
 
     @zimbraCalResRoom.setter
     def zimbraCalResRoom(self, value):
-        val = None
-        if isinstance(value, collections.OrderedDict):
-            if utils.checkIsNum(value['content']):
-                val = value['content']
-        elif isinstance(value, str) or value is None:
-            if utils.checkIsNum(value):
-                val = value
+        if isinstance(value, str) or value is None:
+            self._zimbraCalResRoom = value
         else:
             raise TypeError("zimbraCalResRoom")
-        self._zimbraCalResRoom = val
 
     # ---------------------------------------------------------------------------
 
@@ -592,6 +587,18 @@ class Resource( GlobalModel ):
 
     # ---------------------------------------------------------------------------
 
+    @property
+    def zimbraCalResContactPhone(self):
+        return self._zimbraCalResContactzimbraCalResContactPhone
+
+    @zimbraCalResContactPhone.setter
+    def zimbraCalResContactPhone(self, value):
+        if isinstance(value, str) or value is None:
+            self._zimbraCalResContactPhone = value
+        else:
+            raise TypeError("zimbraCalResContactPhone")
+
+    # ---------------------------------------------------------------------------
     @property
     def zimbraNotes( self ):
         return self._zimbraNotes
