@@ -83,7 +83,7 @@ def getResource( name ):
 #-------------------------------------------------------------------------------
 # Création & suppression
 
-def createResource( name, displayName=None, userPassword=None, zimbraCalResType="Location", password=None, resource=None ):
+def createResource( name, displayName=None, userPassword=None, zimbraCalResType="Location", password=None):
     """
     Crée une ressource en se basant sur une instance du
     modèle, ou simplement en utilisant un nom.
@@ -93,7 +93,6 @@ def createResource( name, displayName=None, userPassword=None, zimbraCalResType=
     :param userPassword: empreinte du mot de passe
     :param zimbraCalResType: type de la ressource
     :param password: mot de passe en clair
-    :param resource: objet Resource pour initialiser les données
 
     :raises TypeError: si le paramètre n'est ni un nom ni une instance du modèle
     :raises NameError: si l'adresse de la ressource à créer est invalide
@@ -106,28 +105,24 @@ def createResource( name, displayName=None, userPassword=None, zimbraCalResType=
 
     # Les attributs issus de l'objet account
     data = {}
-    if resource is not None:
-        data = resource.toData()
-
+    # Les attributs obligatoires
+    if password is not None:
+        data.update({'name': name,
+                     'password': password,
+                     'zimbraCalResType': zimbraCalResType,
+                     'zimbraAccountStatus': "active",
+                     'displayName': displayName
+                     })
     else:
-        # Les attributs obligatoires
-        if password is not None:
-            data.update({'name': name,
-                         'password': password,
-                         'zimbraCalResType': zimbraCalResType,
-                         'zimbraAccountStatus': "active",
-                         'displayName': displayName
-                         })
-        else:
-            if not re.search(r'^\{\S+\}', userPassword):
-                raise NameException(
-                    "Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
-            data.update({'name': name,
-                    'userPassword': userPassword,
-                    'zimbraCalResType': zimbraCalResType,
-                    'zimbraAccountStatus': "active",
-                    'displayName': displayName
-                    })
+        if not re.search(r'^\{\S+\}', userPassword):
+            raise NameException(
+                "Le format de l'empreinte du mot de passe n'est pas correcte ; format attendu : {algo}empreinte")
+        data.update({'name': name,
+                     'userPassword': userPassword,
+                     'zimbraCalResType': zimbraCalResType,
+                     'zimbraAccountStatus': "active",
+                     'displayName': displayName
+                     })
 
     if not utils.checkIsMailAddress( data[ 'name' ] ):
         raise NameException( "L'adresse mail {} n'est pas valide".format( name ) )
@@ -137,6 +132,25 @@ def createResource( name, displayName=None, userPassword=None, zimbraCalResType=
     checkResponseStatus(response)
 
     return getResource(name)
+
+def createResourceExt(resource: Resource):
+    """
+    Méthode permettant de créer une ressource via l'API BSS en lui passant en
+    paramètre les informations concernant un compte
+
+    :param Resource resource: l'objet contenant les informations de la resource
+    """
+
+    if not utils.checkIsMailAddress(resource.name):
+        raise NameException("L'adresse mail " + resource.name + " n'est pas valide")
+
+    data = resource.toData()
+
+    domain = services.extractDomain(resource.name)
+    response = callMethod(domain, 'CreateResource', data)
+    checkResponseStatus(response)
+
+    return getResource(resource.name)
 
 def deleteResource( name_or_resource ):
     """
