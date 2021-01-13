@@ -2,6 +2,7 @@
 import array
 import collections
 import json
+import re
 
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.exceptions.NameException import NameException
@@ -199,7 +200,10 @@ class Resource( GlobalModel ):
             attrValue = self.__getattribute__(attr)
 
             # On ne prend pas le préfixe '_'
-            attrKey = attr[1:]
+            if re.search(r'^_', attr):
+                attrKey = attr[1:]
+            else:
+                attrKey = attr
 
             if (self.__getattribute__(attr) is None ):
                 continue
