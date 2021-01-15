@@ -150,7 +150,7 @@ def createResourceExt(resource: Resource):
     response = callMethod(domain, 'CreateResource', data)
     checkResponseStatus(response)
 
-    return getResource(resource.name)
+    return resource
 
 def deleteResource( name_or_resource ):
     """
