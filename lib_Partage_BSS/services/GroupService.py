@@ -14,13 +14,14 @@ from lib_Partage_BSS.exceptions import NameException, DomainException, ServiceEx
 #-------------------------------------------------------------------------------
 # Opérations d'interrogation
 
-def getAllGroups( domain , limit = 100 , offset = 0 ):
+def getAllGroups( domain , limit = 100 , offset = 0 , ldapQuery=""):
     """
     Lit la liste de tous les groupes depuis le serveur Partage.
 
     :param domain: le domaine de la recherche
     :param limit: le nombre maximal d'entrées à renvoyer
     :param offset: l'index du premier élément à renvoyer
+    :param ldapQuery: un filtre ldap pour affiner la rechercher (optionnel)
 
     :raises ServiceException: la requête vers l'API a echoué
     :raises DomainException: le domaine n'est pas valide
@@ -30,6 +31,7 @@ def getAllGroups( domain , limit = 100 , offset = 0 ):
     data = {
         'limit'  : limit ,
         'offset' : offset ,
+        'ldapQuery': ldapQuery,
     }
 
     response = callMethod( domain , 'GetAllGroups' , data )
