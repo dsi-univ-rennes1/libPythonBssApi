@@ -31,7 +31,7 @@ def getAllGroups( domain , limit = 100 , offset = 0 , ldapQuery=""):
     data = {
         'limit'  : limit ,
         'offset' : offset ,
-        'ldapQuery': ldapQuery,
+        'ldap_query': ldapQuery,
     }
 
     response = callMethod( domain , 'GetAllGroups' , data )
