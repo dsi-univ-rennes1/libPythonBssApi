@@ -20,6 +20,7 @@ class Resource( GlobalModel ):
     :ivar _postalCode: code postal de la ressouce
     :ivar _st: etat de la ressource
     :ivar _street: rue de la ressource
+    :ivar _password: mot de passe de la ressource en clair
     :ivar _userPassword: Empreinte du mot de passe de la ressource
     :ivar _zimbraAccountStatus: etat de la ressource (par defaut active)
     :ivar _zimbraCalResAutoAcceptDecline: accepte ou decline automatiquement les invitations
@@ -44,7 +45,7 @@ class Resource( GlobalModel ):
 
     # Attributs utilisés dans {Create,Modify}Account
     ATTRIBUTES = (
-            'description' , 'displayName' , 'co', 'l', 'postalCode', 'street',
+            'description' , 'displayName' , 'co', 'l', 'postalCode', 'password', 'userPassword', 'street',
             'zimbraAccountStatus', 'zimbraCalResLocationDisplayName', 'st' ,
             'zimbraCalResSite' , 'zimbraCalResBuilding' , 'zimbraCalResFloor' ,
             'zimbraCalResRoom' , 'zimbraCalResCapacity' , 'zimbraCalResAutoAcceptDecline' ,
@@ -390,6 +391,19 @@ class Resource( GlobalModel ):
     # ---------------------------------------------------------------------------
 
     @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        if isinstance(value, str) or value is None:
+            self._password = value
+        else:
+            raise TypeError("password")
+
+    # ---------------------------------------------------------------------------
+
+    @property
     def postalCode(self):
         return self._postalCode
 
@@ -426,6 +440,19 @@ class Resource( GlobalModel ):
             self._st = value
         else:
             raise TypeError("st")
+
+    # ---------------------------------------------------------------------------
+
+    @property
+    def userPassword(self):
+        return self._userPassword
+
+    @userPassword.setter
+    def userPassword(self, value):
+        if isinstance(value, str) or value is None:
+            self._userPassword = value
+        else:
+            raise TypeError("userPassword")
 
     # ---------------------------------------------------------------------------
 
