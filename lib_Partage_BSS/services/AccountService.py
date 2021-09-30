@@ -69,7 +69,7 @@ def getAccount(name):
     return fillAccount(account)
 
 
-def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy=""):
+def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy="", sortAscending=1):
     """
     Permet de rechercher tous les comptes mail d'un domain
 
@@ -78,6 +78,7 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy="
     :param offset: le nombre à partir duquel les comptes sont renvoyés (optionnel)
     :param ldapQuery: un filtre ldap pour affiner la rechercher (optionnel)
     :param sortBy: tri des résultat (mail, givenName, sn, displayName)
+    :param sortAscending: tri ascendant ou descendant (0 ou 1)
     :param attrs: la liste des attributs demandés (par défaut: used , quota, admin, cos_name) (optionnel)
     :raises ServiceException: Exception levée si la requête vers l'API à echoué. L'exception contient le code de l'erreur et le message
     :raises DomainException: Exception levée si le domaine n'est pas un domaine valide
@@ -89,7 +90,8 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy="
         "offset": offset,
         "ldap_query": ldapQuery,
         "attrs": attrs,
-        "sortby": sortBy
+        "sortby": sortBy,
+        "sortascending": sortAscending
     }
     response = callMethod(domain, "GetAllAccounts", data)
     checkResponseStatus(response)
