@@ -64,6 +64,7 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeRootShare --email=user1@x.fr --recipients=user2@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources --ldapQuery='(zimbraCalResType=Location)'\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --getResource --email=test_resource08012021@x.fr\n" + \
@@ -181,6 +182,8 @@ group.add_argument( '--setGroupSenders' , action = 'store_true' ,
               de la liste de distribution par des comptes.''' )
 group.add_argument('--addRootShare', action='store_true',
                    help='''Ajouter un partage root d'une boites de service à un ou plusieurs utilisateurs''')
+group.add_argument('--removeRootShare', action='store_true',
+                   help='''Retirer un partage root d'une boites de service à un ou plusieurs utilisateurs''')
 args = vars(parser.parse_args())
 
 # Connexion au BSS
@@ -842,6 +845,20 @@ elif args[ 'addRootShare' ]:
         sys.exit(2)
 
     print("Partage de la boîte %s avec %s mise en place avec les droits %s" % (args['email'],args['recipients'],args['rights']))
+
+elif args[ 'removeRootShare' ]:
+    if not args['email']:
+        raise Exception("Argument 'email' manquant")
+    if not args['recipients']:
+        raise Exception("Argument 'recipients' manquant")
+
+    try:
+        PartageService.RemoveRootShare(args['email'], [args['recipients']])
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Suppression partage de la boîte %s avec %s" % (args['email'],args['recipients']))
 
 elif args[ 'getResource' ]:
     if not args['email']:

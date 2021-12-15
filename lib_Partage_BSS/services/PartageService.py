@@ -76,14 +76,20 @@ def RemoveRecipientsFromRootShare(account,recipients=[]):
 
 #-------------------------------------------------------------------------------
 
-def RemoveRootShare(account):
+def RemoveRootShare(account,recipients=[]):
     """
     Cet appel permet de retirer un partage root d'une boites de service d'un ou plusieurs utilisateurs
 
     :param account: Adresse email du compte qui fournit le partage root
+    :param recipients: un tableau contenant les adresses des comptes à qui supprimer le partage.
     :raises NameError: si l'adresse du partage à créer est invalide
     """
     data = {}
+
+    # Si la liste est vide
+    if not(recipients):
+        raise TypeError
+
     # On vérifie si le mail est valide
     if not utils.checkIsMailAddress( account ):
         raise NameException( "L'adresse mail {} n'est pas valide".format( account ) )
@@ -91,6 +97,7 @@ def RemoveRootShare(account):
         # Préparation des attributs 
         data.update({
                 "account": account,
+                "recipients[]": recipients
             })
 
         response = callMethod(services.extractDomain(account), "/account/RemoveRootShare", data)
