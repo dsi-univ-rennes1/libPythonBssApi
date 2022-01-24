@@ -16,6 +16,17 @@ from lib_Partage_BSS.services import DomainService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 from lib_Partage_BSS.services import PartageService
 
+
+# Classe permettant d'encoder les set() vers du JSON,
+# volée depuis https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
+class SetEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
+
+
 printer = pprint.PrettyPrinter(indent=4)
 
 epilog = "Exemples d'appel :\n" + \
@@ -646,7 +657,12 @@ elif args[ 'getGroup' ]:
     except Exception as err:
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
-    if group is None:
+    if args['asJson']:
+        if group is None:
+            print('{}')
+        else:
+            print(json.dumps(group.__dict__, sort_keys=True, indent=4, cls=SetEncoder))
+    elif group is None:
         print( "Groupe {} non trouvé".format( args[ 'email' ] ) )
     else:
         print( group.showAttr( ) )
