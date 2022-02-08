@@ -527,6 +527,10 @@ class Resource( GlobalModel ):
     def zimbraCalResRoom(self, value):
         if isinstance(value, str) or value is None:
             self._zimbraCalResRoom = value
+
+        # Cf bug https://support.partage.renater.fr/hc/fr/requests/9968
+        elif isinstance(value, collections.OrderedDict):
+            self._zimbraCalResRoom = value['content']
         else:
             raise TypeError("zimbraCalResRoom")
 
