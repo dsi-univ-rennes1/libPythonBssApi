@@ -89,10 +89,13 @@ def getAllAccounts(domain, limit=100, offset=0, ldapQuery="", attrs="", sortBy="
         "limit": limit,
         "offset": offset,
         "ldap_query": ldapQuery,
-        "attrs": attrs,
         "sortby": sortBy,
         "sortascending": sortAscending
     }
+    
+    if attrs != "":
+        data["attrs"]=attrs
+
     response = callMethod(domain, "GetAllAccounts", data)
     checkResponseStatus(response)
 
