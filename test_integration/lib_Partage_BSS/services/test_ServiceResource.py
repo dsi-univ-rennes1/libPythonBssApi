@@ -89,10 +89,10 @@ def test_modifyResource_cas_addZimbraPrefCalendarForwardInvitesToCompteErrone(te
     
 def test_modifyResource_cas_removeZimbraPrefCalendarForwardInvitesTo(test_config):
     resource = ResourceService.getResource(test_config['resourcename'])
-    resource.removeZimbraPrefCalendarForwardInvitesTo("resource@x.fr")
+    resource.resetZimbraPrefCalendarForwardInvitesTo()
     ResourceService.modifyResource(resource)
     resource1 = ResourceService.getResource(test_config['resourcename'])
-    assert "resource@x.fr" not in resource1.zimbraPrefCalendarForwardInvitesTo
+    assert resource1.zimbraPrefCalendarForwardInvitesTo is None
 
 def test_deleteResource_cas_normal(test_config):
     newResource = ResourceService.deleteResource(test_config['resourcename'])

@@ -299,6 +299,8 @@ class Resource( GlobalModel ):
         else:
             raise TypeError("removeZimbraPrefCalendarForwardInvitesTo")
 
+    def resetZimbraPrefCalendarForwardInvitesTo(self):
+        self._zimbraPrefCalendarForwardInvitesTo = 'DELETE_ARRAY'
 
     """
     def removeZimbraPrefCalendarForwardInvitesTo(self, valueToRemove):
