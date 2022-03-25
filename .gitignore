@@ -3,15 +3,11 @@ test_unitaire/.pytest_cache
 doc/build
 Test.py
 .pytest_cache
-lib_Partage_BSS/__pycache__
-lib_Partage_BSS/utils/__pycache__
+__pycache__
 /*.json
-lib_Partage_BSS/exceptions/__pycache__/
-lib_Partage_BSS/models/__pycache__/
-lib_Partage_BSS/services/__pycache__/
 DeleteOldAccount.py
 venv/
 *.pyc
 build/
 dist/
-
+*.egg-info/
