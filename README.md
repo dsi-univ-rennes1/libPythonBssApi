@@ -106,6 +106,8 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --closeAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --preDeleteAccount --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --restorePreDeleteAccount --email=readytodelete_2018-03-14-13-37-15_user@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZimbraZimletAvailableZimlets --email=account_x@x.fr
+cat liste_emails.txt | ./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZimbraZimletAvailableZimlets
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccount --jsonData=account.json --email=user@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyAccountList --field zimbraAccountStatus closed
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --renameAccount --email=user@x.fr --newEmail=user2@x.fr
@@ -133,7 +135,10 @@ Exemples d'appel :
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --setGroupSender --email=testgroup1@x.fr --sender=sender03@x.fr  --sender=sender05@x.fr
+./cli-bss.py --domain=x.fr --domainKey=yourKey --addRootShare --email=user1@x.fr --recipients=user2@x.fr --rights=sendAs
+./cli-bss.py --domain=x.fr --domainKey=yourKey --removeRootShare --email=user1@x.fr --recipients=user2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources
+./cli-bss.py --domain=x.fr --domainKey=yourKey  -getAllResources --ldapQuery='(zimbraCalResType=Location)'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --getResource --email=test_resource08012021@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --deleteResource --email=test_resource08012021@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --createResource --email=test_resource08012021@x.fr --userPassword=xxxxxxxx --zimbraCalResType=Location --displayName='Ressource de test'
