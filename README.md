@@ -125,6 +125,7 @@ cat liste_emails.txt | ./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZi
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroup --email=testgroup2@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json
+./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyGroup --email=group@x.fr --jsonData=group.json -f displayName 'test'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr
