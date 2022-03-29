@@ -10,7 +10,6 @@ from lib_Partage_BSS.exceptions import *
 from lib_Partage_BSS.models.Account import Account, importJsonAccount
 from lib_Partage_BSS.models.Group import Group
 from lib_Partage_BSS.services import AccountService , GroupService, ResourceService
-from lib_Partage_BSS.models.COS import COS
 from lib_Partage_BSS.services import COSService
 from lib_Partage_BSS.services import DomainService
 from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
@@ -212,7 +211,7 @@ except Exception as err:
     print("Echec de connexion : %s" % err)
     sys.exit(2)
 
-if args['getAllAccounts'] == True:
+if args['getAllAccounts']:
     action_args = {
             'domain': args[ 'domain' ] ,
             'limit': args[ 'limit' ] ,
@@ -225,14 +224,15 @@ if args['getAllAccounts'] == True:
     try:
         all_accounts = AccountService.getAllAccounts( **action_args )
     except Exception as err:
-        raise err
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
 
     print("%d comptes retournés :" % len(all_accounts))
     for account in all_accounts:
         print("Compte %s :" % account.name)
         print(account.showAttr())
 
-elif args['getAccount'] == True:
+elif args['getAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -251,7 +251,7 @@ elif args['getAccount'] == True:
         print("Informations sur le compte %s :" % account.name)
         print(account.showAttr())
 
-elif args['deleteAccount'] == True:
+elif args['deleteAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -265,9 +265,7 @@ elif args['deleteAccount'] == True:
 
     print("Le compte %s a été supprimé" % args['email'])
 
-
-
-elif args['preDeleteAccount'] == True:
+elif args['preDeleteAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -281,7 +279,7 @@ elif args['preDeleteAccount'] == True:
 
     print("Le compte %s a été préparé pour une suppression ultérieure" % args['email'])
 
-elif args['resetZimbraZimletAvailableZimlets'] == True:
+elif args['resetZimbraZimletAvailableZimlets']:
 
     emailList = []
     if args['email']:
@@ -314,8 +312,7 @@ elif args['resetZimbraZimletAvailableZimlets'] == True:
 
     print("Les zimlets ont été réinitialisées pour les %d comptes ; les zimlets de la classe de services s'appliquent maintenant" % countDone)
 
-
-elif args['restorePreDeleteAccount'] == True:
+elif args['restorePreDeleteAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -329,7 +326,7 @@ elif args['restorePreDeleteAccount'] == True:
 
     print("Le compte %s a été rétabli" % args['email'])
 
-elif args['createAccountExt'] == True:
+elif args['createAccountExt']:
 
     if not args[ 'userPassword' ]:
         print("Argument '--userPassword' manquant")
@@ -356,7 +353,7 @@ elif args['createAccountExt'] == True:
     print( "Le compte %s a été créé" % nAccount.name )
     print( nAccount.showAttr( ) )
 
-elif args['createAccount'] == True:
+elif args['createAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -373,7 +370,7 @@ elif args['createAccount'] == True:
 
     print("Le compte %s a été créé" % args['email'])
 
-elif args['modifyAccount'] == True:
+elif args['modifyAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -397,18 +394,16 @@ elif args['modifyAccount'] == True:
 
     print("Le compte %s a été mis à jour" % args['email'])
 
-elif args['modifyAccountList'] == True:
+elif args['modifyAccountList']:
 
     if not args['field']:
         raise Exception("Missing 'field' arguments")
 
     emailList = []
     for email in sys.stdin:
-       if not re.search(r'@', email):
-           continue
-       emailList.append(email.rstrip())
-
-    #print("Email: %s" % ','.join(emailList))
+        if not re.search(r'@', email):
+            continue
+        emailList.append(email.rstrip())
 
     for email in emailList:
         try:
@@ -434,7 +429,7 @@ elif args['modifyAccountList'] == True:
 
         print("Le compte %s a été mis à jour" % email)
 
-elif args['renameAccount'] == True:
+elif args['renameAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -451,7 +446,7 @@ elif args['renameAccount'] == True:
 
     print("Le compte %s a été renommé %s" % (args['email'], args['newEmail']))
 
-elif args['modifyPassword'] == True:
+elif args['modifyPassword']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -468,7 +463,7 @@ elif args['modifyPassword'] == True:
 
     print("Le mot de passe du compte %s a été mis à jour" % args['email'])
 
-elif args['lockAccount'] == True:
+elif args['lockAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -482,8 +477,7 @@ elif args['lockAccount'] == True:
 
     print("Le compte %s a été vérouillé" % args['email'])
 
-
-elif args['activateAccount'] == True:
+elif args['activateAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -497,7 +491,7 @@ elif args['activateAccount'] == True:
 
     print("Le compte %s a été (ré)activé" % args['email'])
 
-elif args['closeAccount'] == True:
+elif args['closeAccount']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -511,7 +505,7 @@ elif args['closeAccount'] == True:
 
     print("Le compte %s a été fermé" % args['email'])
 
-elif args['addAccountAlias'] == True:
+elif args['addAccountAlias']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -529,7 +523,7 @@ elif args['addAccountAlias'] == True:
 
     print("Les aliases %s ont été ajoutés au compte %s" % (args['alias'], args['email']))
 
-elif args['removeAccountAlias'] == True:
+elif args['removeAccountAlias']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -547,7 +541,7 @@ elif args['removeAccountAlias'] == True:
 
     print("Les aliases %s ont été retirés du compte %s" % (args['alias'], args['email']))
 
-elif args['modifyAccountAliases'] == True:
+elif args['modifyAccountAliases']:
 
     if not args['email']:
         raise Exception("Missing 'email' argument")
@@ -564,7 +558,7 @@ elif args['modifyAccountAliases'] == True:
 
     print("Les aliases pour le compte %s ont été positionnés à %s" % (args['email'], args['alias']))
 
-elif args['getCos'] == True:
+elif args['getCos']:
 
     if not args['cosName']:
         raise Exception("Missing 'cosName' argument")
@@ -583,7 +577,7 @@ elif args['getCos'] == True:
         print("Informations sur la classe de service %s :" % cos.name)
         print(cos.showAttr())
 
-elif args['getAllCos'] == True:
+elif args['getAllCos']:
     try:
         all_cos = COSService.getAllCOS( args[ 'domain' ] )
     except Exception as err:
@@ -595,7 +589,7 @@ elif args['getAllCos'] == True:
         print("Classe de service %s :" % cos.name)
         print(cos.showAttr())
 
-elif args['getDomain'] == True:
+elif args['getDomain']:
     try:
         domain = DomainService.getDomain( args[ 'domain' ] )
     except Exception as err:
@@ -608,7 +602,7 @@ elif args['getDomain'] == True:
 
     print(json.dumps(domain_parsed, sort_keys=True, indent=4))
 
-elif args['countObjects'] == True:
+elif args['countObjects']:
 
     if not args['type']:
         raise Exception("Missing 'type' argument")
@@ -620,7 +614,6 @@ elif args['countObjects'] == True:
         sys.exit(2)
 
     print("Nombre d'objets de type %s dans le domaine %s : %s" % (args['type'], args['domain'], count))
-
 
 elif args[ 'getAllGroups' ]:
     data = {
@@ -693,7 +686,6 @@ elif args[ 'createGroup' ]:
         GroupService.createGroup( args[ 'email' ] )
         group = GroupService.getGroup( args[ 'email' ] , full_info = True )
     except Exception as err:
-        raise err
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
@@ -715,7 +707,6 @@ elif args[ 'createGroupExt' ]:
         GroupService.createGroup( group )
         group = GroupService.getGroup( group.name , full_info = True )
     except Exception as err:
-        raise err
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
@@ -796,7 +787,6 @@ elif args[ 'setGroupAliases' ]:
         GroupService.updateGroupAliases( args[ 'email' ] , args[ 'alias' ] )
         group = GroupService.getGroup( args[ 'email' ] , full_info = True )
     except Exception as err:
-        raise err
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
@@ -836,7 +826,6 @@ elif args[ 'setGroupMembers' ]:
         GroupService.updateGroupMembers( args[ 'email' ] , args[ 'member' ] )
         group = GroupService.getGroup( args[ 'email' ] , full_info = True )
     except Exception as err:
-        raise err
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
@@ -876,7 +865,6 @@ elif args[ 'setGroupSenders' ]:
         GroupService.updateGroupSenders( args[ 'email' ] , args[ 'sender' ] )
         group = GroupService.getGroup( args[ 'email' ] , full_info = True )
     except Exception as err:
-        raise err
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
