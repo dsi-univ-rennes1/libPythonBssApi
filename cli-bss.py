@@ -64,6 +64,7 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroup --email=testgroup2@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt -f name testgroup4@x.fr -f displayName 'Groupe 4' -f zimbraMailStatus disabled\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --createGroupExt --jsonData=/tmp/data.json\n" + \
+	"./cli-bss.py --domain=x.fr --domainKey=yourKey --modifyGroup --email=group@x.fr --jsonData=group.json -f displayName 'test'\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteGroup --email=testgroup6@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --addGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey --removeGroupAlias --email=testgroup4@x.fr --alias=alias@x.fr\n" + \
@@ -166,6 +167,9 @@ group.add_argument( '--createGroup' , action = 'store_true' ,
 group.add_argument( '--createGroupExt', action = 'store_true' ,
     help = '''Créer un groupe / une liste de distribution en spécifiant les
               paramètres via -f ou --jsonData''' )
+group.add_argument( '--modifyGroup', action = 'store_true' ,
+    help = '''Mettre à jour un groupe / une liste de distribution en spécifiant
+              les paramètres via -f et/ou --jsonData''' )
 group.add_argument( '--deleteGroup' , action = 'store_true' ,
     help = '''Supprimer un groupe / une liste de distribution.''' )
 group.add_argument( '--addGroupAlias' , action = 'store_true' ,
@@ -715,6 +719,37 @@ elif args[ 'createGroupExt' ]:
         print( "Echec d'exécution : {}".format( repr( err ) ) )
         sys.exit( 2 )
     print( group.showAttr( ) )
+
+elif args['modifyGroup'] == True:
+
+    if not args['email']:
+        raise Exception("Missing 'email' argument")
+    if not (args['jsonData'] or args['field']):
+        raise Exception("Missing data arguments (--jsonData and/or --field are required)")
+
+    try:
+        if args[ 'jsonData' ]:
+            group = Group.from_json( args[ 'jsonData' ] , is_file = True )
+        else:
+            group = Group( )
+        group.from_dict({ 'name' : args['email'] }, allow_name = True)
+    except Exception as err:
+        print("Echec chargement fichier JSON %s : %s" % (args['jsonData'], err))
+        sys.exit(2)
+
+    if args[ 'field' ]:
+        group.from_dict({
+                arg[ 0 ] : arg[ 1 ]
+                    for arg in args[ 'field' ]
+            })
+
+    try:
+        GroupService.modifyGroup(group=group)
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Le groupe %s a été mis à jour" % args['email'])
 
 elif args[ 'deleteGroup' ]:
     try:
