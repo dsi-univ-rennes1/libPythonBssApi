@@ -654,6 +654,7 @@ class Account(GlobalModel):
             if attr == "name" and not allowNameChange:
                 continue
             propattr = getattr(self.__class__, attr, None)
+            propattr = getattr(self.__class__, attr, None)
             if isinstance(propattr, property) and propattr.fset is not None:
                 if listOfAttr[attr] == "None":
                     propattr.fset(self, None)

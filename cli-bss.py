@@ -82,7 +82,11 @@ epilog = "Exemples d'appel :\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --getResource --email=test_resource08012021@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --deleteResource --email=test_resource08012021@x.fr\n" + \
     "./cli-bss.py --domain=x.fr --domainKey=yourKey  --createResource --email=test_resource08012021@x.fr --userPassword=xxxxxxxx --zimbraCalResType=Location --displayName='Ressource de test'\n" + \
-    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --modifyResource --email=test_resource08012021@x.fr --field displayName 'New displayName'\n"
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey  --modifyResource --email=test_resource08012021@x.fr --field displayName 'New displayName'\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getDefinition\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --getHistoryDefinition\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteDefinition\n" + \
+    "./cli-bss.py --domain=x.fr --domainKey=yourKey --createDefinition --jsonData=/tmp/mailinglists.json\n"
 
 parser = argparse.ArgumentParser(description="Client en ligne de commande pour l'API BSS Partage", epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('--bssUrl', metavar='https://api.partage.renater.fr/service/domain', help="pour spécifier l'URL d'accès au BSS")
@@ -145,6 +149,10 @@ group.add_argument('--resetZimbraZimletAvailableZimlets', action='store_const', 
 group.add_argument('--getCos', action='store_const', const=True, help="rechercher une classe de service")
 group.add_argument('--getAllCos', action='store_const', const=True, help="rechercher toutes les classes de service du domaine")
 group.add_argument('--getDomain', action='store_const', const=True, help="informations sur un domaine")
+group.add_argument('--getDefinition', action='store_const', const=True, help="associer un nouveau JSON de définition des listes de diffusion à un domaine (zimlet net_renater_listes_diffusion)")
+group.add_argument('--getHistoryDefinition', action='store_const', const=True, help="lister l'historique mise à jour des JSON de définition des listes de diffusion pour un domaine (zimlet net_renater_listes_diffusion)")
+group.add_argument('--createDefinition', action='store_const', const=True, help="lister l'historique mise à jour des JSON de définition des listes de diffusion pour un domaine (zimlet net_renater_listes_diffusion)")
+group.add_argument('--deleteDefinition', action='store_const', const=True, help="supprimer le JSON de définition des listes de diffusion pour un domaine (zimlet net_renater_listes_diffusion)")
 group.add_argument('--countObjects', action='store_const', const=True, help="compter les objets d'un domaine")
 parser.add_argument('--type', metavar='userAccount', help="type d'objet à rechercher (userAccount, alias, dl ou calresource)")
 group.add_argument('--getResource', action='store_const', const=True, help="rechercher une resource")
@@ -607,6 +615,59 @@ elif args['getDomain'] == True:
         print("Informations sur le domaine %s :" % args['domain'])
 
     print(json.dumps(domain_parsed, sort_keys=True, indent=4))
+
+elif args['getDefinition'] == True:
+    try:
+        definition = DomainService.getDefinition( args[ 'domain' ] )
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+    definition_parsed = json.loads(definition)
+
+    if not args['asJson']:
+        print("Informations sur le domaine %s :" % args['domain'])
+
+    print(json.dumps(definition_parsed, sort_keys=True, indent=4))
+
+elif args['getHistoryDefinition'] == True:
+    try:
+        definitions = DomainService.getHistoryDefinition( args[ 'domain' ] )
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    if not args['asJson']:
+        print("Historique des mises à jour sur le domaine %s :" % args['domain'])
+
+    print(json.dumps(definitions, sort_keys=True, indent=4))
+
+elif args['deleteDefinition'] == True:
+    try:
+        DomainService.deleteDefinition( args[ 'domain' ] )
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Définition des listes de diffusion supprimée")
+
+elif args['createDefinition'] == True:
+
+    if not args['jsonData']:
+        raise Exception("Missing 'jsonData' argument")
+
+    # with open(args['jsonData'], 'r') as jsonFile:
+    #     json.dump(definition,jsonFile)
+
+    with open(args[ 'jsonData' ].name, 'r') as jsonFile:
+        definition = json.load(jsonFile)
+
+    try:
+        DomainService.createDefinition( args[ 'domain' ], json.dumps(definition) )
+    except Exception as err:
+        print("Echec d'exécution : %s" % err)
+        sys.exit(2)
+
+    print("Création réalisée")
 
 elif args['countObjects'] == True:
 

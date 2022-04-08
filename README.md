@@ -144,6 +144,151 @@ cat liste_emails.txt | ./cli-bss.py --domain=x.fr --domainKey=yourKey --resetZi
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --deleteResource --email=test_resource08012021@x.fr
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --createResource --email=test_resource08012021@x.fr --userPassword=xxxxxxxx --zimbraCalResType=Location --displayName='Ressource de test'
 ./cli-bss.py --domain=x.fr --domainKey=yourKey  --modifyResource --email=test_resource08012021@x.fr --field displayName 'New displayName'
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getDefinition
+./cli-bss.py --domain=x.fr --domainKey=yourKey --getHistoryDefinition
+./cli-bss.py --domain=x.fr --domainKey=yourKey --deleteDefinition
+./cli-bss.py --domain=x.fr --domainKey=yourKey --createDefinition --jsonData=/tmp/mailinglists.json
+```
+
+## Opérations implémentées
+
+```
+  --getAccount          rechercher un compte
+  --createAccount       créer un compte
+  --createAccountExt    créer un compte en spécifiant les paramètres via -f ou
+                        --jsonData
+  --modifyAccount       mettre à jour un compte
+  --modifyAccountList   mettre à jour plusieurs compte
+  --renameAccount       renommer un compte
+  --deleteAccount       supprimer un compte
+  --preDeleteAccount    pré-supprimer un compte (le compte est fermé et
+                        renommé)
+  --restorePreDeleteAccount
+                        rétablir un compte pré-supprimé (compte fermé et
+                        renommé)
+  --getAllAccounts      rechercher tous les comptes du domaine
+  --modifyPassword      modifier l'empreinte du mot de passe d'un compte
+  --lockAccount         vérouiller un compte
+  --activateAccount     (ré)activer un compte
+  --closeAccount        fermer un compte
+  --addAccountAlias     ajoute des aliases à un compte
+  --removeAccountAlias  retire des aliases d'un compte
+  --modifyAccountAliases
+                        positionne une liste d'aliases pour un compte
+                        (supprime des aliases existants si non mentionnés)
+  --resetZimbraZimletAvailableZimlets
+                        réinitialise la liste des zimlets pour un compte
+                        (utile pour hériter du paramètre de la classe de
+                        services)
+  --getCos              rechercher une classe de service
+  --getAllCos           rechercher toutes les classes de service du domaine
+  --getDomain           informations sur un domaine
+  --getDefinition       associer un nouveau JSON de définition des listes de
+                        diffusion à un domaine (zimlet
+                        net_renater_listes_diffusion)
+  --getHistoryDefinition
+                        lister l'historique mise à jour des JSON de définition
+                        des listes de diffusion pour un domaine (zimlet
+                        net_renater_listes_diffusion)
+  --createDefinition    lister l'historique mise à jour des JSON de définition
+                        des listes de diffusion pour un domaine (zimlet
+                        net_renater_listes_diffusion)
+  --deleteDefinition    supprimer le JSON de définition des listes de
+                        diffusion pour un domaine (zimlet
+                        net_renater_listes_diffusion)
+  --countObjects        compter les objets d'un domaine
+  --getResource         rechercher une resource
+  --getAllResources     rechercher toutes les resources
+  --deleteResource      Supprimer une resource
+  --modifyResource      Modifier une resource
+  --createResource      Créer une resource
+  --getAllGroups        Afficher la liste des groupes et listes de
+                        distribution
+  --getGroup            Rechercher un groupe / une liste de distribution
+  --getSendAsGroup      Lister les l’ensemble des comptes pouvant utiliser
+                        l’adresse mail du groupe en adresse d’expédition.
+  --createGroup         Créer un groupe / une liste de distribution.
+  --createGroupExt      Créer un groupe / une liste de distribution en
+                        spécifiant les paramètres via -f ou --jsonData
+  --modifyGroup         Mettre à jour un groupe / une liste de distribution en
+                        spécifiant les paramètres via -f et/ou --jsonData
+  --deleteGroup         Supprimer un groupe / une liste de distribution.
+  --addGroupAlias       Ajoute des alias à un groupe / une liste de
+                        distribution.
+  --removeGroupAlias    Supprime des alias à un groupe / une liste de
+                        distribution.
+  --setGroupAliases     Modifie les alias à un groupe / une liste de
+                        distribution.
+  --addGroupMember      Ajoute des membres à un groupe / une liste de
+                        distribution.
+  --removeGroupMember   Supprime des membres d'un groupe / d'une liste de
+                        distribution.
+  --setGroupMembers     Modifie les membres d'un groupe / d'une liste de
+                        distribution.
+  --addGroupSender      Ajoute des autorisations d'utilisation de l'adresse du
+                        groupe ou de la liste de distribution par des comptes.
+  --removeGroupSender   Supprime des autorisations d'utilisation de l'adresse
+                        du groupe ou de la liste de distribution par des
+                        comptes.
+  --setGroupSenders     Modifie les autorisations d'utilisation de l'adresse
+                        du groupe ou de la liste de distribution par des
+                        comptes.
+  --addRootShare        Ajouter un partage root d'une boites de service à un
+                        ou plusieurs utilisateurs
+  --removeRootShare     Retirer un partage root d'une boites de service à un
+                        ou plusieurs utilisateurs
+```
+
+## Options
+```
+  -h, --help            show this help message and exit
+  --bssUrl https://api.partage.renater.fr/service/domain
+                        pour spécifier l'URL d'accès au BSS
+  --domain mondomaine.fr
+                        domaine cible sur le serveur Partage
+  --domainKey 6b7ead4bd425836e8c
+                        clé du domaine cible
+  --email jchirac@mondomaine.fr
+                        adresse mail passée en argument
+  --recipients sendAs   droits à attribuer
+  --rights autreuser@mondomaine.fr
+                        adresse mail passée en argument
+  --newEmail pdupont@mondomaine.fr
+                        nouvelle adresse mail du compte
+  --alias fcotton@mondomaine.fr
+                        alias pour un compte
+  --cosId 829a2781-c41e-4r4e2-b1a8-69f99dd20
+                        identifiant de la classe de service
+  --cosName staff_l_univ_rennes1
+                        nom de la classe de service
+  --limit 150           nombre d'entrées max pour une requête
+  --offset 0            index de la première entrée à récupérer
+  --ldapQuery mail=jean*
+                        filtre LDAP pour une requête
+  --attrs attrs=carLicense,zimbraAccountStatus,zimbraHideInGAL
+                        sélection des attributs à retourner
+  --sortBy mail         tri des résultats par attribut
+  --userPassword {ssha}HpqRjlh1WEha+6or95YkqA
+                        empreinte du mot de passe utilisateur
+  --asJson              option pour exporter un compte au format JSON
+  --jsonData /tmp/myAccount.json
+                        fichier contenant des données JSON
+  --fullData            Récupérer toutes les informations dans les requêtes
+                        sur les groupes. Attention, c'est lent.
+  --field name value, -f name value
+                        nom et valeur d'un champ du compte
+  --member example@example.org
+                        Membre(s) d'un groupe ou d'une liste de distribution.
+  --sender example@example.org
+                        Compte autorisé à utiliser l'adresse mail d'un groupe
+                        ou d'une liste de distribution en adresse
+                        d'expédition.
+  --zimbraCalResType Location
+                        Type de la resource
+  --displayName Resource
+                        Nom de la resource
+  --type userAccount    type d'objet à rechercher (userAccount, alias, dl ou
+                        calresource)
 ```
 
 ## Tests

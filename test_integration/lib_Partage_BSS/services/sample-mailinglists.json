@@ -1,0 +1,61 @@
+{
+  "type": "root",
+  "description": "Listes de diffusion étudiants de l'Université de Rennes 1",
+  "children": [
+    {
+      "type": "topic",
+      "description": "Faculté de médecine",
+      "children": [
+        {
+          "type": "topic",
+          "description": "Inscrits 2021-2022",
+          "children": [
+            {
+              "type": "list",
+              "email": "xx-doctorat-2122@listes.etudiant.univ-rennes1.fr",
+              "description": "Faculté de médecine : tous les étudiants inscrits en Doctorat (inscrits 2021-2022) (19 membres)"
+            },
+            {
+              "type": "list",
+              "email": "xx-m10103-2122@listes.etudiant.univ-rennes1.fr",
+              "description": "CERTIFICAT DE CAPACITE D'ORTHOPTISTE ANNEE2 (inscrits 2021-2022) (20 membres)"
+            },
+            {
+              "type": "list",
+              "email": "xx-m10104-2122@listes.etudiant.univ-rennes1.fr",
+              "description": "CERTIFICAT DE CAPACITE D'ORTHOPTISTE ANNEE3 (inscrits 2021-2022) (18 membres)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "topic",
+      "description": "Université de Rennes 1",
+      "children": [
+        {
+          "type": "topic",
+          "description": "Listes institutionnelles",
+          "children": [
+            {
+              "type": "list",
+              "email": "ur1-etudiants@listes.etudiant.univ-rennes1.fr",
+              "description": "Tous les étudiants inscrits à l'Université, année universitaire en cours (37751 membres)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "topic",
+      "description": "IUT de Rennes",
+      "children": [
+        {
+          "type": "list",
+          "email": "t20301pastel@listes.etudiant.univ-rennes1.fr",
+          "description": "Liste correspondant au parcours PASTEL de la LP Mécatronique (13 membres)"
+        }
+      ]
+    }
+  ]
+}

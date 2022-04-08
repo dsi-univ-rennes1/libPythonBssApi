@@ -45,3 +45,13 @@ def postBSS(url, data):
     :return: BSSResponse la réponse de l'API BSS
     """
     return parseResponse(requests.post(url, data=data).text)
+
+def getBSS(url, data):
+    """
+    Permet de récupérer la réponse d'une requête GET auprès de l'API BSS
+
+    :param url: url de l'action demandée avec si nécessaire le token
+    :param data: le body de la requête post
+    :return: BSSResponse la réponse de l'API BSS
+    """
+    return parseResponse(requests.get(url, data=data).text)

@@ -5,7 +5,7 @@ Module général regroupant les méthodes communes des différents services
 import re
 from lib_Partage_BSS import utils
 from lib_Partage_BSS.services import BSSConnexion
-from lib_Partage_BSS.utils.BSSRequest import postBSS
+from lib_Partage_BSS.utils.BSSRequest import postBSS, getBSS
 from lib_Partage_BSS.exceptions import NameException, DomainException, BSSConnexionException, ServiceException, TmpServiceException, NotFoundException
 
 
@@ -23,7 +23,7 @@ def extractDomain(mailAddress):
         raise NameException("L'adresse mail " + mailAddress + " n'est pas valide")
 
 
-def callMethod(domain, methodName, data):
+def callMethod(domain, methodName, data, method='POST'):
     """
     Méthode permettant d'appeler une méthode de l'API BSS
 
@@ -45,7 +45,10 @@ def callMethod(domain, methodName, data):
     except DomainException as e:
         raise ServiceException(3,"Problème authentification BSS : "+ str(e))
 
-    return postBSS(con.url+"/"+methodName+"/"+token, data)
+    if method == 'GET':
+        return getBSS(con.url + "/" + methodName + "/" + token, data)
+    else:
+        return postBSS(con.url+"/"+methodName+"/"+token, data)
 
 def checkResponseStatus(response):
     """
@@ -65,8 +68,10 @@ def checkResponseStatus(response):
         # On essaie de déterminer les erreurs temporaires versus définitives, à partir du contenu de response["message"]
         if re.search('(unable to get connection|Invalid token|Accès refusé|Une erreur système bloque votre requête|LDAP error|system failure|unable to create entry|unable to create account|mailbox in maintenance mode)', response["message"]):
             raise TmpServiceException(response["status"], response["message"])
-        elif re.search('(no such account|no such domain|no such distribution list|no such cos)', response["message"]):
+        elif re.search('(no such )', response["message"], flags=re.IGNORECASE):
             raise NotFoundException(response["status"], response["message"])
+        elif "errors" in response and re.search('(no such )', response["errors"], flags=re.IGNORECASE):
+            raise NotFoundException(response["status"], response["errors"])
         else:
             raise ServiceException(response["status"], response["message"])
 
