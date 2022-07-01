@@ -13,6 +13,7 @@ class Resource( GlobalModel ):
     """
     Classe représentant une ressource dans Partage.
 
+    :ivar _id: identifiant Zimbra de la ressource
     :ivar _description: description du de la ressource
     :ivar _displayName: nom d'affichage de la ressouce
     :ivar _co: non du pays de la ressouce
@@ -45,7 +46,7 @@ class Resource( GlobalModel ):
 
     # Attributs utilisés dans {Create,Modify}Account
     ATTRIBUTES = (
-            'description' , 'displayName' , 'co', 'l', 'postalCode', 'password', 'userPassword', 'street',
+            'id' , 'description' , 'displayName' , 'co', 'l', 'postalCode', 'password', 'userPassword', 'street',
             'zimbraAccountStatus', 'zimbraCalResLocationDisplayName', 'st' ,
             'zimbraCalResSite' , 'zimbraCalResBuilding' , 'zimbraCalResFloor' ,
             'zimbraCalResRoom' , 'zimbraCalResCapacity' , 'zimbraCalResAutoAcceptDecline' ,
@@ -339,6 +340,18 @@ class Resource( GlobalModel ):
         else:
             raise TypeError("description")
 
+    #---------------------------------------------------------------------------
+
+    @property
+    def id( self ):
+        return self._id
+
+    @id.setter
+    def id( self , value ):
+        if isinstance( value , str ) or value is None:
+            self._id = value
+        else:
+            raise TypeError("id")
     #---------------------------------------------------------------------------
 
     @property
