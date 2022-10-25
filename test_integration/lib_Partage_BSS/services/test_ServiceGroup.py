@@ -68,11 +68,11 @@ def test_removeGroupAliases_cas_Normal(test_config):
     assert test_config['autre_groupalias'] not in group.aliases
 
 def test_updateGroupAliases_cas_domaine_incorrect(test_config):
-    with pytest.raises(ServiceException):
+    with pytest.raises(NotFoundException):
         GroupService.updateGroupAliases(test_config['groupname'], "test_group_lib_python@mauvais.domaine.fr")
 
 def test_removeGroupAliases_cas_alias_inconnu(test_config):
-    with pytest.raises(ServiceException):
+    with pytest.raises(NotFoundException):
         GroupService.removeGroupAliases(test_config['groupname'], test_config['autre_groupalias'])
 
 def test_addGroupMember_cas_Normal(test_config):
@@ -114,7 +114,7 @@ def test_removeGroupSenders_cas_Normal(test_config):
     assert test_config['autre_accountname'] not in group.senders
 
 def test_removeGroupSenders_cas_alias_inconnu(test_config):
-    with pytest.raises(ServiceException):
+    with pytest.raises(NotFoundException):
         GroupService.removeGroupSenders(test_config['groupname'], test_config['autre_accountname'])
 
 def test_deleteGroup_cas_normal(test_config):

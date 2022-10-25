@@ -35,7 +35,7 @@ def test_getResource_cas_normal(test_config):
     assert resource.name == test_config['resourcename']
 
 def test_getResource_cas_resource_inexistant(test_config):
-    with pytest.raises(ServiceException) as excinfo:
+    with pytest.raises(NotFoundException) as excinfo:
         resource = ResourceService.getResource("inexistant" + '@' + test_config['bss_domain'])
 
 def test_modifyResource_cas_Normal(test_config):
@@ -100,5 +100,5 @@ def test_deleteResource_cas_normal(test_config):
     assert resource == None
 
 def test_deleteResource_cas_resource_inexistant(test_config):
-    with pytest.raises(ServiceException):
+    with pytest.raises(NotFoundException):
         resource = ResourceService.deleteResource(test_config['resourcename'])
