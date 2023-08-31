@@ -47,10 +47,10 @@ from lib_Partage_BSS.services.BSSConnexionService import BSSConnexion
 
 # Connexion au BSS
 bss = BSSConnexion()
-bss.setDomainKey('x.fr', 'yourKey')
+bss.setDomainKey({'x.fr', 'yourKey'})
 
 # Recherche parmis les comptes
-all_accounts = AccountService.getAllAccounts(domain='x.fr', limit=200, 'mail=u*', , attrs="carLicense,zimbraAccountStatus,zimbraHideInGAL")
+all_accounts = AccountService.getAllAccounts(domain='x.fr', limit=200, ldapQuery='mail=u*', attrs="carLicense,zimbraAccountStatus,zimbraHideInGAL")
 
 # Consultation d'un compte
 account = AccountService.getAccount('user@x.fr')
