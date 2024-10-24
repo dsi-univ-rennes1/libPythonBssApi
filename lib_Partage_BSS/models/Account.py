@@ -38,6 +38,7 @@ class Account(GlobalModel):
     :ivar _zimbraAccountStatus: Etat du compte défaut active (active,closed)
     :ivar _zimbraFeatureBriefcasesEnabled: ...
     :ivar _zimbraFeatureCalendarEnabled: ...
+    :ivar _zimbraFeatureContactsEnabled: ...
     :ivar _zimbraFeatureMailEnabled: ...
     :ivar _zimbraFeatureMailForwardingEnabled: Permettre à l'utilisateur d'indiquer une adresse de redirection (TRUE,FALSE)
     :ivar _zimbraFeatureOptionsEnabled: ...
@@ -86,6 +87,7 @@ class Account(GlobalModel):
             self._zimbraAccountStatus = None
             self._zimbraFeatureBriefcasesEnabled = None
             self._zimbraFeatureCalendarEnabled = None
+            self._zimbraFeatureContactsEnabled = None
             self._zimbraFeatureMailEnabled = None
             self._zimbraFeatureMailForwardingEnabled = None
             self._zimbraFeatureOptionsEnabled = None
@@ -217,6 +219,10 @@ class Account(GlobalModel):
     @property
     def zimbraFeatureCalendarEnabled(self):
         return self._zimbraFeatureCalendarEnabled
+
+    @property
+    def zimbraFeatureContactsEnabled(self):
+        return self._zimbraFeatureContactsEnabled
 
     @property
     def zimbraFeatureMailEnabled(self):
@@ -493,6 +499,15 @@ class Account(GlobalModel):
             self._zimbraFeatureCalendarEnabled = None
         elif utils.checkBoolean( value ):
             self._zimbraFeatureCalendarEnabled = utils.convertToBoolean( value )
+        else:
+            raise TypeError
+
+    @zimbraFeatureContactsEnabled.setter
+    def zimbraFeatureContactsEnabled(self, value):
+        if value is None:
+            self._zimbraFeatureContactsEnabled = None
+        elif utils.checkBoolean( value ):
+            self._zimbraFeatureContactsEnabled = utils.convertToBoolean( value )
         else:
             raise TypeError
 
