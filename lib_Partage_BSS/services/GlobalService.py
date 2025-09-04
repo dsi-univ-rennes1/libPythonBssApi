@@ -66,7 +66,7 @@ def checkResponseStatus(response):
 
     if status != 0:
         # On essaie de déterminer les erreurs temporaires versus définitives, à partir du contenu de response["message"]
-        if re.search('(unable to get connection|Invalid token|Accès refusé|Une erreur système bloque votre requête|LDAP error|system failure|unable to create entry|unable to create account|mailbox in maintenance mode)', response["message"]):
+        if re.search('(unable to get connection|Invalid token|Accès refusé|Une erreur système bloque votre requête|LDAP error|system failure|unable to create entry|unable to create account|mailbox in maintenance mode|Aucune classe de service n\'a été trouvée)', response["message"]):
             raise TmpServiceException(response["status"], response["message"])
         elif re.search('(no such |ne fait pas partie des domaines)', response["message"], flags=re.IGNORECASE):
             raise NotFoundException(response["status"], response["message"])
